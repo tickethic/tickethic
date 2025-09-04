@@ -40,7 +40,7 @@ const config: HardhatUserConfig = {
       accounts: process.env.AMOY_PRIVATE_KEY ? [process.env.AMOY_PRIVATE_KEY] : [],
       chainId: 80002,
       gas: 30000000,
-      gasPrice: 20000000000,
+      gasPrice: 1000000000,
     },
   },
 };

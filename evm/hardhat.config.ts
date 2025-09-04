@@ -11,13 +11,19 @@ const config: HardhatUserConfig = {
     profiles: {
       default: {
         version: "0.8.28",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 1,
+          },
+        },
       },
       production: {
         version: "0.8.28",
         settings: {
           optimizer: {
             enabled: true,
-            runs: 200,
+            runs: 1,
           },
         },
       },
@@ -33,6 +39,8 @@ const config: HardhatUserConfig = {
       url: process.env.AMOY_RPC_URL || "",
       accounts: process.env.AMOY_PRIVATE_KEY ? [process.env.AMOY_PRIVATE_KEY] : [],
       chainId: 80002,
+      gas: 30000000,
+      gasPrice: 20000000000,
     },
   },
 };

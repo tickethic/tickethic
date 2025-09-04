@@ -25,6 +25,11 @@ contract Event is Ownable {
 
     Organizator public organizatorContract;
 
+    // Verificators management
+    mapping(address => bool) public verificators;
+    event VerificatorAdded(address indexed verificator);
+    event VerificatorRemoved(address indexed verificator);
+
     constructor(
         address _artistContract,
         uint256[] memory _artistIds,
@@ -57,6 +62,8 @@ contract Event is Ownable {
         totalTickets = _totalTickets;
         organizerShare = 100 - totalShare;
         ticketContract = Ticket(_ticketContract);
+    // Optionally, organizer is a verificator by default
+    verificators[_organizer] = true;
     }
 
     function buyTicket() external payable {
@@ -79,8 +86,27 @@ contract Event is Ownable {
         payable(organizer).transfer(organizerAmount);
     }
 
-    function checkIn(uint256 tokenId) external {
-        require(msg.sender == organizer, "Only organizer can check in");
+    modifier onlyOrganizer() {
+        require(msg.sender == organizer, "Only organizer can manage verificators");
+        _;
+    }
+
+    function addVerificator(address verificator) external onlyOrganizer {
+        verificators[verificator] = true;
+        emit VerificatorAdded(verificator);
+    }
+
+    function removeVerificator(address verificator) external onlyOrganizer {
+        verificators[verificator] = false;
+        emit VerificatorRemoved(verificator);
+    }
+
+    modifier onlyVerificator() {
+        require(verificators[msg.sender], "Not a verificator");
+        _;
+    }
+
+    function checkIn(uint256 tokenId) external onlyVerificator {
         require(!usedTickets[tokenId], "Already used");
         require(ticketContract.ownerOf(tokenId) != address(0), "Invalid ticket");
         usedTickets[tokenId] = true;

@@ -15,10 +15,6 @@ const ARTIST_ABI = parseAbi([
 
 export const ActionButtonList = () => {
   const { disconnect } = useDisconnect();
-<<<<<<< HEAD
-=======
-  const { open } = useAppKit();
->>>>>>> develop
   const { switchNetwork } = useAppKitNetwork();
   const { address } = useAccount();
 

@@ -5,17 +5,15 @@
   "scripts": {
     "test": "npx hardhat test",
     "compile": "hardhat compile",
-    "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
-    "deploy:amoy": "hardhat run scripts/deploy.ts --network amoy"
+    "deploy:local": "npx hardhat ignition deploy ignition/modules/Tickethic.ts --network localhost",
+    "deploy:amoy": "npx hardhat ignition deploy ignition/modules/Tickethic.ts --network amoy"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-ethers": "^4.0.0",
+    "@nomicfoundation/hardhat-ignition": "^3.0.2",
     "@nomicfoundation/hardhat-toolbox-viem": "^5.0.0",
-    "@types/dotenv": "^6.1.1",
-    "@types/node": "^22.18.0",
+    "@types/node": "^22.18.1",
     "forge-std": "github:foundry-rs/forge-std#v1.9.4",
     "hardhat": "^3.0.4",
-    "solc": "^0.8.28",
     "typescript": "~5.8.0",
     "viem": "^2.37.3"
   },

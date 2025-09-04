@@ -1,57 +1,127 @@
-# Sample Hardhat 3 Beta Project (`node:test` and `viem`)
+# Tickethic - Event Ticketing System
 
-This project showcases a Hardhat 3 Beta project using the native Node.js test runner (`node:test`) and the `viem` library for Ethereum interactions.
-
-To learn more about the Hardhat 3 Beta, please visit the [Getting Started guide](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3). To share your feedback, join our [Hardhat 3 Beta](https://hardhat.org/hardhat3-beta-telegram-group) Telegram group or [open an issue](https://github.com/NomicFoundation/hardhat/issues/new) in our GitHub issue tracker.
+A decentralized event ticketing system built with Solidity and Hardhat 3 Beta.
 
 ## Project Overview
 
-This example project includes:
+This project includes:
 
-- A simple Hardhat configuration file.
-- Foundry-compatible Solidity unit tests.
-- TypeScript integration tests using [`node:test`](nodejs.org/api/test.html), the new Node.js native test runner, and [`viem`](https://viem.sh/).
-- Examples demonstrating how to connect to different types of networks, including locally simulating OP mainnet.
+- **Artist.sol** - Contract for managing artists (ERC721 NFT)
+- **Ticket.sol** - Contract for event tickets (ERC721 NFT)
+- **Organizator.sol** - Contract for managing organizers
+- **Event.sol** - Main contract for managing events and ticketing
+- **Solidity Tests** - Comprehensive tests with Foundry
+- **Ignition Deployment** - Automated deployment with Hardhat Ignition
 
-## Usage
+## Features
 
-### Running Tests
+- ✅ Event creation and management
+- ✅ Ticket sales with ETH payments
+- ✅ Automatic revenue distribution between artists and organizer
+- ✅ Ticket verification system
+- ✅ Organizer and verifier management
+- ✅ Comprehensive tests (14 passing tests)
+- ✅ Automated deployment with Ignition
 
-To run all the tests in the project, execute the following command:
+## Installation
 
-```shell
+```bash
+npm install
+```
+
+## Compilation
+
+```bash
+npx hardhat compile
+```
+
+## Testing
+
+```bash
+# All tests
 npx hardhat test
-```
 
-You can also selectively run the Solidity or `node:test` tests:
-
-```shell
+# Solidity tests only
 npx hardhat test solidity
-npx hardhat test nodejs
 ```
 
-### Make a deployment to Sepolia
+## Deployment
 
-This project includes an example Ignition module to deploy the contract. You can deploy this module to a locally simulated chain or to Sepolia.
+### Local Deployment
 
-To run the deployment to a local chain:
-
-```shell
-npx hardhat ignition deploy ignition/modules/Counter.ts
+```bash
+npx hardhat ignition deploy ignition/modules/Tickethic.ts --network localhost
 ```
 
-To run the deployment to Sepolia, you need an account with funds to send the transaction. The provided Hardhat configuration includes a Configuration Variable called `SEPOLIA_PRIVATE_KEY`, which you can use to set the private key of the account you want to use.
+### Deployment on Amoy (Polygon testnet)
 
-You can set the `SEPOLIA_PRIVATE_KEY` variable using the `hardhat-keystore` plugin or by setting it as an environment variable.
+```bash
+# Configure environment variables
+export AMOY_RPC_URL="your_rpc_url"
+export AMOY_PRIVATE_KEY="your_private_key"
 
-To set the `SEPOLIA_PRIVATE_KEY` config variable using `hardhat-keystore`:
-
-```shell
-npx hardhat keystore set SEPOLIA_PRIVATE_KEY
+# Deploy
+npx hardhat ignition deploy ignition/modules/Tickethic.ts --network amoy
 ```
 
-After setting the variable, you can run the deployment with the Sepolia network:
+## Available Scripts
 
-```shell
-npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
+```bash
+npm run test          # Run all tests
+npm run compile       # Compile contracts
+npm run deploy:local  # Deploy locally
+npm run deploy:amoy   # Deploy on Amoy
 ```
+
+## Contract Architecture
+
+### Event.sol
+The main contract that manages:
+- Event creation
+- Ticket sales
+- Payment distribution
+- Verification system
+
+### Artist.sol
+ERC721 contract to represent artists with metadata.
+
+### Ticket.sol
+ERC721 contract for event tickets.
+
+### Organizator.sol
+Contract for managing authorized organizers.
+
+## Testing
+
+The project includes 14 comprehensive tests that cover:
+- ✅ Event creation
+- ✅ Ticket purchasing
+- ✅ Payment distribution
+- ✅ Verification system
+- ✅ Error handling
+- ✅ Access controls
+
+## Deployment with Ignition
+
+The project uses Hardhat Ignition for automated and reproducible deployment. The `Tickethic.ts` module deploys all contracts in the correct order with proper dependencies.
+
+## Configuration
+
+The project is configured for:
+- Solidity 0.8.28
+- Hardhat 3 Beta
+- OpenZeppelin Contracts 5.4.0
+- Foundry for Solidity testing
+- Viem for Ethereum interactions
+
+## Supported Networks
+
+- `localhost` - Local Hardhat network
+- `amoy` - Polygon Amoy testnet
+
+## Security
+
+- All contracts use OpenZeppelin for security
+- Comprehensive tests for all use cases
+- Appropriate access controls
+- User input validation

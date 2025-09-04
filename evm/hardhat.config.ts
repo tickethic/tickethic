@@ -1,37 +1,46 @@
 import type { HardhatUserConfig } from "hardhat/config";
+
 import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
-import { configVariable } from "hardhat/config";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 const config: HardhatUserConfig = {
   plugins: [hardhatToolboxViemPlugin],
-  paths: {
-    artifacts: "./artifacts",
-    cache: "./cache",
-  },
   solidity: {
-    compilers: [
-      {
+    profiles: {
+      default: {
         version: "0.8.28",
         settings: {
-          optimizer: { enabled: true, runs: 200 },
+          optimizer: {
+            enabled: true,
+            runs: 1,
+          },
         },
       },
-    ],
+      production: {
+        version: "0.8.28",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 1,
+          },
+        },
+      },
+    },
   },
   networks: {
-    hardhatMainnet: {
-      type: "edr-simulated",
-      chainType: "l1",
+    localhost: {
+      type: "hardhat",
     },
-    hardhatOp: {
-      type: "edr-simulated",
-      chainType: "op",
-    },
-    sepolia: {
+    amoy: {
       type: "http",
       chainType: "l1",
-      url: configVariable("SEPOLIA_RPC_URL"),
-      accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
+      url: process.env.AMOY_RPC_URL || "",
+      accounts: process.env.AMOY_PRIVATE_KEY ? [process.env.AMOY_PRIVATE_KEY] : [],
+      chainId: 80002,
+      gas: 30000000,
+      gasPrice: 1000000000,
     },
   },
 };

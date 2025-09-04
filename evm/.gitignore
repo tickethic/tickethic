@@ -1,0 +1,42 @@
+# Node modules
+/node_modules
+
+# Compilation output
+/dist
+
+# pnpm deploy output
+/bundle
+
+# Hardhat Build Artifacts
+/artifacts
+
+# Hardhat compilation (v2) support directory
+/cache
+
+# Typechain output
+/types
+
+# Hardhat coverage reports
+/coverage
+
+# IDE files
+.vscode/
+*.code-workspace
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Env files
+.env
+.env.local
+
+# Build outputs
+/build
+
+# Test outputs
+/test-coverage
+*.log
+
+# Solidity build info
+/build-info/

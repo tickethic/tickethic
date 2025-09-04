@@ -1,5 +1,5 @@
 'use client'
-import { useDisconnect, useAppKit, useAppKitNetwork } from '@reown/appkit/react'
+import { useDisconnect, useAppKitNetwork } from '@reown/appkit/react'
 import { networks } from '@/config'
 import { useWriteContract, useAccount } from 'wagmi'
 import { parseAbi } from 'viem'
@@ -15,7 +15,6 @@ const ARTIST_ABI = parseAbi([
 
 export const ActionButtonList = () => {
   const { disconnect } = useDisconnect();
-  const { open } = useAppKit();
   const { switchNetwork } = useAppKitNetwork();
   const { address } = useAccount();
 

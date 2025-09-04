@@ -1,27 +1,27 @@
 # Tickethic - Event Ticketing System
 
-Un système de billetterie d'événements décentralisé construit avec Solidity et Hardhat 3 Beta.
+A decentralized event ticketing system built with Solidity and Hardhat 3 Beta.
 
-## Vue d'ensemble du projet
+## Project Overview
 
-Ce projet comprend :
+This project includes:
 
-- **Artist.sol** - Contrat pour gérer les artistes (NFT ERC721)
-- **Ticket.sol** - Contrat pour les billets d'événement (NFT ERC721)
-- **Organizator.sol** - Contrat pour gérer les organisateurs
-- **Event.sol** - Contrat principal pour gérer les événements et la billetterie
-- **Tests Solidity** - Tests complets avec Foundry
-- **Déploiement Ignition** - Déploiement automatisé avec Hardhat Ignition
+- **Artist.sol** - Contract for managing artists (ERC721 NFT)
+- **Ticket.sol** - Contract for event tickets (ERC721 NFT)
+- **Organizator.sol** - Contract for managing organizers
+- **Event.sol** - Main contract for managing events and ticketing
+- **Solidity Tests** - Comprehensive tests with Foundry
+- **Ignition Deployment** - Automated deployment with Hardhat Ignition
 
-## Fonctionnalités
+## Features
 
-- ✅ Création et gestion d'événements
-- ✅ Vente de billets avec paiement en ETH
-- ✅ Répartition automatique des revenus entre artistes et organisateur
-- ✅ Système de vérification des billets
-- ✅ Gestion des organisateurs et vérificateurs
-- ✅ Tests complets (14 tests passants)
-- ✅ Déploiement automatisé avec Ignition
+- ✅ Event creation and management
+- ✅ Ticket sales with ETH payments
+- ✅ Automatic revenue distribution between artists and organizer
+- ✅ Ticket verification system
+- ✅ Organizer and verifier management
+- ✅ Comprehensive tests (14 passing tests)
+- ✅ Automated deployment with Ignition
 
 ## Installation
 
@@ -35,93 +35,93 @@ npm install
 npx hardhat compile
 ```
 
-## Tests
+## Testing
 
 ```bash
-# Tous les tests
+# All tests
 npx hardhat test
 
-# Tests Solidity uniquement
+# Solidity tests only
 npx hardhat test solidity
 ```
 
-## Déploiement
+## Deployment
 
-### Déploiement local
+### Local Deployment
 
 ```bash
 npx hardhat ignition deploy ignition/modules/Tickethic.ts --network localhost
 ```
 
-### Déploiement sur Amoy (Polygon testnet)
+### Deployment on Amoy (Polygon testnet)
 
 ```bash
-# Configurer les variables d'environnement
+# Configure environment variables
 export AMOY_RPC_URL="your_rpc_url"
 export AMOY_PRIVATE_KEY="your_private_key"
 
-# Déployer
+# Deploy
 npx hardhat ignition deploy ignition/modules/Tickethic.ts --network amoy
 ```
 
-## Scripts disponibles
+## Available Scripts
 
 ```bash
-npm run test          # Exécuter tous les tests
-npm run compile       # Compiler les contrats
-npm run deploy:local  # Déployer localement
-npm run deploy:amoy   # Déployer sur Amoy
+npm run test          # Run all tests
+npm run compile       # Compile contracts
+npm run deploy:local  # Deploy locally
+npm run deploy:amoy   # Deploy on Amoy
 ```
 
-## Architecture des contrats
+## Contract Architecture
 
 ### Event.sol
-Le contrat principal qui gère :
-- La création d'événements
-- La vente de billets
-- La répartition des paiements
-- Le système de vérification
+The main contract that manages:
+- Event creation
+- Ticket sales
+- Payment distribution
+- Verification system
 
 ### Artist.sol
-Contrat ERC721 pour représenter les artistes avec métadonnées.
+ERC721 contract to represent artists with metadata.
 
 ### Ticket.sol
-Contrat ERC721 pour les billets d'événement.
+ERC721 contract for event tickets.
 
 ### Organizator.sol
-Contrat pour gérer les organisateurs autorisés.
+Contract for managing authorized organizers.
 
-## Tests
+## Testing
 
-Le projet inclut 14 tests complets qui couvrent :
-- ✅ Création d'événements
-- ✅ Achat de billets
-- ✅ Répartition des paiements
-- ✅ Système de vérification
-- ✅ Gestion des erreurs
-- ✅ Contrôles d'accès
+The project includes 14 comprehensive tests that cover:
+- ✅ Event creation
+- ✅ Ticket purchasing
+- ✅ Payment distribution
+- ✅ Verification system
+- ✅ Error handling
+- ✅ Access controls
 
-## Déploiement avec Ignition
+## Deployment with Ignition
 
-Le projet utilise Hardhat Ignition pour un déploiement automatisé et reproductible. Le module `Tickethic.ts` déploie tous les contrats dans le bon ordre avec les bonnes dépendances.
+The project uses Hardhat Ignition for automated and reproducible deployment. The `Tickethic.ts` module deploys all contracts in the correct order with proper dependencies.
 
 ## Configuration
 
-Le projet est configuré pour :
+The project is configured for:
 - Solidity 0.8.28
 - Hardhat 3 Beta
 - OpenZeppelin Contracts 5.4.0
-- Foundry pour les tests Solidity
-- Viem pour les interactions Ethereum
+- Foundry for Solidity testing
+- Viem for Ethereum interactions
 
-## Réseaux supportés
+## Supported Networks
 
-- `localhost` - Réseau local Hardhat
+- `localhost` - Local Hardhat network
 - `amoy` - Polygon Amoy testnet
 
-## Sécurité
+## Security
 
-- Tous les contrats utilisent OpenZeppelin pour la sécurité
-- Tests complets pour tous les cas d'usage
-- Contrôles d'accès appropriés
-- Validation des entrées utilisateur
+- All contracts use OpenZeppelin for security
+- Comprehensive tests for all use cases
+- Appropriate access controls
+- User input validation

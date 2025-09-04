@@ -1,23 +1,24 @@
 {
-  "name": "dapp",
+  "name": "evm",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "test": "npx hardhat test",
     "compile": "hardhat compile",
-    "deploy:local": "hardhat run scripts/deploy.js --network localhost"
+    "deploy:local": "npx hardhat ignition deploy ignition/modules/Tickethic.ts --network localhost",
+    "deploy:amoy": "npx hardhat ignition deploy ignition/modules/Tickethic.ts --network amoy"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-ignition": "^3.0.2",
     "@nomicfoundation/hardhat-toolbox-viem": "^5.0.0",
-    "@types/node": "^22.18.0",
+    "@types/node": "^22.18.1",
     "forge-std": "github:foundry-rs/forge-std#v1.9.4",
     "hardhat": "^3.0.4",
-    "solc": "^0.8.28",
     "typescript": "~5.8.0",
     "viem": "^2.37.3"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^5.4.0"
+    "@openzeppelin/contracts": "^5.4.0",
+    "dotenv": "^17.2.2"
   }
 }

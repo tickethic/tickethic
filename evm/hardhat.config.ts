@@ -1,9 +1,13 @@
-import type { HardhatUserConfig } from "hardhat/config";
-import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
-import { configVariable } from "hardhat/config";
+import { HardhatUserConfig } from "hardhat/config";
+import "@nomicfoundation/hardhat-ethers";
+import * as dotenv from "dotenv";
+
+dotenv.config();
+
+const AMOY_RPC_URL = process.env.AMOY_RPC_URL || "";
+const AMOY_PRIVATE_KEY = process.env.AMOY_PRIVATE_KEY || "";
 
 const config: HardhatUserConfig = {
-  plugins: [hardhatToolboxViemPlugin],
   paths: {
     artifacts: "./artifacts",
     cache: "./cache",
@@ -19,19 +23,14 @@ const config: HardhatUserConfig = {
     ],
   },
   networks: {
-    hardhatMainnet: {
-      type: "edr-simulated",
-      chainType: "l1",
+    localhost: {
+      type: "hardhat",
     },
-    hardhatOp: {
-      type: "edr-simulated",
-      chainType: "op",
-    },
-    sepolia: {
+    amoy: {
       type: "http",
-      chainType: "l1",
-      url: configVariable("SEPOLIA_RPC_URL"),
-      accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
+      url: AMOY_RPC_URL,
+      accounts: AMOY_PRIVATE_KEY ? [AMOY_PRIVATE_KEY] : [],
+      chainId: 80002,
     },
   },
 };

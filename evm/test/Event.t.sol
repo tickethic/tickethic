@@ -93,7 +93,7 @@ contract EventTest is Test {
         eventContract.buyTicket{value: ticketPrice}();
 
         // Only organizer can check in
-        vm.expectRevert("Only organizer can check in");
+        vm.expectRevert("Not a verificator");
         vm.prank(buyer);
         eventContract.checkIn(1);
 
@@ -119,5 +119,162 @@ contract EventTest is Test {
         vm.expectRevert("Sold out");
         vm.prank(buyer);
         eventContract.buyTicket{value: ticketPrice}();
+    }
+
+    function testConstructorRevertsOnMismatchedArtistArrays() public {
+        address[] memory initialOrganizators = new address[](1);
+        initialOrganizators[0] = organizer;
+        Organizator orgContract = new Organizator(owner, initialOrganizators);
+        uint256[] memory ids = new uint256[](2);
+        uint256[] memory shares = new uint256[](3);
+        ids[0] = 1; ids[1] = 2;
+        shares[0] = 50; shares[1] = 30; shares[2] = 20;
+        vm.expectRevert("Artists and shares length mismatch");
+        new Event(
+            address(artistContract),
+            ids,
+            shares,
+            organizer,
+            block.timestamp + 1 days,
+            "ipfs://metadata",
+            ticketPrice,
+            totalTickets,
+            address(ticketContract),
+            address(orgContract)
+        );
+    }
+
+    function testConstructorRevertsOnTotalShareOver100() public {
+        address[] memory initialOrganizators = new address[](1);
+        initialOrganizators[0] = organizer;
+        Organizator orgContract = new Organizator(owner, initialOrganizators);
+        uint256[] memory ids = new uint256[](2);
+        uint256[] memory shares = new uint256[](2);
+        ids[0] = 1; ids[1] = 2;
+        shares[0] = 60; shares[1] = 50;
+        vm.expectRevert("Total artist share > 100");
+        new Event(
+            address(artistContract),
+            ids,
+            shares,
+            organizer,
+            block.timestamp + 1 days,
+            "ipfs://metadata",
+            ticketPrice,
+            totalTickets,
+            address(ticketContract),
+            address(orgContract)
+        );
+    }
+
+    function testConstructorRevertsIfOrganizerNotRegistered() public {
+        address[] memory initialOrganizators = new address[](1);
+        initialOrganizators[0] = address(0xB2); // Not organizer
+        Organizator orgContract = new Organizator(owner, initialOrganizators);
+        uint256[] memory ids = new uint256[](1);
+        uint256[] memory shares = new uint256[](1);
+        ids[0] = 1;
+        shares[0] = 100;
+        vm.expectRevert("Organizer not registered");
+        new Event(
+            address(artistContract),
+            ids,
+            shares,
+            organizer,
+            block.timestamp + 1 days,
+            "ipfs://metadata",
+            ticketPrice,
+            totalTickets,
+            address(ticketContract),
+            address(orgContract)
+        );
+    }
+
+    function testBuyTicketRevertsIfEventPassed() public {
+        // Deploy event with past date
+        Event pastEvent = new Event(
+            address(artistContract),
+            artistIds,
+            artistShares,
+            organizer,
+            block.timestamp - 1,
+            "ipfs://metadata",
+            ticketPrice,
+            totalTickets,
+            address(ticketContract),
+            address(organizatorContract)
+        );
+        vm.deal(buyer, 10 ether);
+        vm.prank(buyer);
+        vm.expectRevert("Event already happened");
+        pastEvent.buyTicket{value: ticketPrice}();
+    }
+
+    function testBuyTicketRevertsIfIncorrectETHSent() public {
+        vm.deal(buyer, 10 ether);
+        vm.prank(buyer);
+        vm.expectRevert("Incorrect ETH sent");
+        eventContract.buyTicket{value: ticketPrice - 1}();
+    }
+
+    function testOnlyOrganizerCanAddRemoveVerificator() public {
+        address newVerificator = address(0xD1);
+        // Non-organizer cannot add
+        vm.prank(buyer);
+        vm.expectRevert("Only organizer can manage verificators");
+        eventContract.addVerificator(newVerificator);
+        // Organizer can add
+        vm.prank(organizer);
+        eventContract.addVerificator(newVerificator);
+        assertTrue(eventContract.verificators(newVerificator), "Verificator should be added");
+        // Non-organizer cannot remove
+        vm.prank(buyer);
+        vm.expectRevert("Only organizer can manage verificators");
+        eventContract.removeVerificator(newVerificator);
+        // Organizer can remove
+        vm.prank(organizer);
+        eventContract.removeVerificator(newVerificator);
+        assertFalse(eventContract.verificators(newVerificator), "Verificator should be removed");
+    }
+
+    function testCheckInRevertsIfNotVerificator() public {
+        vm.prank(buyer);
+        eventContract.buyTicket{value: ticketPrice}();
+        vm.prank(buyer);
+        vm.expectRevert("Not a verificator");
+        eventContract.checkIn(1);
+    }
+
+    function testCheckInRevertsIfAlreadyUsed() public {
+        vm.prank(buyer);
+        eventContract.buyTicket{value: ticketPrice}();
+        vm.prank(organizer);
+        eventContract.checkIn(1);
+        vm.prank(organizer);
+        vm.expectRevert("Already used");
+        eventContract.checkIn(1);
+    }
+
+    function testCheckInRevertsIfTicketDoesNotExist() public {
+        vm.prank(organizer);
+        vm.expectRevert("Invalid ticket");
+        eventContract.checkIn(999);
+    }
+
+    function testIsValidReturnsCorrectStatus() public {
+        vm.prank(buyer);
+        eventContract.buyTicket{value: ticketPrice}();
+        assertTrue(eventContract.isValid(1), "Ticket should be valid before check-in");
+        vm.prank(organizer);
+        eventContract.checkIn(1);
+        assertFalse(eventContract.isValid(1), "Ticket should be invalid after check-in");
+    }
+
+    function testGetArtistIdsReturnsCorrectIds() public {
+        uint256[] memory ids = eventContract.getArtistIds();
+        assertEq(ids.length, artistIds.length, "Artist IDs length should match");
+        for (uint256 i = 0; i < ids.length; i++) {
+            assertEq(ids[i], artistIds[i], "Artist ID should match");
+        }
     }
 }

@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./Artist.sol";
+import "./Ticket.sol";
 
-contract Event is ERC721URIStorage, Ownable {
-    address public artist;
+contract Event is Ownable {
     address public organizer;
     uint256 public date;
     string public metadataURI;
@@ -13,64 +13,77 @@ contract Event is ERC721URIStorage, Ownable {
     uint256 public totalTickets;
     uint256 public soldTickets;
 
-    uint256 public artistShare;    // percentage (e.g. 70 means 70%)
-    uint256 public organizerShare; // percentage (e.g. 30 means 30%)
+    mapping(uint256 => bool) public usedTickets;
 
-    uint256 private nextTicketId = 1;
+    Artist public artistContract;
+    uint256[] public artistIds;
+    uint256[] public artistShares;
+    uint256 public organizerShare;
 
-    mapping(uint256 => bool) public usedTickets; // track checked-in tickets
+    Ticket public ticketContract;
 
     constructor(
-        address _artist,
+        address _artistContract,
+        uint256[] memory _artistIds,
+        uint256[] memory _artistShares,
         address _organizer,
         uint256 _date,
         string memory _metadataURI,
         uint256 _ticketPrice,
         uint256 _totalTickets,
-        uint256 _artistShare
-    ) ERC721("EventTicket", "TIX") Ownable(_organizer) {
-        require(_artistShare <= 100, "Invalid share");
-        artist = _artist;
+        address _ticketContract
+    ) Ownable(_organizer) {
+        require(_artistIds.length == _artistShares.length, "Artists and shares length mismatch");
+        uint256 totalShare = 0;
+        for (uint256 i = 0; i < _artistShares.length; i++) {
+            totalShare += _artistShares[i];
+        }
+        require(totalShare <= 100, "Total artist share > 100");
+
+        artistContract = Artist(_artistContract);
+        artistIds = _artistIds;
+        artistShares = _artistShares;
         organizer = _organizer;
         date = _date;
         metadataURI = _metadataURI;
         ticketPrice = _ticketPrice;
         totalTickets = _totalTickets;
-        artistShare = _artistShare;
-        organizerShare = 100 - _artistShare;
+        organizerShare = 100 - totalShare;
+        ticketContract = Ticket(_ticketContract);
     }
 
-    /// @notice Buy a ticket
     function buyTicket() external payable {
         require(block.timestamp < date, "Event already happened");
         require(soldTickets < totalTickets, "Sold out");
         require(msg.value == ticketPrice, "Incorrect ETH sent");
 
-        uint256 tokenId = nextTicketId++;
-        _safeMint(msg.sender, tokenId);
-        _setTokenURI(tokenId, metadataURI);
-
+        uint256 tokenId = ticketContract.mintTicket(msg.sender, metadataURI);
         soldTickets++;
 
-        // split payment
-        uint256 artistAmount = (msg.value * artistShare) / 100;
-        uint256 organizerAmount = msg.value - artistAmount;
-
-        payable(artist).transfer(artistAmount);
+        // split payment among artists and organizer
+        uint256 totalSent = 0;
+        for (uint256 i = 0; i < artistIds.length; i++) {
+            address artistOwner = artistContract.ownerOf(artistIds[i]);
+            uint256 artistAmount = (msg.value * artistShares[i]) / 100;
+            totalSent += artistAmount;
+            payable(artistOwner).transfer(artistAmount);
+        }
+        uint256 organizerAmount = msg.value - totalSent;
         payable(organizer).transfer(organizerAmount);
     }
 
-    /// @notice Mark a ticket as used (only organizer)
     function checkIn(uint256 tokenId) external {
         require(msg.sender == organizer, "Only organizer can check in");
-        ownerOf(tokenId); // Check if ticket does exist
         require(!usedTickets[tokenId], "Already used");
-
+        require(ticketContract.ownerOf(tokenId) != address(0), "Invalid ticket");
         usedTickets[tokenId] = true;
     }
 
-    /// @notice Verify if a ticket is valid and unused
     function isValid(uint256 tokenId) external view returns (bool) {
         return !usedTickets[tokenId];
+    }
+
+    function getArtistIds() external view returns (uint256[] memory) {
+        return artistIds;
     }
 }

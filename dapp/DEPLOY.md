@@ -1,52 +1,52 @@
-# Déploiement FTP
+# FTP Deployment
 
-Ce guide explique comment déployer votre dapp sur un hébergement statique via FTP.
+This guide explains how to deploy your dapp to a static hosting via FTP.
 
 ## Configuration
 
-1. **Copiez le fichier de configuration :**
+1. **Copy the configuration file:**
    ```bash
    cp env.example .env
    ```
 
-2. **Modifiez le fichier `.env` avec vos paramètres FTP :**
+2. **Edit the `.env` file with your FTP settings:**
    ```env
-   FTP_HOST=ftp.votre-domaine.com
+   FTP_HOST=ftp.your-domain.com
    FTP_PORT=21
-   FTP_USER=votre-utilisateur
-   FTP_PASSWORD=votre-mot-de-passe
+   FTP_USER=your-username
+   FTP_PASSWORD=your-password
    FTP_REMOTE_DIR=/public_html
    ```
 
-## Déploiement
+## Deployment
 
-### Option 1: Déploiement automatique
+### Option 1: Automatic deployment
 ```bash
 npm run deploy
 ```
 
-### Option 2: Étapes manuelles
+### Option 2: Manual steps
 ```bash
-# 1. Installer les dépendances
+# 1. Install dependencies
 npm install
 
-# 2. Builder l'application
+# 2. Build the application
 npm run build
 
-# 3. Déployer via FTP
+# 3. Deploy via FTP
 node deploy.js
 ```
 
-## Structure des fichiers
+## File structure
 
-- `deploy.js` : Script de déploiement FTP
-- `env.example` : Template de configuration
-- `.env` : Vos paramètres FTP (à créer)
+- `deploy.js` : FTP deployment script
+- `env.example` : Configuration template
+- `.env` : Your FTP settings (to be created)
 
-## Hébergements courants
+## Common hosting providers
 
 ### OVH
-- **FTP_HOST** : `ftp.cluster0XX.ovh.net` ou `ftp.votre-domaine.com`
+- **FTP_HOST** : `ftp.cluster0XX.ovh.net` or `ftp.your-domain.com`
 - **FTP_REMOTE_DIR** : `/www`
 
 ### Infomaniak
@@ -54,11 +54,11 @@ node deploy.js
 - **FTP_REMOTE_DIR** : `/www`
 
 ### Hostinger
-- **FTP_HOST** : `ftp.votre-domaine.com`
+- **FTP_HOST** : `ftp.your-domain.com`
 - **FTP_REMOTE_DIR** : `/public_html`
 
-## Dépannage
+## Troubleshooting
 
-- Vérifiez que le dossier `out` existe après le build
-- Vérifiez vos paramètres FTP dans le fichier `.env`
-- Assurez-vous que votre hébergement supporte les fichiers statiques
+- Check that the `out` folder exists after build
+- Verify your FTP settings in the `.env` file
+- Make sure your hosting supports static files

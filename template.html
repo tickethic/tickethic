@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tick3thic - Plateforme événementielle pour organisateurs et artistes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(109, 72, 170, 0.3);
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Hero Section with Vanta.js background -->
+    <div id="hero" class="relative overflow-hidden hero-gradient text-white">
+        <div class="absolute inset-0 z-0" id="vanta-bg"></div>
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+            <div class="text-center" data-aos="fade-up">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">L'événementiel <span class="text-yellow-300">éthique</span> et <span class="text-yellow-300">décentralisé</span></h1>
+                <p class="text-xl md:text-2xl max-w-3xl mx-auto mb-10">Une plateforme Web3 qui garantit des paiements directs aux artistes et une transparence totale.</p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#" class="btn-primary px-8 py-4 rounded-full font-semibold text-white">Créer un événement</a>
+                    <a href="#" class="bg-white text-purple-700 px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition">Découvrir les événements</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <a href="#" class="flex items-center">
+                        <i data-feather="ticket" class="text-purple-600 mr-2"></i>
+                        <span class="text-xl font-bold text-gray-800">Tick3thic</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="text-gray-700 hover:text-purple-600 transition">Accueil</a>
+                    <a href="#" class="text-gray-700 hover:text-purple-600 transition">Événements</a>
+                    <a href="#" class="text-gray-700 hover:text-purple-600 transition">Pour les organisateurs</a>
+                    <a href="#" class="text-gray-700 hover:text-purple-600 transition">Pour les artistes</a>
+                    <a href="#" class="text-gray-700 hover:text-purple-600 transition">Contact</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="text-gray-700 hover:text-purple-600 transition hidden md:block">Connexion</a>
+                    <a href="#" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition">Inscription</a>
+                    <button class="md:hidden text-gray-700">
+                        <i data-feather="menu"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Une révolution dans l'événementiel</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Notre plateforme blockchain élimine les intermédiaires pour plus d'équité</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Organizers Feature -->
+                <div class="feature-card bg-white p-8 rounded-xl shadow-md border border-gray-100 transition duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6">
+                        <i data-feather="calendar" class="text-purple-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Pour les organisateurs</h3>
+                    <p class="text-gray-600 mb-4">Organisez des événements avec des contrats intelligents transparents.</p>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2 w-4 h-4"></i>
+                            <span>Smart contracts automatisés</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2 w-4 h-4"></i>
+                            <span>Paiements garantis aux artistes</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2 w-4 h-4"></i>
+                            <span>Transparence totale des fonds</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Artists Feature -->
+                <div class="feature-card bg-white p-8 rounded-xl shadow-md border border-gray-100 transition duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6">
+                        <i data-feather="music" class="text-blue-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Pour les artistes</h3>
+                    <p class="text-gray-600 mb-4">Recevez directement vos revenus sans intermédiaire.</p>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2 w-4 h-4"></i>
+                            <span>Paiements instantanés en crypto</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2 w-4 h-4"></i>
+                            <span>0% de commission sur vos revenus</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2 w-4 h-4"></i>
+                            <span>Contrats transparents et immuables</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Attendees Feature -->
+                <div class="feature-card bg-white p-8 rounded-xl shadow-md border border-gray-100 transition duration-300" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                        <i data-feather="users" class="text-green-600 w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Pour les participants</h3>
+                    <p class="text-gray-600 mb-4">Participez à des événements en soutenant directement les artistes.</p>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2 w-4 h-4"></i>
+                            <span>Billets NFT uniques et traçables</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2 w-4 h-4"></i>
+                            <span>Paiement en crypto ou fiat</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="check" class="text-green-500 mr-2 w-4 h-4"></i>
+                            <span>Impact direct sur la scène locale</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Comment ça marche</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Découvrez en quelques étapes comment Tick3thic révolutionne votre expérience événementielle</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-purple-600 font-bold text-2xl">1</span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Inscription</h3>
+                    <p class="text-gray-600">Créez votre compte en 2 minutes selon votre profil</p>
+                </div>
+                <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-blue-600 font-bold text-2xl">2</span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Configuration</h3>
+                    <p class="text-gray-600">Complétez votre profil ou créez votre événement</p>
+                </div>
+                <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-green-600 font-bold text-2xl">3</span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Interaction</h3>
+                    <p class="text-gray-600">Connectez-vous avec la communauté</p>
+                </div>
+                <div class="text-center" data-aos="fade-up" data-aos-delay="400">
+                    <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-yellow-600 font-bold text-2xl">4</span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Profitez</h3>
+                    <p class="text-gray-600">Vivez une expérience événementielle inoubliable</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Showcase -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-12">
+                <div data-aos="fade-right">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Événements à venir</h2>
+                    <p class="text-gray-600">Découvrez les prochains événements près de chez vous</p>
+                </div>
+                <a href="#" class="text-purple-600 font-semibold hover:text-purple-700 transition flex items-center" data-aos="fade-left">
+                    Voir tout <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Event 1 -->
+                <div class="rounded-xl overflow-hidden shadow-md border border-gray-100 transition hover:shadow-lg" data-aos="fade-up">
+                    <div class="h-48 bg-cover bg-center" style="background-image: url('http://static.photos/music/640x360/1');"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Musique</span>
+                            <span class="text-gray-500 text-sm">25 Juin 2023</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Festival Électronique</h3>
+                        <p class="text-gray-600 mb-4">Un festival de musique électronique avec les meilleurs DJs internationaux.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700 font-medium">Genève, Suisse</span>
+                            <a href="#" class="text-purple-600 hover:text-purple-700 font-medium">Détails</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event 2 -->
+                <div class="rounded-xl overflow-hidden shadow-md border border-gray-100 transition hover:shadow-lg" data-aos="fade-up" data-aos-delay="100">
+                    <div class="h-48 bg-cover bg-center" style="background-image: url('http://static.photos/art/640x360/2');"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Art</span>
+                            <span class="text-gray-500 text-sm">15 Juillet 2023</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Exposition Contemporaine</h3>
+                        <p class="text-gray-600 mb-4">Découvrez les œuvres d'artistes contemporains émergents.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700 font-medium">Lausanne, Suisse</span>
+                            <a href="#" class="text-purple-600 hover:text-purple-700 font-medium">Détails</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event 3 -->
+                <div class="rounded-xl overflow-hidden shadow-md border border-gray-100 transition hover:shadow-lg" data-aos="fade-up" data-aos-delay="200">
+                    <div class="h-48 bg-cover bg-center" style="background-image: url('http://static.photos/food/640x360/3');"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Gastronomie</span>
+                            <span class="text-gray-500 text-sm">5 Août 2023</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Marché Culinaire</h3>
+                        <p class="text-gray-600 mb-4">Dégustez les spécialités de chefs locaux et internationaux.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700 font-medium">Zurich, Suisse</span>
+                            <a href="#" class="text-purple-600 hover:text-purple-700 font-medium">Détails</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Une économie plus juste</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Notre technologie blockchain redonne le pouvoir aux créateurs</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100" data-aos="fade-up">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-cover bg-center mr-4" style="background-image: url('http://static.photos/people/200x200/1');"></div>
+                        <div>
+                            <h4 class="font-bold text-gray-800">Marie Dubois</h4>
+                            <p class="text-gray-600 text-sm">Organisatrice d'événements</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">"Tick3thic a révolutionné la façon dont je gère mes événements. La plateforme est intuitive et complète, me permettant de tout gérer en un seul endroit."</p>
+                    <div class="flex text-yellow-400">
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-cover bg-center mr-4" style="background-image: url('http://static.photos/people/200x200/2');"></div>
+                        <div>
+                            <h4 class="font-bold text-gray-800">Jean Martin</h4>
+                            <p class="text-gray-600 text-sm">Musicien</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">"Grâce à Tick3thic, j'ai pu me concentrer sur ma musique tout en ayant une gestion transparente de mes participations et paiements. Une vraie bouffée d'air frais !"</p>
+                    <div class="flex text-yellow-400">
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-cover bg-center mr-4" style="background-image: url('http://static.photos/people/200x200/3');"></div>
+                        <div>
+                            <h4 class="font-bold text-gray-800">Sophie Lambert</h4>
+                            <p class="text-gray-600 text-sm">Participante</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">"Je trouve toujours des événements intéressants sur Tick3thic. L'achat de billets est simple et sécurisé, et je peux gérer toutes mes réservations en un clin d'œil."</p>
+                    <div class="flex text-yellow-400">
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 hero-gradient text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center" data-aos="fade-up">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Prêt à révolutionner votre expérience événementielle ?</h2>
+            <p class="text-xl mb-10 max-w-3xl mx-auto">Rejoignez des milliers d'organisateurs, artistes et participants qui utilisent déjà Tick3thic.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#" class="bg-white text-purple-700 px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition">S'inscrire maintenant</a>
+                <a href="#" class="border-2 border-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-purple-700 transition">Voir une démo</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <a href="#" class="flex items-center mb-6">
+                        <i data-feather="ticket" class="text-purple-400 mr-2"></i>
+                        <span class="text-xl font-bold">Tick3thic</span>
+                    </a>
+                    <p class="text-gray-400 mb-4">La première plateforme événementielle décentralisée et éthique.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i data-feather="facebook" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i data-feather="twitter" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i data-feather="instagram" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i data-feather="linkedin" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Pour les organisateurs</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Créer un événement</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Gestion des billets</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Analytics</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Tarifs</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Pour les artistes</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Créer un profil</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Trouver des événements</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Gestion des paiements</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Ressources</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-400">
+                            <i data-feather="mail" class="w-4 h-4 mr-2"></i>
+                            <span>contact@Tick3thic.ch</span>
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i data-feather="phone" class="w-4 h-4 mr-2"></i>
+                            <span>+41 22 123 45 67</span>
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i data-feather="map-pin" class="w-4 h-4 mr-2"></i>
+                            <span>Genève, Suisse</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 mb-4 md:mb-0">© 2023 Tick3thic. Tous droits réservés.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition">Conditions générales</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition">Politique de confidentialité</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition">Mentions légales</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // Initialize Vanta.js
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x7e4dbb,
+            backgroundColor: 0x6e48aa,
+            points: 12.00,
+            maxDistance: 22.00,
+            spacing: 18.00
+        });
+
+        // Initialize Feather Icons
+        feather.replace();
+    </script>
+</body>
+</html>

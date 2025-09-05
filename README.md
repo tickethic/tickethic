@@ -197,3 +197,6 @@ If you have any questions or need help:
 **Made with ❤️ by the Tickethic team**
 
 *Empowering artists and event organizers through blockchain technology*
+
+**Join the team
+https://discord.gg/bbtr7PE3

@@ -198,5 +198,5 @@ If you have any questions or need help:
 
 *Empowering artists and event organizers through blockchain technology*
 
-**Join the team
+Join the team
 https://discord.gg/bbtr7PE3

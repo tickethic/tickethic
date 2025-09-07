@@ -41,8 +41,8 @@ export const CONTRACT_ABIS = {
     'function transfer(address to, uint256 amount) returns (bool)',
     'function approve(address spender, uint256 amount) returns (bool)',
     'function getRewardPoolBalance() returns (uint256)',
-    'function getCreators() returns (address[])',
-    'function checkIsCreator(address _address) returns (bool)',
+    'function getFoundersMultisig() returns (address)',
+    'function isFoundersMultisig(address _address) returns (bool)',
   ],
   EVENT_MANAGER: [
     'function createEvent(uint256[] _artistIds, uint256[] _artistShares, address _organizer, uint256 _date, string _metadataURI, uint256 _ticketPrice, uint256 _totalTickets) returns (uint256 eventId, address eventAddress)',

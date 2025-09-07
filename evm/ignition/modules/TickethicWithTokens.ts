@@ -1,41 +1,52 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
 const TickethicWithTokensModule = buildModule("TickethicWithTokensModule", (m) => {
-  // Déployer le contrat TickethicCoin en premier
-  // Remplacez ces adresses par les vôtres (créateurs de la plateforme)
-  const creators = [
-    m.getAccount(0), // Premier compte (déployeur)
-    // Ajoutez d'autres adresses de créateurs si nécessaire
-    // "0x...", // Adresse du créateur 2
-    // "0x...", // Adresse du créateur 3
-  ];
+  const deployer = m.getAccount(0);
+  
+  // For now, use deployer as founders multisig (can be updated later)
+  // In production, replace with actual multisig wallet address
+  const foundersMultisig = deployer; // TODO: Replace with actual multisig address
 
-  const tickethicCoin = m.contract("TickethicCoin", [creators]);
+  // Deploy TickethicCoin with founders multisig
+  const tickethicCoin = m.contract("TickethicCoin", [foundersMultisig]);
 
-  // Déployer Artist contract
+  // Deploy RewardConfig
+  const initialBuyerReward = 10n * 10n**18n; // 10 TTC
+  const initialArtistReward = 5n * 10n**18n;  // 5 TTC
+  const initialOrganizerReward = 5n * 10n**18n; // 5 TTC
+  const initialValidatorReward = 2n * 10n**18n; // 2 TTC
+  const rewardConfig = m.contract("RewardConfig", [
+    initialBuyerReward,
+    initialArtistReward,
+    initialOrganizerReward,
+    initialValidatorReward
+  ]);
+
+  // Deploy Artist contract
   const artist = m.contract("Artist");
 
-  // Déployer Ticket contract avec deployer comme initial owner
-  const ticket = m.contract("Ticket", [m.getAccount(0)]);
+  // Deploy Ticket contract with deployer as initial owner
+  const ticket = m.contract("Ticket", [deployer]);
 
-  // Déployer Organizator contract avec deployer comme owner et initial organizers
-  const initialOrganizers = [m.getAccount(0)]; // Use the same account as deployer and organizer
-  const organizator = m.contract("Organizator", [m.getAccount(0), initialOrganizers]);
+  // Deploy Organizator contract with deployer as owner and initial organizers
+  const initialOrganizers = [deployer];
+  const organizator = m.contract("Organizator", [deployer, initialOrganizers]);
 
-  // Déployer EventManager avec tous les contrats
+  // Deploy EventManager with all contracts
   const eventManager = m.contract("EventManager", [
     artist,
     ticket,
     organizator,
     tickethicCoin,
+    rewardConfig
   ]);
 
-  // Donner les permissions à l'EventManager pour distribuer les récompenses
-  // Note: L'EventManager doit être ajouté comme owner du TickethicCoin
-  // Cela se fait via une transaction séparée après le déploiement
+  // Transfer ownership of Ticket to EventManager
+  m.call(ticket, "transferOwnership", [eventManager]);
 
   return { 
     tickethicCoin, 
+    rewardConfig,
     artist, 
     ticket, 
     organizator, 

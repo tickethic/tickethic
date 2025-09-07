@@ -10,18 +10,18 @@ async function main() {
   console.log("👤 Deploying contracts with account:", deployer.address);
   console.log("💰 Account balance:", ethers.formatEther(await deployer.provider.getBalance(deployer.address)), "ETH");
 
-  // Deployment configuration
-  const creators = [
-    deployer.address, // Add your creator addresses here
-    // "0x...", // Add more creators if needed
-  ];
-
-  console.log("📝 Creators:", creators);
+  // Load environment variables
+  require('dotenv').config();
+  
+  // Get founders multisig from environment or use deployer as fallback
+  const foundersMultisig = process.env.FOUNDERS_MULTISIG || deployer.address;
+  
+  console.log("📝 Founders multisig:", foundersMultisig);
 
   // Deploy TickethicCoin first
   console.log("\n🪙 Deploying TickethicCoin...");
   const TickethicCoin = await ethers.getContractFactory("TickethicCoin");
-  const tickethicCoin = await TickethicCoin.deploy(creators);
+  const tickethicCoin = await TickethicCoin.deploy(foundersMultisig);
   await tickethicCoin.waitForDeployment();
   const tickethicCoinAddress = await tickethicCoin.getAddress();
   console.log("✅ TickethicCoin deployed to:", tickethicCoinAddress);
@@ -29,7 +29,16 @@ async function main() {
   // Deploy RewardConfig
   console.log("\n⚙️ Deploying RewardConfig...");
   const RewardConfig = await ethers.getContractFactory("RewardConfig");
-  const rewardConfig = await RewardConfig.deploy();
+  const initialBuyerReward = ethers.parseEther("10"); // 10 TTC
+  const initialArtistReward = ethers.parseEther("5");  // 5 TTC
+  const initialOrganizerReward = ethers.parseEther("5"); // 5 TTC
+  const initialValidatorReward = ethers.parseEther("2"); // 2 TTC
+  const rewardConfig = await RewardConfig.deploy(
+    initialBuyerReward,
+    initialArtistReward,
+    initialOrganizerReward,
+    initialValidatorReward
+  );
   await rewardConfig.waitForDeployment();
   const rewardConfigAddress = await rewardConfig.getAddress();
   console.log("✅ RewardConfig deployed to:", rewardConfigAddress);
@@ -65,7 +74,8 @@ async function main() {
     artistAddress,
     ticketAddress,
     organizatorAddress,
-    tickethicCoinAddress
+    tickethicCoinAddress,
+    rewardConfigAddress
   );
   await eventManager.waitForDeployment();
   const eventManagerAddress = await eventManager.getAddress();
@@ -129,10 +139,8 @@ async function main() {
   const rewardPoolBalance = await tickethicCoin.getRewardPoolBalance();
   console.log("  Reward Pool:", ethers.formatEther(rewardPoolBalance), "TTC");
   
-  for (const creator of creators) {
-    const balance = await tickethicCoin.balanceOf(creator);
-    console.log(`  Creator ${creator}:`, ethers.formatEther(balance), "TTC");
-  }
+  const foundersBalance = await tickethicCoin.balanceOf(foundersMultisig);
+  console.log(`  Founders Multisig ${foundersMultisig}:`, ethers.formatEther(foundersBalance), "TTC");
 
   console.log("\n✅ All contracts deployed and configured successfully!");
 }

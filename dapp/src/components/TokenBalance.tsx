@@ -27,11 +27,11 @@ export const TokenBalance = () => {
     functionName: 'getRewardPoolBalance',
   });
 
-  // Vérifier si l'utilisateur est un créateur
-  const { data: isCreator, isLoading: creatorLoading } = useReadContract({
+  // Check if current user is the founders multisig
+  const { data: isFoundersMultisig, isLoading: multisigLoading } = useReadContract({
     address: CONTRACT_ADDRESSES.TICKETHIC_COIN,
     abi: TICKETHIC_COIN_ABI,
-    functionName: 'checkIsCreator',
+    functionName: 'isFoundersMultisig',
     args: address ? [address] : undefined,
     query: {
       enabled: !!address,
@@ -85,9 +85,9 @@ export const TokenBalance = () => {
         )}
       </div>
 
-      {creatorLoading ? (
-        <p>Checking creator status...</p>
-      ) : isCreator ? (
+      {multisigLoading ? (
+        <p>Checking multisig status...</p>
+      ) : isFoundersMultisig ? (
         <div style={{ 
           padding: '10px', 
           backgroundColor: '#d4edda', 
@@ -95,7 +95,7 @@ export const TokenBalance = () => {
           borderRadius: '4px',
           color: '#155724'
         }}>
-          <strong>🎨 You are a platform creator!</strong>
+          <strong>🏛️ You are the founders multisig wallet!</strong>
         </div>
       ) : null}
 

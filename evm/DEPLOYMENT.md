@@ -34,7 +34,7 @@ AMOY_PRIVATE_KEY=0x_your_private_key_here
 
 # Deployment Configuration
 DEPLOYER_ADDRESS=0x_your_deployer_address_here
-CREATORS=0x_address1,0x_address2
+FOUNDERS_MULTISIG=0x_your_multisig_wallet_address_here
 
 # Optional: Gas Configuration
 GAS_LIMIT=30000000

@@ -10,40 +10,29 @@ contract TickethicCoin is ERC20, Ownable, ERC20Burnable {
     uint256 public constant TOTAL_SUPPLY = 1_000_000_000 * 10**18;
     
     // Token distribution
-    uint256 public constant CREATORS_SHARE = 200_000_000 * 10**18; // 20% for creators
+    uint256 public constant FOUNDERS_SHARE = 200_000_000 * 10**18; // 20% for founders
     uint256 public constant REWARD_POOL = 800_000_000 * 10**18;    // 80% for rewards
     
-    // Creator addresses (to be defined during deployment)
-    address[] public creators;
-    mapping(address => bool) public isCreator;
+    // Multisig wallet for founders
+    address public foundersMultisig;
     
     // Reward pool
     uint256 public rewardPoolBalance;
     
     // Events
-    event CreatorAdded(address indexed creator);
-    event CreatorRemoved(address indexed creator);
+    event FoundersMultisigUpdated(address indexed oldMultisig, address indexed newMultisig);
     event RewardDistributed(address indexed recipient, uint256 amount, string reason);
     event RewardPoolRefilled(uint256 amount);
     
     constructor(
-        address[] memory _creators
+        address _foundersMultisig
     ) ERC20("TickethicCoin", "TTC") Ownable(msg.sender) {
-        require(_creators.length > 0, "At least one creator required");
+        require(_foundersMultisig != address(0), "Invalid founders multisig address");
         
-        // Initialize creators
-        for (uint256 i = 0; i < _creators.length; i++) {
-            require(_creators[i] != address(0), "Invalid creator address");
-            creators.push(_creators[i]);
-            isCreator[_creators[i]] = true;
-            emit CreatorAdded(_creators[i]);
-        }
+        foundersMultisig = _foundersMultisig;
         
-        // Mint tokens for creators (20%)
-        uint256 creatorTokensPerAddress = CREATORS_SHARE / _creators.length;
-        for (uint256 i = 0; i < _creators.length; i++) {
-            _mint(_creators[i], creatorTokensPerAddress);
-        }
+        // Mint tokens for founders multisig (20%)
+        _mint(foundersMultisig, FOUNDERS_SHARE);
         
         // Mint tokens for reward pool (80%)
         _mint(address(this), REWARD_POOL);
@@ -53,55 +42,22 @@ contract TickethicCoin is ERC20, Ownable, ERC20Burnable {
     }
     
     /**
-     * @dev Add a new creator (only owner)
+     * @dev Update founders multisig wallet (only owner)
      */
-    function addCreator(address _creator) external onlyOwner {
-        require(_creator != address(0), "Invalid creator address");
-        require(!isCreator[_creator], "Already a creator");
+    function updateFoundersMultisig(address _newMultisig) external onlyOwner {
+        require(_newMultisig != address(0), "Invalid multisig address");
+        require(_newMultisig != foundersMultisig, "Same multisig address");
         
-        creators.push(_creator);
-        isCreator[_creator] = true;
+        address oldMultisig = foundersMultisig;
+        foundersMultisig = _newMultisig;
         
-        // Distribute a share of creator tokens
-        uint256 newCreatorTokens = CREATORS_SHARE / (creators.length + 1);
-        uint256 tokensToRedistribute = newCreatorTokens;
-        
-        // Redistribute tokens among all creators
-        for (uint256 i = 0; i < creators.length - 1; i++) {
-            _transfer(creators[i], _creator, newCreatorTokens / creators.length);
-            tokensToRedistribute -= newCreatorTokens / creators.length;
+        // Transfer all founder tokens to new multisig
+        uint256 founderBalance = balanceOf(oldMultisig);
+        if (founderBalance > 0) {
+            _transfer(oldMultisig, _newMultisig, founderBalance);
         }
         
-        _mint(_creator, tokensToRedistribute);
-        
-        emit CreatorAdded(_creator);
-    }
-    
-    /**
-     * @dev Remove a creator (only owner)
-     */
-    function removeCreator(address _creator) external onlyOwner {
-        require(isCreator[_creator], "Not a creator");
-        require(creators.length > 1, "Cannot remove the last creator");
-        
-        isCreator[_creator] = false;
-        
-        // Remove from list
-        for (uint256 i = 0; i < creators.length; i++) {
-            if (creators[i] == _creator) {
-                creators[i] = creators[creators.length - 1];
-                creators.pop();
-                break;
-            }
-        }
-        
-        // Burn tokens of removed creator
-        uint256 creatorBalance = balanceOf(_creator);
-        if (creatorBalance > 0) {
-            _burn(_creator, creatorBalance);
-        }
-        
-        emit CreatorRemoved(_creator);
+        emit FoundersMultisigUpdated(oldMultisig, _newMultisig);
     }
     
     /**
@@ -161,23 +117,16 @@ contract TickethicCoin is ERC20, Ownable, ERC20Burnable {
     }
     
     /**
-     * @dev Get creators list
+     * @dev Get founders multisig address
      */
-    function getCreators() external view returns (address[] memory) {
-        return creators;
+    function getFoundersMultisig() external view returns (address) {
+        return foundersMultisig;
     }
     
     /**
-     * @dev Get creators count
+     * @dev Check if an address is the founders multisig
      */
-    function getCreatorsCount() external view returns (uint256) {
-        return creators.length;
-    }
-    
-    /**
-     * @dev Check if an address is a creator
-     */
-    function checkIsCreator(address _address) external view returns (bool) {
-        return isCreator[_address];
+    function isFoundersMultisig(address _address) external view returns (bool) {
+        return _address == foundersMultisig;
     }
 }

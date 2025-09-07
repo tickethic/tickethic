@@ -2,6 +2,8 @@
 import { ConnectButton } from "@/components/ConnectButton";
 import { InfoList } from "@/components/InfoList";
 import { ActionButtonList } from "@/components/ActionButtonList";
+import { EventManager } from "@/components/EventManager";
+import { TokenBalance } from "@/components/TokenBalance";
 import Image from 'next/image';
 
 export default function Home() {
@@ -12,7 +14,9 @@ export default function Home() {
       <h1>Tickethic</h1>
 
       <ConnectButton />
+      <TokenBalance />
       <ActionButtonList />
+      <EventManager />
       <div className="advice">
         <p>Welcome on the Tickethic dApp!</p>
       </div>

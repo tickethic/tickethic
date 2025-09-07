@@ -40,6 +40,15 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+# Sensitive configuration files
+contract-addresses.json
+deployment-config.json
+ftp-config.json
+
+# Build outputs
+/out/
+/build/
+
 # vercel
 .vercel
 

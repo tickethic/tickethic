@@ -4,14 +4,13 @@ import { networks } from '@/config'
 import { useWriteContract, useAccount } from 'wagmi'
 import { parseAbi } from 'viem'
 import React, { useState } from 'react'
+import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from '@/config/contracts'
 
-// Replace with your deployed Artist contract address
-const TICKETHIC_CONTRACT_ADDRESS = '0xYourArtistContractAddressHere'
+// Deployed Artist contract address
+const ARTIST_CONTRACT_ADDRESS = CONTRACT_ADDRESSES.ARTIST
 
-// Minimal ABI for mintArtist(address to, string artistName, string artistMetadataURI)
-const ARTIST_ABI = parseAbi([
-  'function mintArtist(address to, string artistName, string artistMetadataURI) returns (uint256)'
-])
+// Artist contract ABI
+const ARTIST_ABI = parseAbi(CONTRACT_ABIS.ARTIST)
 
 export const ActionButtonList = () => {
   const { disconnect } = useDisconnect();
@@ -48,7 +47,7 @@ export const ActionButtonList = () => {
     }
     try {
       await writeContractAsync({
-        address: TICKETHIC_CONTRACT_ADDRESS,
+        address: ARTIST_CONTRACT_ADDRESS,
         abi: ARTIST_ABI,
         functionName: 'mintArtist',
         args: [address, artistName, artistMetadataURI],

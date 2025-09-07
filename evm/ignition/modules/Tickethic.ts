@@ -32,7 +32,14 @@ const TickethicModule = buildModule("TickethicModule", (m) => {
     organizator,
   ]);
 
-  return { artist, ticket, organizator, event };
+  // Deploy EventManager
+  const eventManager = m.contract("EventManager", [
+    artist,
+    ticket,
+    organizator
+  ]);
+
+  return { artist, ticket, organizator, event, eventManager };
 });
 
 export default TickethicModule;

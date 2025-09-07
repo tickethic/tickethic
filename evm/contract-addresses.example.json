@@ -1,0 +1,37 @@
+{
+  "networks": {
+    "polygonAmoy": {
+      "chainId": 80002,
+      "name": "Polygon Amoy Testnet",
+      "rpcUrl": "https://rpc-amoy.polygon.technology",
+      "explorerUrl": "https://amoy.polygonscan.com",
+      "contracts": {
+        "TickethicCoin": "0x...",
+        "Artist": "0x...",
+        "Ticket": "0x...",
+        "Organizator": "0x...",
+        "EventManager": "0x...",
+        "RewardConfig": "0x..."
+      }
+    },
+    "localhost": {
+      "chainId": 31337,
+      "name": "Local Hardhat Network",
+      "rpcUrl": "http://localhost:8545",
+      "explorerUrl": "",
+      "contracts": {
+        "TickethicCoin": "0x...",
+        "Artist": "0x...",
+        "Ticket": "0x...",
+        "Organizator": "0x...",
+        "EventManager": "0x...",
+        "RewardConfig": "0x..."
+      }
+    }
+  },
+  "deployment": {
+    "lastDeployed": "2024-01-01T00:00:00.000Z",
+    "deployer": "0x...",
+    "version": "1.0.0"
+  }
+}

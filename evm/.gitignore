@@ -114,3 +114,21 @@ dist
 # Temporary folders
 tmp/
 temp/
+
+# Sensitive deployment files
+deployment-addresses.json
+deployment-config.json
+private-keys.txt
+deployment-secrets.env
+
+# Contract addresses (keep example only)
+contract-addresses.json
+!contract-addresses.example.json
+
+# Deployment logs
+deployment-*.log
+deploy-*.log
+
+# Local development files
+local-deployment.json
+dev-addresses.json

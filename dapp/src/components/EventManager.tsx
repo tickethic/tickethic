@@ -1,214 +1,84 @@
 'use client'
-import { useWriteContract, useAccount, useReadContract } from 'wagmi'
-import { parseAbi } from 'viem'
-import React, { useState } from 'react'
-import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from '@/config/contracts'
+import { useState } from 'react'
+import { CreateEventForm } from './CreateEventForm'
+import { ArtistList } from './ArtistList'
 
-// ABI for EventManager
-const EVENT_MANAGER_ABI = parseAbi(CONTRACT_ABIS.EVENT_MANAGER);
+interface EventManagerProps {
+  onCancel?: () => void
+}
 
-export const EventManager = () => {
-  const { address } = useAccount();
-  const { writeContractAsync, isPending } = useWriteContract();
+export const EventManager = ({ onCancel }: EventManagerProps) => {
+  const [activeTab, setActiveTab] = useState<'create' | 'artists'>('create')
 
-  // State for event creation form
-  const [eventForm, setEventForm] = useState({
-    artistIds: '',
-    artistShares: '',
-    date: '',
-    metadataURI: '',
-    ticketPrice: '',
-    totalTickets: '',
-  });
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-
-  // Read total events count
-  const { data: totalEvents, isLoading: eventsLoading } = useReadContract({
-    address: CONTRACT_ADDRESSES.EVENT_MANAGER,
-    abi: EVENT_MANAGER_ABI,
-    functionName: 'getTotalEvents',
-  });
-
-  const handleCreateEvent = async () => {
-    setError(null);
-    setSuccess(null);
-    
-    try {
-      // Data validation
-      const artistIds = eventForm.artistIds.split(',').map(id => parseInt(id.trim()));
-      const artistShares = eventForm.artistShares.split(',').map(share => parseInt(share.trim()));
-      const date = Math.floor(new Date(eventForm.date).getTime() / 1000);
-      const ticketPrice = BigInt(parseFloat(eventForm.ticketPrice) * 1e18); // Convert to wei
-
-      if (artistIds.length !== artistShares.length) {
-        setError('Number of artist IDs must match number of shares');
-        return;
-      }
-
-      if (!address) {
-        setError('Please connect your wallet');
-        return;
-      }
-
-      // Call EventManager contract to create the event
-      const result = await writeContractAsync({
-        address: CONTRACT_ADDRESSES.EVENT_MANAGER,
-        abi: EVENT_MANAGER_ABI,
-        functionName: 'createEvent',
-        args: [
-          artistIds,
-          artistShares,
-          address, // organizer
-          date,
-          eventForm.metadataURI,
-          ticketPrice,
-          parseInt(eventForm.totalTickets)
-        ],
-      });
-
-      setSuccess(`Event created successfully! Transaction: ${result}`);
-      
-      // Reset form
-      setEventForm({
-        artistIds: '',
-        artistShares: '',
-        date: '',
-        metadataURI: '',
-        ticketPrice: '',
-        totalTickets: '',
-      });
-      
-    } catch (error) {
-      console.error("Error creating event:", error);
-      setError('Error creating event: ' + (error as Error).message);
-    }
-  };
+  const handleEventCreated = (eventId: number, eventAddress: string) => {
+    console.log('Event created:', { eventId, eventAddress })
+    // You can add success notification here
+    alert(`Event created successfully! ID: ${eventId}, Address: ${eventAddress}`)
+  }
 
   return (
-    <div style={{ marginTop: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
-      <h3>Event Manager</h3>
-      
-      {/* Display total events */}
-      <div style={{ marginBottom: '20px' }}>
-        <h4>📊 Total Events Created:</h4>
-        {eventsLoading ? (
-          <p>Loading...</p>
-        ) : (
-          <p style={{ fontSize: '18px', fontWeight: 'bold', color: '#007bff' }}>
-            {totalEvents ? Number(totalEvents) : 0} events
-          </p>
-        )}
-      </div>
-      
-      <div style={{ marginBottom: '10px' }}>
-        <label>
-          Artist IDs (comma separated):<br />
-          <input
-            type="text"
-            value={eventForm.artistIds}
-            onChange={e => setEventForm({...eventForm, artistIds: e.target.value})}
-            style={{ width: '100%', height: '38px', borderRadius: '8px', padding: '8px'}}
-            placeholder="1,2,3"
-            disabled={isPending}
-          />
-        </label>
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Event Management</h1>
+              <p className="text-gray-600 mt-2">
+                Create events and manage artists for your ticketing platform
+              </p>
+            </div>
+            {onCancel && (
+              <button
+                onClick={onCancel}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+              >
+                ← Back
+              </button>
+            )}
+          </div>
+        </div>
 
-      <div style={{ marginBottom: '10px' }}>
-        <label>
-          Artist shares in % (comma separated):<br />
-          <input
-            type="text"
-            value={eventForm.artistShares}
-            onChange={e => setEventForm({...eventForm, artistShares: e.target.value})}
-            style={{ width: '100%', height: '38px', borderRadius: '8px', padding: '8px'}}
-            placeholder="40,30,20"
-            disabled={isPending}
-          />
-        </label>
-      </div>
+        {/* Navigation Tabs */}
+        <div className="mb-8">
+          <nav className="flex space-x-8">
+            <button
+              onClick={() => setActiveTab('create')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'create'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              Create Event
+            </button>
+            <button
+              onClick={() => setActiveTab('artists')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'artists'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              Browse Artists
+            </button>
+          </nav>
+        </div>
 
-      <div style={{ marginBottom: '10px' }}>
-        <label>
-          Event date:<br />
-          <input
-            type="datetime-local"
-            value={eventForm.date}
-            onChange={e => setEventForm({...eventForm, date: e.target.value})}
-            style={{ width: '100%', height: '38px', borderRadius: '8px', padding: '8px'}}
-            disabled={isPending}
-          />
-        </label>
-      </div>
-
-      <div style={{ marginBottom: '10px' }}>
-        <label>
-          Metadata URI:<br />
-          <input
-            type="text"
-            value={eventForm.metadataURI}
-            onChange={e => setEventForm({...eventForm, metadataURI: e.target.value})}
-            style={{ width: '100%', height: '38px', borderRadius: '8px', padding: '8px'}}
-            placeholder="ipfs://..."
-            disabled={isPending}
-          />
-        </label>
-      </div>
-
-      <div style={{ marginBottom: '10px' }}>
-        <label>
-          Ticket price (ETH):<br />
-          <input
-            type="number"
-            step="0.01"
-            value={eventForm.ticketPrice}
-            onChange={e => setEventForm({...eventForm, ticketPrice: e.target.value})}
-            style={{ width: '100%', height: '38px', borderRadius: '8px', padding: '8px'}}
-            placeholder="0.1"
-            disabled={isPending}
-          />
-        </label>
-      </div>
-
-      <div style={{ marginBottom: '10px' }}>
-        <label>
-          Total number of tickets:<br />
-          <input
-            type="number"
-            value={eventForm.totalTickets}
-            onChange={e => setEventForm({...eventForm, totalTickets: e.target.value})}
-            style={{ width: '100%', height: '38px', borderRadius: '8px', padding: '8px'}}
-            placeholder="100"
-            disabled={isPending}
-          />
-        </label>
-      </div>
-
-      {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
-      {success && <div style={{ color: 'green', marginBottom: '10px' }}>{success}</div>}
-
-      <button 
-        onClick={handleCreateEvent} 
-        disabled={isPending}
-        style={{ 
-          padding: '10px 20px', 
-          backgroundColor: '#007bff', 
-          color: 'white', 
-          border: 'none', 
-          borderRadius: '8px',
-          cursor: isPending ? 'not-allowed' : 'pointer'
-        }}
-      >
-        {isPending ? 'Creating...' : 'Create Event'}
-      </button>
-      
-      <div style={{ marginTop: '20px', padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
-        <h4>📝 Instructions:</h4>
-        <p><strong>Artist IDs:</strong> Enter artist IDs separated by commas (e.g., 1,2,3)</p>
-        <p><strong>Shares:</strong> Enter revenue percentages for each artist (e.g., 40,30,20)</p>
-        <p><strong>Note:</strong> You must be a registered organizer to create events.</p>
+        {/* Tab Content */}
+        <div className="bg-white rounded-lg shadow">
+          {activeTab === 'create' && (
+            <CreateEventForm onEventCreated={handleEventCreated} />
+          )}
+          
+          {activeTab === 'artists' && (
+            <div className="p-6">
+              <h2 className="text-2xl font-bold mb-6">Available Artists</h2>
+              <ArtistList />
+            </div>
+          )}
+        </div>
       </div>
     </div>
-  );
-};
+  )
+}

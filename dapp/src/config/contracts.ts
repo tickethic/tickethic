@@ -1,13 +1,13 @@
 // Deployed contract addresses on Polygon Amoy
 export const CONTRACT_ADDRESSES = {
-  // Main contracts
-  ARTIST: '0x31Da0B05B3537e9540B8b76C643BcB123428DA98',
-  ORGANIZATOR: '0x189441313F6ca0Ea2103b9a5F4bBC13fE02E6D8a',
-  TICKET: '0x1e3119708Fb88FFAd1b5D7A3A030c1A76a7Dc70E',
-  EVENT: '0x271D35FF1E6D8e41cfA451A39dE90bfdF85b44B1',
+  // Main contracts (updated after redeployment)
+  ARTIST: '0x93E458156a0Ee3f186FbD3756b372eCc94603a7a',
+  ORGANIZATOR: '0x7953AE167f8F87FA5485b8F6C47613239A95Bde3',
+  TICKET: '0x3FB0863307fF2CAacC8F31DAdcFE4216cD055e41',
+  EVENT: '0x73E5eca7D5C9f6B8B254Ed8C0ac9c296EBB9E01D',
   
-  // New EventManager contract (to be replaced after deployment)
-  EVENT_MANAGER: '0x9D04429C5ec6ea8dcdEe0f0D8D6E06e8d291ACcc', // To be replaced after deployment
+  // EventManager contract
+  EVENT_MANAGER: '0x7ab8BE1dE5740B4d27752944Bf92Bff510D0D363',
 } as const;
 
 // Contract ABIs (extracted from deployed contracts)
@@ -16,6 +16,10 @@ export const CONTRACT_ABIS = {
     'function mintArtist(address to, string artistName, string artistMetadataURI) returns (uint256)',
     'function ownerOf(uint256 artistId) returns (address)',
     'function getArtistInfo(uint256 artistId) returns (string name, string metadataURI)',
+    'function getAllArtistIds() returns (uint256[])',
+    'function getArtistName(uint256 artistId) returns (string)',
+    'function getTotalArtists() returns (uint256)',
+    'function getArtistDetails(uint256 artistId) returns (string name, address owner, string metadataURI)',
   ],
   EVENT: [
     'function buyTicket() payable',

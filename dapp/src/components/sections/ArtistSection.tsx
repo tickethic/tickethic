@@ -50,7 +50,7 @@ export const ArtistSection = () => {
         address: CONTRACT_ADDRESSES.ARTIST,
         abi: parseAbi(CONTRACT_ABIS.ARTIST),
         functionName: 'mintArtist',
-        args: [address, artistName, artistMetadataURI],
+        args: [artistName, artistMetadataURI],
       })
       
       setSuccess('NFT Artiste créé avec succès !')

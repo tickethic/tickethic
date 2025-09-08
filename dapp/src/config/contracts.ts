@@ -13,13 +13,16 @@ export const CONTRACT_ADDRESSES = {
 // Contract ABIs (extracted from deployed contracts)
 export const CONTRACT_ABIS = {
   ARTIST: [
-    'function mintArtist(address to, string artistName, string artistMetadataURI) returns (uint256)',
+    'function mintArtist(string artistName, string artistMetadataURI) returns (uint256)',
     'function ownerOf(uint256 artistId) returns (address)',
     'function getArtistInfo(uint256 artistId) returns (string name, string metadataURI)',
     'function getAllArtistIds() returns (uint256[])',
     'function getArtistName(uint256 artistId) returns (string)',
     'function getTotalArtists() returns (uint256)',
     'function getArtistDetails(uint256 artistId) returns (string name, address owner, string metadataURI)',
+    'function hasAddressMintedArtist(address userAddress) returns (bool)',
+    'function getArtistIdByAddress(address userAddress) returns (uint256)',
+    'function hasMintedArtist(address) returns (bool)',
   ],
   EVENT: [
     'function buyTicket() payable',

@@ -7,7 +7,7 @@ import { Music, User, Globe, Twitter, Instagram, Headphones, Upload, CheckCircle
 
 export function CreateArtistForm() {
   const { address } = useWallet()
-  const { submitArtistApplication, isLoading, error, success } = useArtistRegistration()
+  const { mintArtist, isLoading, error, success, hash } = useArtistRegistration()
   
   const [formData, setFormData] = useState<ArtistRegistrationData>({
     name: '',
@@ -60,7 +60,7 @@ export function CreateArtistForm() {
       return
     }
 
-    await submitArtistApplication(formData, address)
+    await mintArtist(formData)
   }
 
   const handleInputChange = (field: keyof ArtistRegistrationData, value: string) => {
@@ -97,21 +97,19 @@ export function CreateArtistForm() {
           </div>
           
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            Demande soumise !
+            Artiste créé avec succès !
           </h2>
           
           <p className="text-gray-600 mb-6">
-            Votre demande d'inscription en tant qu'artiste a été soumise avec succès. Notre équipe examinera votre candidature et vous contactera bientôt.
+            Votre profil artiste a été créé avec succès sur la blockchain. Vous pouvez maintenant participer aux événements.
           </p>
           
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <p className="text-blue-800 text-sm">
-              <strong>Prochaines étapes :</strong><br/>
-              • Votre demande sera examinée par notre équipe<br/>
-              • Vous recevrez une notification par email<br/>
-              • Si approuvée, votre profil artiste sera créé sur la blockchain
-            </p>
-          </div>
+          {hash && (
+            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+              <p className="text-sm text-gray-600 mb-2">Transaction hash :</p>
+              <p className="text-xs font-mono text-gray-800 break-all">{hash}</p>
+            </div>
+          )}
           
           <button
             onClick={() => window.location.reload()}
@@ -132,8 +130,8 @@ export function CreateArtistForm() {
             <Music className="w-6 h-6 text-purple-600" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">Demande d'inscription Artiste</h2>
-            <p className="text-gray-600">Soumettez votre candidature pour devenir artiste sur la plateforme</p>
+            <h2 className="text-2xl font-bold text-gray-800">Créer un Profil Artiste</h2>
+            <p className="text-gray-600">Créez votre profil artiste NFT sur la blockchain</p>
           </div>
         </div>
 
@@ -142,13 +140,13 @@ export function CreateArtistForm() {
             Comment ça marche ?
           </h3>
           <p className="text-blue-700 text-sm mb-2">
-            L'inscription en tant qu'artiste nécessite une approbation de notre équipe pour maintenir la qualité de la plateforme.
+            Créez directement votre profil artiste NFT sur la blockchain. Chaque wallet peut créer un seul profil artiste.
           </p>
           <ul className="text-blue-700 text-sm space-y-1">
             <li>• Remplissez le formulaire ci-dessous</li>
-            <li>• Notre équipe examinera votre candidature</li>
-            <li>• Vous recevrez une réponse dans les 48h</li>
-            <li>• Si approuvée, votre profil NFT sera créé</li>
+            <li>• Votre profil NFT sera créé instantanément</li>
+            <li>• Vous pourrez participer aux événements</li>
+            <li>• Limite : 1 profil artiste par wallet</li>
           </ul>
         </div>
 
@@ -295,10 +293,10 @@ export function CreateArtistForm() {
             {isLoading ? (
               <div className="flex items-center justify-center">
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Soumission en cours...
+                Création en cours...
               </div>
             ) : (
-              'Soumettre ma candidature'
+              'Créer mon profil artiste'
             )}
           </button>
         </form>

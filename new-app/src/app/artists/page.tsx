@@ -44,7 +44,7 @@ export default function ArtistsPage() {
                   <ul className="text-left text-purple-700 space-y-2">
                     <li className="flex items-center">
                       <Plus className="w-4 h-4 mr-2" />
-                      Soumettre une candidature artiste
+                      Créer un profil artiste NFT
                     </li>
                     <li className="flex items-center">
                       <Music className="w-4 h-4 mr-2" />
@@ -82,7 +82,7 @@ export default function ArtistsPage() {
               Espace Artistes
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Soumettez votre candidature pour devenir artiste et gérez votre profil sur la plateforme
+              Créez votre profil artiste NFT et gérez votre profil sur la plateforme
             </p>
             <div className="mt-4 flex items-center justify-center space-x-2 text-sm text-gray-500">
               <User className="w-4 h-4" />
@@ -100,7 +100,7 @@ export default function ArtistsPage() {
                   : 'text-gray-600 hover:text-gray-800'
               }`}
             >
-              Mes artistes
+              Créer
             </button>
             <button
               onClick={() => setActiveTab('all-artists')}

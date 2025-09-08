@@ -8,13 +8,19 @@ import { useState } from 'react'
 const ARTIST_ABI = [
   {
     "inputs": [
-      {"internalType": "address", "name": "to", "type": "address"},
       {"internalType": "string", "name": "artistName", "type": "string"},
       {"internalType": "string", "name": "artistMetadataURI", "type": "string"}
     ],
     "name": "mintArtist",
     "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{"internalType": "address", "name": "userAddress", "type": "address"}],
+    "name": "hasAddressMintedArtist",
+    "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
+    "stateMutability": "view",
     "type": "function"
   }
 ] as const
@@ -37,21 +43,25 @@ export function useArtistRegistration() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
 
-  const submitArtistApplication = async (artistData: ArtistRegistrationData, userAddress: string) => {
+  const { writeContract, data: hash, isPending } = useWriteContract()
+  
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  })
+
+  const mintArtist = async (artistData: ArtistRegistrationData) => {
     try {
       setIsLoading(true)
       setError(null)
       setSuccess(null)
 
-      // Create metadata JSON for the application
+      // Create metadata JSON
       const metadata = {
         name: artistData.name,
         description: artistData.description,
         genre: artistData.genre,
         socialLinks: artistData.socialLinks,
         image: artistData.imageUrl || '',
-        applicantAddress: userAddress,
-        timestamp: new Date().toISOString(),
         attributes: [
           {
             trait_type: "Genre",
@@ -59,34 +69,42 @@ export function useArtistRegistration() {
           },
           {
             trait_type: "Type",
-            value: "Artist Application"
+            value: "Artist"
           }
         ]
       }
 
-      // In a real implementation, you would:
-      // 1. Upload metadata to IPFS
-      // 2. Send the application to a backend service
-      // 3. Store the application in a database
-      // 4. Notify the contract owner
-      
-      // For now, we'll simulate the application submission
-      await new Promise(resolve => setTimeout(resolve, 2000)) // Simulate API call
-      
-      setSuccess('Demande d\'inscription soumise avec succès ! Elle sera examinée par l\'équipe.')
+      // For now, we'll use a placeholder IPFS URI
+      // In a real implementation, you would upload the metadata to IPFS first
+      const metadataURI = `ipfs://artist-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+
+      // Call the mintArtist function
+      writeContract({
+        address: contractAddresses.Artist,
+        abi: ARTIST_ABI,
+        functionName: 'mintArtist',
+        args: [artistData.name, metadataURI],
+      })
 
     } catch (err) {
-      console.error('Error submitting artist application:', err)
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue lors de la soumission de la demande')
+      console.error('Error minting artist:', err)
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue lors de la création de l\'artiste')
     } finally {
       setIsLoading(false)
     }
   }
 
+  // Update success/error states based on transaction status
+  if (isSuccess && !success) {
+    setSuccess('Artiste créé avec succès !')
+  }
+
   return {
-    submitArtistApplication,
-    isLoading,
+    mintArtist,
+    isLoading: isLoading || isPending || isConfirming,
     error,
-    success
+    success,
+    hash,
+    isSuccess
   }
 }

@@ -1,13 +1,13 @@
 // Deployed contract addresses on Polygon Amoy
 export const CONTRACT_ADDRESSES = {
-  // Main contracts (updated after redeployment)
-  ARTIST: '0x93E458156a0Ee3f186FbD3756b372eCc94603a7a',
-  ORGANIZATOR: '0x7953AE167f8F87FA5485b8F6C47613239A95Bde3',
-  TICKET: '0x3FB0863307fF2CAacC8F31DAdcFE4216cD055e41',
-  EVENT: '0x73E5eca7D5C9f6B8B254Ed8C0ac9c296EBB9E01D',
+  // Main contracts (updated after redeployment with new Artist contract)
+  ARTIST: '0xC3dA080Ecf60d29f50eB838519e068eB15Cd573f',
+  ORGANIZATOR: '0xB3A3D8164c1Fe87F7E9771f87eb1BFc074c2d06e',
+  TICKET: '0x7DA7651cF179792985728151c9B336d966810Ae5',
+  EVENT: '0x65B96123e53081D16F3405C4Db54a0b5fc492f4A',
   
   // EventManager contract
-  EVENT_MANAGER: '0x7ab8BE1dE5740B4d27752944Bf92Bff510D0D363',
+  EVENT_MANAGER: '0xb566702544055969Ef08983F745Faf092F2f1976',
 } as const;
 
 // Contract ABIs (extracted from deployed contracts)

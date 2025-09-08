@@ -13,18 +13,22 @@ contract Artist is ERC721URIStorage, Ownable {
     }
 
     mapping(uint256 => ArtistInfo) public artistInfos;
+    mapping(address => bool) public hasMintedArtist;
 
     constructor() ERC721("Artist", "ARTIST") Ownable(msg.sender) {}
 
     function mintArtist(
-        address to,
         string memory artistName,
         string memory artistMetadataURI
-    ) external onlyOwner returns (uint256) {
+    ) external returns (uint256) {
+        require(!hasMintedArtist[msg.sender], "Address has already minted an artist");
+        
         uint256 artistId = nextArtistId++;
-        _safeMint(to, artistId);
+        _safeMint(msg.sender, artistId);
         _setTokenURI(artistId, artistMetadataURI);
         artistInfos[artistId] = ArtistInfo(artistName, artistMetadataURI);
+        hasMintedArtist[msg.sender] = true;
+        
         return artistId;
     }
 
@@ -77,5 +81,34 @@ contract Artist is ERC721URIStorage, Ownable {
         require(artistId > 0 && artistId < nextArtistId, "Artist does not exist");
         ArtistInfo storage info = artistInfos[artistId];
         return (info.name, ownerOf(artistId), info.metadataURI);
+    }
+
+    /**
+     * @dev Check if an address has already minted an artist
+     * @param userAddress The address to check
+     * @return True if the address has minted an artist, false otherwise
+     */
+    function hasAddressMintedArtist(address userAddress) external view returns (bool) {
+        return hasMintedArtist[userAddress];
+    }
+
+    /**
+     * @dev Get the artist ID owned by a specific address (if any)
+     * @param userAddress The address to check
+     * @return artistId The artist ID owned by the address, or 0 if none
+     */
+    function getArtistIdByAddress(address userAddress) external view returns (uint256) {
+        if (!hasMintedArtist[userAddress]) {
+            return 0;
+        }
+        
+        // Find the artist ID owned by this address
+        for (uint256 i = 1; i < nextArtistId; i++) {
+            if (ownerOf(i) == userAddress) {
+                return i;
+            }
+        }
+        
+        return 0;
     }
 }

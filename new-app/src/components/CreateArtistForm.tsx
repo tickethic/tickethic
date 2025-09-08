@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useWallet } from '@/hooks/useWallet'
 import { useArtistRegistration, ArtistRegistrationData } from '@/hooks/useArtistRegistration'
-import { Music, User, CheckCircle, AlertCircle } from 'lucide-react'
+import { Music, User, CheckCircle, AlertCircle, Link } from 'lucide-react'
 
 export function CreateArtistForm() {
   const { address } = useWallet()
@@ -21,6 +21,8 @@ export function CreateArtistForm() {
     },
     imageUrl: ''
   })
+
+  const [ipfsUrl, setIpfsUrl] = useState('')
 
   const [errors, setErrors] = useState<Partial<ArtistRegistrationData>>({})
 
@@ -47,7 +49,7 @@ export function CreateArtistForm() {
       return
     }
 
-    await mintArtist(formData)
+    await mintArtist(formData, ipfsUrl)
   }
 
   const handleInputChange = (field: keyof ArtistRegistrationData, value: string) => {
@@ -153,6 +155,26 @@ export function CreateArtistForm() {
               />
             </div>
             {errors.name && <p className="text-red-600 text-sm mt-1">{errors.name}</p>}
+          </div>
+
+          {/* URL IPFS (optionnel) */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              URL IPFS (optionnel)
+            </label>
+            <div className="relative">
+              <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="url"
+                value={ipfsUrl}
+                onChange={(e) => setIpfsUrl(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="ipfs://QmXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXx"
+              />
+            </div>
+            <p className="text-gray-500 text-sm mt-1">
+              Laissez vide pour générer automatiquement une URL IPFS
+            </p>
           </div>
 
           {/* Submit button */}

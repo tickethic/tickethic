@@ -45,15 +45,14 @@ export function useArtistRegistration() {
     hash,
   })
 
-  const mintArtist = async (artistData: ArtistRegistrationData) => {
+  const mintArtist = async (artistData: ArtistRegistrationData, customIpfsUrl?: string) => {
     try {
       setIsLoading(true)
       setError(null)
       setSuccess(null)
 
-      // For now, we'll use a placeholder IPFS URI
-      // In a real implementation, you would upload the metadata to IPFS first
-      const metadataURI = `ipfs://artist-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      // Use custom IPFS URL if provided, otherwise generate a placeholder
+      const metadataURI = customIpfsUrl || `ipfs://artist-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
       // Note: This will fail because the contract has onlyOwner modifier
       // The user needs to contact the contract owner to mint an artist

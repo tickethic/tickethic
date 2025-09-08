@@ -2,19 +2,18 @@
 
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
-import { ArtistList } from '@/components/ArtistList'
 import { AllArtistsList } from '@/components/AllArtistsList'
-import { OwnerArtistForm } from '@/components/OwnerArtistForm'
+import { ArtistRegistration } from '@/components/ArtistRegistration'
+import { UserArtistProfile } from '@/components/UserArtistProfile'
 import { useWallet } from '@/hooks/useWallet'
-import { useIsOwner } from '@/hooks/useOwnerArtist'
+import { useUserArtist } from '@/hooks/useUserArtist'
 import { User, Music, Plus, Wallet } from 'lucide-react'
 import { useState } from 'react'
 
 export default function ArtistsPage() {
   const { isConnected, address } = useWallet()
-  const { isOwner, isLoading: isLoadingOwner } = useIsOwner(address)
-  const [activeTab, setActiveTab] = useState<'my-artists' | 'all-artists' | 'owner'>('my-artists')
-  const [stats, setStats] = useState({ totalArtists: 0, totalEvents: 0, totalRevenue: 0 })
+  const { userArtist, hasMinted, isLoading: isLoadingUserArtist } = useUserArtist(address)
+  const [activeTab, setActiveTab] = useState<'profile' | 'all-artists'>('profile')
 
   if (!isConnected) {
     return (
@@ -91,16 +90,16 @@ export default function ArtistsPage() {
           </div>
 
           {/* Tabs */}
-          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8 max-w-lg mx-auto">
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8 max-w-md mx-auto">
             <button
-              onClick={() => setActiveTab('my-artists')}
+              onClick={() => setActiveTab('profile')}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
-                activeTab === 'my-artists'
+                activeTab === 'profile'
                   ? 'bg-white text-purple-600 shadow-sm'
                   : 'text-gray-600 hover:text-gray-800'
               }`}
             >
-              Créer
+              {hasMinted ? 'Mon Profil' : 'S\'inscrire'}
             </button>
             <button
               onClick={() => setActiveTab('all-artists')}
@@ -112,47 +111,31 @@ export default function ArtistsPage() {
             >
               Tous les artistes
             </button>
-            {isOwner && (
-              <button
-                onClick={() => setActiveTab('owner')}
-                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
-                  activeTab === 'owner'
-                    ? 'bg-white text-purple-600 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-800'
-                }`}
-              >
-                Admin
-              </button>
-            )}
           </div>
 
           {/* Tab Content */}
-          {activeTab === 'my-artists' ? (
-            <ArtistList 
-              artistAddress={address || ''} 
-              onStatsUpdate={setStats}
-            />
-          ) : activeTab === 'all-artists' ? (
-            <AllArtistsList />
+          {activeTab === 'profile' ? (
+            isLoadingUserArtist ? (
+              <div className="max-w-4xl mx-auto">
+                <div className="bg-white rounded-lg shadow-md p-8">
+                  <div className="animate-pulse">
+                    <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
+                    <div className="space-y-4">
+                      <div className="h-4 bg-gray-200 rounded"></div>
+                      <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : hasMinted && userArtist ? (
+              <UserArtistProfile userArtist={userArtist} />
+            ) : (
+              <ArtistRegistration />
+            )
           ) : (
-            <OwnerArtistForm />
+            <AllArtistsList />
           )}
 
-          {/* Quick Stats */}
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-lg shadow-md p-6 text-center">
-              <div className="text-3xl font-bold text-purple-600 mb-2">{stats.totalArtists}</div>
-              <div className="text-gray-600">Profils artistes</div>
-            </div>
-            <div className="bg-white rounded-lg shadow-md p-6 text-center">
-              <div className="text-3xl font-bold text-green-600 mb-2">{stats.totalEvents}</div>
-              <div className="text-gray-600">Événements participés</div>
-            </div>
-            <div className="bg-white rounded-lg shadow-md p-6 text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">{stats.totalRevenue.toFixed(4)} ETH</div>
-              <div className="text-gray-600">Revenus générés</div>
-            </div>
-          </div>
         </div>
       </div>
       

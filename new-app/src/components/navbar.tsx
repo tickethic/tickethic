@@ -1,11 +1,13 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Ticket, Menu, User, LogOut } from 'lucide-react'
+import { Ticket, Menu, User, LogOut, Shield } from 'lucide-react'
 import { useWallet } from '@/hooks/useWallet'
+import { useIsContractOwner } from '@/hooks/useIsContractOwner'
 
 export function Navbar() {
   const { address, isConnected, connect, disconnect, formatAddress } = useWallet()
+  const { isOwner } = useIsContractOwner()
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -21,6 +23,12 @@ export function Navbar() {
             <a href="/events" className="text-gray-700 hover:text-purple-600 transition">Événements</a>
             <a href="/organizers" className="text-gray-700 hover:text-purple-600 transition">Pour les organisateurs</a>
             <a href="/artists" className="text-gray-700 hover:text-purple-600 transition">Pour les artistes</a>
+            {isOwner && (
+              <a href="/admin" className="text-gray-700 hover:text-purple-600 transition flex items-center">
+                <Shield className="w-4 h-4 mr-1" />
+                Admin
+              </a>
+            )}
             <a href="#" className="text-gray-700 hover:text-purple-600 transition">Contact</a>
           </div>
           <div className="flex items-center space-x-4">

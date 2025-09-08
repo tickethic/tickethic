@@ -2,18 +2,15 @@
 
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
-import { AllArtistsList } from '@/components/AllArtistsList'
-import { ArtistRegistration } from '@/components/ArtistRegistration'
+import { CreateArtistForm } from '@/components/CreateArtistForm'
 import { UserArtistProfile } from '@/components/UserArtistProfile'
 import { useWallet } from '@/hooks/useWallet'
 import { useUserArtist } from '@/hooks/useUserArtist'
 import { User, Music, Plus, Wallet } from 'lucide-react'
-import { useState } from 'react'
 
 export default function ArtistsPage() {
   const { isConnected, address } = useWallet()
   const { userArtist, hasMinted, isLoading: isLoadingUserArtist } = useUserArtist(address)
-  const [activeTab, setActiveTab] = useState<'profile' | 'all-artists'>('profile')
 
   if (!isConnected) {
     return (
@@ -89,32 +86,6 @@ export default function ArtistsPage() {
             </div>
           </div>
 
-          {/* Tabs - Only show if user hasn't minted an artist yet */}
-          {!hasMinted && (
-            <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8 max-w-md mx-auto">
-              <button
-                onClick={() => setActiveTab('profile')}
-                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
-                  activeTab === 'profile'
-                    ? 'bg-white text-purple-600 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-800'
-                }`}
-              >
-                S'inscrire
-              </button>
-              <button
-                onClick={() => setActiveTab('all-artists')}
-                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
-                  activeTab === 'all-artists'
-                    ? 'bg-white text-purple-600 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-800'
-                }`}
-              >
-                Tous les artistes
-              </button>
-            </div>
-          )}
-
           {/* Content */}
           {isLoadingUserArtist ? (
             <div className="max-w-4xl mx-auto">
@@ -130,10 +101,8 @@ export default function ArtistsPage() {
             </div>
           ) : hasMinted && userArtist ? (
             <UserArtistProfile userArtist={userArtist} />
-          ) : activeTab === 'all-artists' ? (
-            <AllArtistsList />
           ) : (
-            <ArtistRegistration />
+            <CreateArtistForm />
           )}
 
         </div>

@@ -2,12 +2,14 @@
 
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { contractAddresses } from '@/config'
+import { useWallet } from '@/hooks/useWallet'
 import { useState } from 'react'
 
-// Artist ABI
+// Artist ABI - Current deployed version
 const ARTIST_ABI = [
   {
     "inputs": [
+      {"internalType": "address", "name": "to", "type": "address"},
       {"internalType": "string", "name": "artistName", "type": "string"},
       {"internalType": "string", "name": "artistMetadataURI", "type": "string"}
     ],
@@ -15,21 +17,14 @@ const ARTIST_ABI = [
     "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
     "stateMutability": "nonpayable",
     "type": "function"
-  },
-  {
-    "inputs": [{"internalType": "address", "name": "userAddress", "type": "address"}],
-    "name": "hasAddressMintedArtist",
-    "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
-    "stateMutability": "view",
-    "type": "function"
   }
 ] as const
 
 export interface ArtistRegistrationData {
   name: string
-  description: string
-  genre: string
-  socialLinks: {
+  description?: string
+  genre?: string
+  socialLinks?: {
     website?: string
     twitter?: string
     instagram?: string
@@ -39,6 +34,7 @@ export interface ArtistRegistrationData {
 }
 
 export function useArtistRegistration() {
+  const { address } = useWallet()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
@@ -55,40 +51,26 @@ export function useArtistRegistration() {
       setError(null)
       setSuccess(null)
 
-      // Create metadata JSON
-      const metadata = {
-        name: artistData.name,
-        description: artistData.description,
-        genre: artistData.genre,
-        socialLinks: artistData.socialLinks,
-        image: artistData.imageUrl || '',
-        attributes: [
-          {
-            trait_type: "Genre",
-            value: artistData.genre
-          },
-          {
-            trait_type: "Type",
-            value: "Artist"
-          }
-        ]
-      }
-
       // For now, we'll use a placeholder IPFS URI
       // In a real implementation, you would upload the metadata to IPFS first
       const metadataURI = `ipfs://artist-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
-      // Call the mintArtist function
+      // Note: This will fail because the contract has onlyOwner modifier
+      // The user needs to contact the contract owner to mint an artist
+      if (!address) {
+        throw new Error('Wallet non connecté')
+      }
+      
       writeContract({
         address: contractAddresses.Artist,
         abi: ARTIST_ABI,
         functionName: 'mintArtist',
-        args: [artistData.name, metadataURI],
+        args: [address, artistData.name, metadataURI], // This will fail due to onlyOwner
       })
 
     } catch (err) {
       console.error('Error minting artist:', err)
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue lors de la création de l\'artiste')
+      setError('Seul le propriétaire du contrat peut créer des artistes. Contactez l\'administrateur.')
     } finally {
       setIsLoading(false)
     }

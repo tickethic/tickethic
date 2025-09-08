@@ -89,51 +89,51 @@ export default function ArtistsPage() {
             </div>
           </div>
 
-          {/* Tabs */}
-          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8 max-w-md mx-auto">
-            <button
-              onClick={() => setActiveTab('profile')}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
-                activeTab === 'profile'
-                  ? 'bg-white text-purple-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800'
-              }`}
-            >
-              {hasMinted ? 'Mon Profil' : 'S\'inscrire'}
-            </button>
-            <button
-              onClick={() => setActiveTab('all-artists')}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
-                activeTab === 'all-artists'
-                  ? 'bg-white text-purple-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800'
-              }`}
-            >
-              Tous les artistes
-            </button>
-          </div>
+          {/* Tabs - Only show if user hasn't minted an artist yet */}
+          {!hasMinted && (
+            <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8 max-w-md mx-auto">
+              <button
+                onClick={() => setActiveTab('profile')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
+                  activeTab === 'profile'
+                    ? 'bg-white text-purple-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                S'inscrire
+              </button>
+              <button
+                onClick={() => setActiveTab('all-artists')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
+                  activeTab === 'all-artists'
+                    ? 'bg-white text-purple-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                Tous les artistes
+              </button>
+            </div>
+          )}
 
-          {/* Tab Content */}
-          {activeTab === 'profile' ? (
-            isLoadingUserArtist ? (
-              <div className="max-w-4xl mx-auto">
-                <div className="bg-white rounded-lg shadow-md p-8">
-                  <div className="animate-pulse">
-                    <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
-                    <div className="space-y-4">
-                      <div className="h-4 bg-gray-200 rounded"></div>
-                      <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                    </div>
+          {/* Content */}
+          {isLoadingUserArtist ? (
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-white rounded-lg shadow-md p-8">
+                <div className="animate-pulse">
+                  <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
+                  <div className="space-y-4">
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded w-5/6"></div>
                   </div>
                 </div>
               </div>
-            ) : hasMinted && userArtist ? (
-              <UserArtistProfile userArtist={userArtist} />
-            ) : (
-              <ArtistRegistration />
-            )
-          ) : (
+            </div>
+          ) : hasMinted && userArtist ? (
+            <UserArtistProfile userArtist={userArtist} />
+          ) : activeTab === 'all-artists' ? (
             <AllArtistsList />
+          ) : (
+            <ArtistRegistration />
           )}
 
         </div>

@@ -5,17 +5,23 @@ import { contractAddresses } from '@/config'
 import { useWallet } from '@/hooks/useWallet'
 import { useState } from 'react'
 
-// Artist ABI - Current deployed version
+// Artist ABI - Updated version (allows anyone to mint)
 const ARTIST_ABI = [
   {
     "inputs": [
-      {"internalType": "address", "name": "to", "type": "address"},
       {"internalType": "string", "name": "artistName", "type": "string"},
       {"internalType": "string", "name": "artistMetadataURI", "type": "string"}
     ],
     "name": "mintArtist",
     "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{"internalType": "address", "name": "userAddress", "type": "address"}],
+    "name": "hasAddressMintedArtist",
+    "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
+    "stateMutability": "view",
     "type": "function"
   }
 ] as const
@@ -54,8 +60,6 @@ export function useArtistRegistration() {
       // Use custom IPFS URL if provided, otherwise generate a placeholder
       const metadataURI = customIpfsUrl || `ipfs://artist-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
-      // Note: This will fail because the contract has onlyOwner modifier
-      // The user needs to contact the contract owner to mint an artist
       if (!address) {
         throw new Error('Wallet non connecté')
       }
@@ -64,12 +68,12 @@ export function useArtistRegistration() {
         address: contractAddresses.Artist,
         abi: ARTIST_ABI,
         functionName: 'mintArtist',
-        args: [address, artistData.name, metadataURI], // This will fail due to onlyOwner
+        args: [artistData.name, metadataURI], // New version: no address parameter, mints to msg.sender
       })
 
     } catch (err) {
       console.error('Error minting artist:', err)
-      setError('Seul le propriétaire du contrat peut créer des artistes. Contactez l\'administrateur.')
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue lors de la création de l\'artiste')
     } finally {
       setIsLoading(false)
     }

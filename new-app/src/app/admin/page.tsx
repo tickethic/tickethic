@@ -3,13 +3,16 @@
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { AdminArtistsList } from '@/components/AdminArtistsList'
+import { AdminAddArtistForm } from '@/components/AdminAddArtistForm'
 import { useIsContractOwner } from '@/hooks/useIsContractOwner'
 import { useAllArtists } from '@/hooks/useAllArtists'
 import { Shield, Lock, User, AlertCircle } from 'lucide-react'
+import { useState } from 'react'
 
 export default function AdminPage() {
   const { isOwner, isLoading: isLoadingOwner, contractOwner, userAddress } = useIsContractOwner()
   const { artists, isLoading: isLoadingArtists, error, totalCount } = useAllArtists()
+  const [activeTab, setActiveTab] = useState<'list' | 'add'>('list')
 
   if (isLoadingOwner) {
     return (
@@ -130,12 +133,40 @@ export default function AdminPage() {
             </div>
           </div>
 
-          {/* Artists List */}
-          <AdminArtistsList 
-            artists={artists}
-            isLoading={isLoadingArtists}
-            error={error}
-          />
+          {/* Tabs */}
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8 max-w-md mx-auto">
+            <button
+              onClick={() => setActiveTab('list')}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
+                activeTab === 'list'
+                  ? 'bg-white text-purple-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              Liste des artistes
+            </button>
+            <button
+              onClick={() => setActiveTab('add')}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
+                activeTab === 'add'
+                  ? 'bg-white text-purple-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              Ajouter un artiste
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          {activeTab === 'list' ? (
+            <AdminArtistsList 
+              artists={artists}
+              isLoading={isLoadingArtists}
+              error={error}
+            />
+          ) : (
+            <AdminAddArtistForm />
+          )}
         </div>
       </div>
       

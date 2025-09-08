@@ -4,11 +4,18 @@ import { useReadContract } from 'wagmi'
 import { contractAddresses } from '@/config'
 import { useState, useEffect } from 'react'
 
-// Artist ABI - Current deployed version
+// Artist ABI - Updated version
 const ARTIST_ABI = [
   {
-    "inputs": [],
-    "name": "nextArtistId",
+    "inputs": [{"internalType": "address", "name": "userAddress", "type": "address"}],
+    "name": "hasAddressMintedArtist",
+    "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{"internalType": "address", "name": "userAddress", "type": "address"}],
+    "name": "getArtistIdByAddress",
     "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
     "stateMutability": "view",
     "type": "function"
@@ -44,76 +51,81 @@ export function useUserArtist(userAddress?: string) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Get the next artist ID to know how many artists exist
-  const { data: nextArtistId, isLoading: isLoadingNextId } = useReadContract({
+  // Check if user has minted an artist
+  const { data: hasMinted, isLoading: isLoadingMinted } = useReadContract({
     address: contractAddresses.Artist,
     abi: ARTIST_ABI,
-    functionName: 'nextArtistId',
+    functionName: 'hasAddressMintedArtist',
+    args: userAddress ? [userAddress as `0x${string}`] : undefined,
     query: {
       enabled: !!userAddress
     }
   })
 
+  // Get artist ID if user has minted
+  const { data: artistId, isLoading: isLoadingId } = useReadContract({
+    address: contractAddresses.Artist,
+    abi: ARTIST_ABI,
+    functionName: 'getArtistIdByAddress',
+    args: userAddress ? [userAddress as `0x${string}`] : undefined,
+    query: {
+      enabled: !!userAddress && !!hasMinted
+    }
+  })
+
+  // Get artist info if we have an ID
+  const { data: artistInfo, isLoading: isLoadingInfo } = useReadContract({
+    address: contractAddresses.Artist,
+    abi: ARTIST_ABI,
+    functionName: 'getArtistInfo',
+    args: artistId ? [artistId as bigint] : undefined,
+    query: {
+      enabled: !!artistId && Number(artistId) > 0
+    }
+  })
+
+  // Get owner of the NFT
+  const { data: owner, isLoading: isLoadingOwner } = useReadContract({
+    address: contractAddresses.Artist,
+    abi: ARTIST_ABI,
+    functionName: 'ownerOf',
+    args: artistId ? [artistId as bigint] : undefined,
+    query: {
+      enabled: !!artistId && Number(artistId) > 0
+    }
+  })
+
   useEffect(() => {
-    if (!userAddress || !nextArtistId) {
+    if (!userAddress) {
       setUserArtist(null)
       setIsLoading(false)
       return
     }
 
-    const findUserArtist = async () => {
-      try {
-        setIsLoading(true)
-        
-        // Check all existing artists to see if user owns one
-        const totalArtists = Number(nextArtistId)
-        
-        for (let i = 1; i < totalArtists; i++) {
-          try {
-            // Check if this artist exists and get its owner
-            const owner = await fetch(`/api/artist/${i}`)
-              .then(res => res.json())
-              .then(data => data.owner)
-              .catch(() => null)
-            
-            if (owner && owner.toLowerCase() === userAddress.toLowerCase()) {
-              // User owns this artist, get the artist info
-              const artistInfo = await fetch(`/api/artist/${i}`)
-                .then(res => res.json())
-                .catch(() => null)
-              
-              if (artistInfo) {
-                setUserArtist({
-                  id: i,
-                  name: artistInfo.name,
-                  metadataURI: artistInfo.metadataURI,
-                  owner: artistInfo.owner
-                })
-                break
-              }
-            }
-          } catch (err) {
-            // Artist doesn't exist or error, continue
-            continue
-          }
-        }
-        
-        // If no artist found, userArtist remains null
-      } catch (err) {
-        console.error('Error finding user artist:', err)
-        setError('Erreur lors de la recherche de votre profil artiste')
-      } finally {
-        setIsLoading(false)
-      }
+    if (isLoadingMinted || isLoadingId || isLoadingInfo || isLoadingOwner) {
+      setIsLoading(true)
+      return
     }
 
-    findUserArtist()
-  }, [userAddress, nextArtistId])
+    if (hasMinted && artistId && Number(artistId) > 0 && artistInfo && owner) {
+      const [name, metadataURI] = artistInfo as [string, string]
+      setUserArtist({
+        id: Number(artistId),
+        name,
+        metadataURI,
+        owner: owner as string
+      })
+    } else {
+      setUserArtist(null)
+    }
+
+    setIsLoading(false)
+  }, [userAddress, hasMinted, artistId, artistInfo, owner, isLoadingMinted, isLoadingId, isLoadingInfo, isLoadingOwner])
 
   return {
     userArtist,
-    hasMinted: !!userArtist,
-    isLoading: isLoading || isLoadingNextId,
+    hasMinted: !!hasMinted,
+    isLoading,
     error
   }
 }

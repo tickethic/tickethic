@@ -32,11 +32,11 @@ const ARTIST_ABI = [
 
 // Contract addresses
 const contractAddresses = {
-  Artist: "0x31Da0B05B3537e9540B8b76C643BcB123428DA98",
-  Organizator: "0x189441313F6ca0Ea2103b9a5F4bBC13fE02E6D8a",
-  Ticket: "0x1e3119708Fb88FFAd1b5D7A3A030c1A76a7Dc70E",
-  Event: "0x271D35FF1E6D8e41cfA451A39dE90bfdF85b44B1",
-  EventManager: "0x9D04429C5ec6ea8dcdEe0f0D8D6E06e8d291ACcc"
+  Artist: "0xC3dA080Ecf60d29f50eB838519e068eB15Cd573f",
+  Organizator: "0xB3A3D8164c1Fe87F7E9771f87eb1BFc074c2d06e",
+  Ticket: "0x7DA7651cF179792985728151c9B336d966810Ae5",
+  Event: "0x65B96123e53081D16F3405C4Db54a0b5fc492f4A",
+  EventManager: "0xb566702544055969Ef08983F745Faf092F2f1976"
 } as const
 
 // Create public client
@@ -47,10 +47,11 @@ const publicClient = createPublicClient({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const artistId = parseInt(params.id)
+    const { id } = await params
+    const artistId = parseInt(id)
     
     if (isNaN(artistId) || artistId <= 0) {
       return NextResponse.json(

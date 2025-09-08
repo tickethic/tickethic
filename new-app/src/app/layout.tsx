@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import ContextProvider from "@/context";
 
 export const metadata: Metadata = {
-  title: "Tick3thic - Plateforme événementielle pour organisateurs et artistes",
+  title: "Tickethic - Plateforme événementielle pour organisateurs et artistes",
   description: "Une plateforme Web3 qui garantit des paiements directs aux artistes et une transparence totale.",
 };
 
@@ -20,7 +21,9 @@ export default function RootLayout({
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
       </head>
       <body className="bg-gray-50">
-        {children}
+        <ContextProvider>
+          {children}
+        </ContextProvider>
       </body>
     </html>
   );

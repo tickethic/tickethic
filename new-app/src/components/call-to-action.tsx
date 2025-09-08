@@ -6,7 +6,7 @@ export function CallToAction() {
           Prêt à révolutionner votre expérience événementielle ?
         </h2>
         <p className="text-xl mb-10 max-w-3xl mx-auto">
-          Rejoignez des milliers d'organisateurs, artistes et participants qui utilisent déjà Tick3thic.
+          Rejoignez des milliers d'organisateurs, artistes et participants qui utilisent déjà Tickethic.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <a href="#" className="bg-white text-purple-700 px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition">

@@ -73,12 +73,26 @@ export function CreateEventForm() {
     // Convert ticket price to wei (assuming ETH)
     const ticketPriceInWei = BigInt(Math.floor(parseFloat(formData.ticketPrice) * 1e18))
 
+    // Create event metadata with the title and description from the form
+    const eventMetadata = {
+      name: formData.title,
+      description: formData.description || `Un événement organisé par ${address.slice(0, 6)}...${address.slice(-4)}`,
+      image: 'https://via.placeholder.com/400x200/7c3aed/ffffff?text=Event',
+      date: eventDateTime.toISOString(),
+      location: 'À définir',
+      category: 'Musique'
+    }
+
+    // For now, we'll use a placeholder URI since we can't upload to IPFS from the frontend
+    // In a real app, you'd upload the metadata to IPFS and get the hash
+    const metadataURI = formData.metadataURI || `event://${formData.title.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}`
+
     const params = {
       artistIds: artists.map(a => a.id),
       artistShares: artists.map(a => a.share),
       organizer: address,
       date: timestamp,
-      metadataURI: formData.metadataURI || `ipfs://event-${Date.now()}`,
+      metadataURI: metadataURI,
       ticketPrice: ticketPriceInWei,
       totalTickets: parseInt(formData.totalTickets)
     }

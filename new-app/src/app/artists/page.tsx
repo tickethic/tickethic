@@ -2,18 +2,19 @@
 
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
-import { CreateEventForm } from '@/components/CreateEventForm'
-import { OrganizerEventsList } from '@/components/OrganizerEventsList'
+import { ArtistList } from '@/components/ArtistList'
+import { AllArtistsList } from '@/components/AllArtistsList'
+import { OwnerArtistForm } from '@/components/OwnerArtistForm'
 import { useWallet } from '@/hooks/useWallet'
-// Remove the import since we're now using the API directly
-import { User, Calendar, Plus, Wallet } from 'lucide-react'
+import { useIsOwner } from '@/hooks/useOwnerArtist'
+import { User, Music, Plus, Wallet } from 'lucide-react'
 import { useState } from 'react'
 
-export default function OrganizersPage() {
+export default function ArtistsPage() {
   const { isConnected, address } = useWallet()
-  const [activeTab, setActiveTab] = useState<'create' | 'manage'>('create')
-  // We'll get the stats from the OrganizerEventsList component
-  const [stats, setStats] = useState({ totalEvents: 0, totalSold: 0, totalRevenue: 0 })
+  const { isOwner, isLoading: isLoadingOwner } = useIsOwner(address)
+  const [activeTab, setActiveTab] = useState<'my-artists' | 'all-artists' | 'owner'>('my-artists')
+  const [stats, setStats] = useState({ totalArtists: 0, totalEvents: 0, totalRevenue: 0 })
 
   if (!isConnected) {
     return (
@@ -33,25 +34,25 @@ export default function OrganizersPage() {
                 </h1>
                 
                 <p className="text-lg text-gray-600 mb-8">
-                  Pour accéder à l'espace organisateurs, vous devez d'abord connecter votre wallet.
+                  Pour accéder à l'espace artistes, vous devez d'abord connecter votre wallet.
                 </p>
                 
                 <div className="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-8">
                   <h3 className="text-lg font-semibold text-purple-800 mb-3">
-                    Fonctionnalités disponibles pour les organisateurs :
+                    Fonctionnalités disponibles pour les artistes :
                   </h3>
                   <ul className="text-left text-purple-700 space-y-2">
                     <li className="flex items-center">
                       <Plus className="w-4 h-4 mr-2" />
-                      Créer de nouveaux événements
+                      Soumettre une candidature artiste
                     </li>
                     <li className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Gérer vos événements existants
+                      <Music className="w-4 h-4 mr-2" />
+                      Gérer son profil artiste
                     </li>
                     <li className="flex items-center">
                       <User className="w-4 h-4 mr-2" />
-                      Suivre les ventes et statistiques
+                      Suivre ses performances et revenus
                     </li>
                   </ul>
                 </div>
@@ -78,10 +79,10 @@ export default function OrganizersPage() {
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">
-              Espace Organisateurs
+              Espace Artistes
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Gérez vos événements et créez de nouvelles expériences pour votre communauté
+              Soumettez votre candidature pour devenir artiste et gérez votre profil sur la plateforme
             </p>
             <div className="mt-4 flex items-center justify-center space-x-2 text-sm text-gray-500">
               <User className="w-4 h-4" />
@@ -90,48 +91,62 @@ export default function OrganizersPage() {
           </div>
 
           {/* Tabs */}
-          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8 max-w-md mx-auto">
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8 max-w-lg mx-auto">
             <button
-              onClick={() => setActiveTab('create')}
+              onClick={() => setActiveTab('my-artists')}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
-                activeTab === 'create'
+                activeTab === 'my-artists'
                   ? 'bg-white text-purple-600 shadow-sm'
                   : 'text-gray-600 hover:text-gray-800'
               }`}
             >
-              Créer un événement
+              Mes artistes
             </button>
             <button
-              onClick={() => setActiveTab('manage')}
+              onClick={() => setActiveTab('all-artists')}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
-                activeTab === 'manage'
+                activeTab === 'all-artists'
                   ? 'bg-white text-purple-600 shadow-sm'
                   : 'text-gray-600 hover:text-gray-800'
               }`}
             >
-              Mes événements
+              Tous les artistes
             </button>
+            {isOwner && (
+              <button
+                onClick={() => setActiveTab('owner')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
+                  activeTab === 'owner'
+                    ? 'bg-white text-purple-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                Admin
+              </button>
+            )}
           </div>
 
           {/* Tab Content */}
-          {activeTab === 'create' ? (
-            <CreateEventForm />
-          ) : (
-            <OrganizerEventsList 
-              organizerAddress={address || ''} 
+          {activeTab === 'my-artists' ? (
+            <ArtistList 
+              artistAddress={address || ''} 
               onStatsUpdate={setStats}
             />
+          ) : activeTab === 'all-artists' ? (
+            <AllArtistsList />
+          ) : (
+            <OwnerArtistForm />
           )}
 
           {/* Quick Stats */}
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white rounded-lg shadow-md p-6 text-center">
-              <div className="text-3xl font-bold text-purple-600 mb-2">{stats.totalEvents}</div>
-              <div className="text-gray-600">Événements créés</div>
+              <div className="text-3xl font-bold text-purple-600 mb-2">{stats.totalArtists}</div>
+              <div className="text-gray-600">Profils artistes</div>
             </div>
             <div className="bg-white rounded-lg shadow-md p-6 text-center">
-              <div className="text-3xl font-bold text-green-600 mb-2">{stats.totalSold}</div>
-              <div className="text-gray-600">Billets vendus</div>
+              <div className="text-3xl font-bold text-green-600 mb-2">{stats.totalEvents}</div>
+              <div className="text-gray-600">Événements participés</div>
             </div>
             <div className="bg-white rounded-lg shadow-md p-6 text-center">
               <div className="text-3xl font-bold text-blue-600 mb-2">{stats.totalRevenue.toFixed(4)} ETH</div>

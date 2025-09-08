@@ -12,22 +12,33 @@ export function EventCard({ eventId }: EventCardProps) {
   const { eventInfo, isLoading } = useEventInfo(eventId)
   const { metadataURI, artistIds } = useEventMetadata(eventInfo?.[0] || '')
   const [eventName, setEventName] = useState<string>('')
+  const [eventDescription, setEventDescription] = useState<string>('')
+  const [eventImage, setEventImage] = useState<string>('')
+  const [eventLocation, setEventLocation] = useState<string>('')
   const [isLoadingMetadata, setIsLoadingMetadata] = useState(false)
 
   // Fetch event metadata when metadataURI is available
   useEffect(() => {
     if (metadataURI && metadataURI !== '') {
+      console.log(`EventCard ${eventId}: Fetching metadata for URI:`, metadataURI)
       setIsLoadingMetadata(true)
       
       // Fetch metadata from API
       fetch(`/api/event-metadata?uri=${encodeURIComponent(metadataURI)}`)
         .then(response => response.json())
         .then(data => {
+          console.log(`EventCard ${eventId}: Received metadata:`, data)
           setEventName(data.name || `Événement #${eventId}`)
+          setEventDescription(data.description || '')
+          setEventImage(data.image || '')
+          setEventLocation(data.location || '')
         })
         .catch(error => {
           console.error('Error fetching event metadata:', error)
           setEventName(`Événement #${eventId}`)
+          setEventDescription('')
+          setEventImage('')
+          setEventLocation('')
         })
         .finally(() => {
           setIsLoadingMetadata(false)
@@ -70,13 +81,36 @@ export function EventCard({ eventId }: EventCardProps) {
   const formatAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`
 
   return (
-    <div className={`bg-white rounded-lg shadow-md p-6 transition-transform hover:scale-105 ${
+    <div className={`bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105 ${
       isPastEvent ? 'opacity-60' : ''
     }`}>
-      {/* Event Title */}
-      <h3 className="text-xl font-bold text-gray-800 mb-2">
-        {isLoadingMetadata ? 'Chargement...' : (eventName || `Événement #${eventId}`)}
-      </h3>
+      {/* Event Image */}
+      {eventImage && (
+        <div className="h-48 bg-gray-200">
+          <img 
+            src={eventImage} 
+            alt={eventName || `Événement #${eventId}`}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              // Hide image if it fails to load
+              e.currentTarget.style.display = 'none'
+            }}
+          />
+        </div>
+      )}
+      
+      <div className="p-6">
+        {/* Event Title */}
+        <h3 className="text-xl font-bold text-gray-800 mb-2">
+          {isLoadingMetadata ? 'Chargement...' : (eventName || `Événement #${eventId}`)}
+        </h3>
+
+        {/* Event Description */}
+        {eventDescription && (
+          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+            {eventDescription}
+          </p>
+        )}
 
       {/* Event Details */}
       <div className="space-y-3 mb-4">
@@ -102,6 +136,13 @@ export function EventCard({ eventId }: EventCardProps) {
           <Users className="w-4 h-4 mr-2" />
           <span>Organisateur: {formatAddress(organizer)}</span>
         </div>
+
+        {eventLocation && (
+          <div className="flex items-center text-gray-600">
+            <MapPin className="w-4 h-4 mr-2" />
+            <span>{eventLocation}</span>
+          </div>
+        )}
 
         {artistIds && artistIds.length > 0 && (
           <div className="flex items-center text-gray-600">
@@ -160,12 +201,15 @@ export function EventCard({ eventId }: EventCardProps) {
 
       {/* Metadata URI if available */}
       {metadataURI && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
-          <p className="text-xs text-gray-500">
-            Métadonnées: {metadataURI}
-          </p>
+        <div className="px-6 pb-6">
+          <div className="pt-4 border-t border-gray-200">
+            <p className="text-xs text-gray-500">
+              Métadonnées: {metadataURI}
+            </p>
+          </div>
         </div>
       )}
+      </div>
     </div>
   )
 }

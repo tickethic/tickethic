@@ -20,7 +20,7 @@ export function Navbar() {
             <a href="/" className="text-gray-700 hover:text-purple-600 transition">Accueil</a>
             <a href="/events" className="text-gray-700 hover:text-purple-600 transition">Événements</a>
             <a href="/organizers" className="text-gray-700 hover:text-purple-600 transition">Pour les organisateurs</a>
-            <a href="#" className="text-gray-700 hover:text-purple-600 transition">Pour les artistes</a>
+            <a href="/artists" className="text-gray-700 hover:text-purple-600 transition">Pour les artistes</a>
             <a href="#" className="text-gray-700 hover:text-purple-600 transition">Contact</a>
           </div>
           <div className="flex items-center space-x-4">

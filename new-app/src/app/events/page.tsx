@@ -1,19 +1,20 @@
 'use client'
 
-import { useEvents } from '@/hooks/useEvents'
+import { useEventSearch } from '@/hooks/useEventSearch'
 import { EventCard } from '@/components/EventCard'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
-import { Calendar, Filter, Search } from 'lucide-react'
-import { useState } from 'react'
+import { Calendar, Filter, Search, X } from 'lucide-react'
 
 export default function EventsPage() {
-  const { totalEvents, isLoadingTotal } = useEvents()
-  const [searchTerm, setSearchTerm] = useState('')
-  const [filterStatus, setFilterStatus] = useState<'all' | 'available' | 'soldout' | 'past'>('all')
-
-  // Generate array of event IDs
-  const eventIds = Array.from({ length: totalEvents }, (_, i) => i + 1)
+  const { 
+    totalEvents, 
+    isLoadingTotal, 
+    eventIds, 
+    filters, 
+    updateFilters, 
+    clearFilters 
+  } = useEventSearch()
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -32,8 +33,8 @@ export default function EventsPage() {
                 <input
                   type="text"
                   placeholder="Rechercher un événement..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  value={filters.searchTerm}
+                  onChange={(e) => updateFilters({ searchTerm: e.target.value })}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
               </div>
@@ -43,8 +44,8 @@ export default function EventsPage() {
             <div className="flex items-center space-x-2">
               <Filter className="w-5 h-5 text-gray-400" />
               <select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value as any)}
+                value={filters.status}
+                onChange={(e) => updateFilters({ status: e.target.value as any })}
                 className="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               >
                 <option value="all">Tous les événements</option>
@@ -53,6 +54,17 @@ export default function EventsPage() {
                 <option value="past">Terminés</option>
               </select>
             </div>
+
+            {/* Clear Filters */}
+            {(filters.searchTerm || filters.status !== 'all') && (
+              <button
+                onClick={clearFilters}
+                className="flex items-center space-x-1 px-3 py-2 text-sm text-gray-600 hover:text-gray-800 transition"
+              >
+                <X className="w-4 h-4" />
+                <span>Effacer</span>
+              </button>
+            )}
           </div>
         </div>
 

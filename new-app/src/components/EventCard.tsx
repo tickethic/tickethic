@@ -2,6 +2,7 @@
 
 import { Calendar, MapPin, Users, Ticket, Clock } from 'lucide-react'
 import { useEventInfo, useEventMetadata } from '@/hooks/useEvents'
+import { useState, useEffect } from 'react'
 
 interface EventCardProps {
   eventId: number
@@ -10,6 +11,31 @@ interface EventCardProps {
 export function EventCard({ eventId }: EventCardProps) {
   const { eventInfo, isLoading } = useEventInfo(eventId)
   const { metadataURI, artistIds } = useEventMetadata(eventInfo?.[0] || '')
+  const [eventName, setEventName] = useState<string>('')
+  const [isLoadingMetadata, setIsLoadingMetadata] = useState(false)
+
+  // Fetch event metadata when metadataURI is available
+  useEffect(() => {
+    if (metadataURI && metadataURI !== '') {
+      setIsLoadingMetadata(true)
+      
+      // Fetch metadata from API
+      fetch(`/api/event-metadata?uri=${encodeURIComponent(metadataURI)}`)
+        .then(response => response.json())
+        .then(data => {
+          setEventName(data.name || `Événement #${eventId}`)
+        })
+        .catch(error => {
+          console.error('Error fetching event metadata:', error)
+          setEventName(`Événement #${eventId}`)
+        })
+        .finally(() => {
+          setIsLoadingMetadata(false)
+        })
+    } else {
+      setEventName(`Événement #${eventId}`)
+    }
+  }, [metadataURI, eventId])
 
   if (isLoading) {
     return (
@@ -49,7 +75,7 @@ export function EventCard({ eventId }: EventCardProps) {
     }`}>
       {/* Event Title */}
       <h3 className="text-xl font-bold text-gray-800 mb-2">
-        Événement #{eventId}
+        {isLoadingMetadata ? 'Chargement...' : (eventName || `Événement #${eventId}`)}
       </h3>
 
       {/* Event Details */}

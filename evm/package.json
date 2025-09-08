@@ -7,7 +7,7 @@
     "compile": "hardhat compile",
     "deploy:local": "npx hardhat ignition deploy ignition/modules/Tickethic.ts --network localhost",
     "deploy:amoy": "npx hardhat ignition deploy ignition/modules/Tickethic.ts --network amoy",
-    "deploy:eventmanager": "npx hardhat run scripts/deployWithEventManager.cjs --network amoy"
+    "deploy:eventmanager": "npx hardhat ignition deploy ignition/modules/TickethicWithEventManager.ts --network amoy"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-ignition": "^3.0.2",

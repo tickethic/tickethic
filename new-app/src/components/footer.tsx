@@ -1,4 +1,4 @@
-import { Ticket, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react'
+import { Ticket, Facebook, Twitter, Instagram, Linkedin, Github } from 'lucide-react'
 
 export function Footer() {
   return (
@@ -24,24 +24,25 @@ export function Footer() {
               <a href="#" className="text-gray-400 hover:text-white transition">
                 <Linkedin className="w-5 h-5" />
               </a>
+              <a href="https://github.com/dadamagouil/tickethic" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition">
+                <Github className="w-5 h-5" />
+              </a>
             </div>
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Pour les organisateurs</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-white transition">Créer un événement</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition">Gestion des billets</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition">Analytics</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition">Tarifs</a></li>
+              <li><a href="/organizers" className="text-gray-400 hover:text-white transition">Créer un événement</a></li>
+              <li><a href="/organizers" className="text-gray-400 hover:text-white transition">Mes événements</a></li>
+              <li><a href="/analytics" className="text-gray-400 hover:text-white transition">Analytics</a></li>
+              <li><a href="/pricing" className="text-gray-400 hover:text-white transition">Tarifs</a></li>
             </ul>
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Pour les artistes</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-white transition">Créer un profil</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition">Trouver des événements</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition">Gestion des paiements</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition">Ressources</a></li>
+              <li><a href="/artists" className="text-gray-400 hover:text-white transition">Créer un profil</a></li>
+              <li><a href="/artist-payments" className="text-gray-400 hover:text-white transition">Gestion des paiements</a></li>
             </ul>
           </div>
           <div>

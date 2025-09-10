@@ -2,26 +2,26 @@ export function HowItWorks() {
   const steps = [
     {
       number: 1,
-      title: "Connexion",
-      description: "Connecte ton wallet pour commencer",
+      title: "Connexion Wallet",
+      description: "Connectez votre wallet Ethereum pour accéder à la plateforme",
       color: "purple"
     },
     {
       number: 2,
-      title: "Profil",
-      description: "Choisis ton profil : Organisateur, Artiste ou Participant",
+      title: "Créer un Profil",
+      description: "Artistes : Créez votre NFT d'artiste. Organisateurs : Enregistrez-vous comme organisateur",
       color: "blue"
     },
     {
       number: 3,
-      title: "Artiste ?",
-      description: "Ajoute ton NFT d'artiste pour partager tes créations",
+      title: "Créer un Événement",
+      description: "Les organisateurs créent des événements avec répartition automatique des revenus",
       color: "green"
     },
     {
       number: 4,
-      title: "Interaction",
-      description: "Organise ton événement ou participe à un événement en soutenant directement les artistes",
+      title: "Achat de Billets",
+      description: "Les participants achètent des billets NFT, les paiements sont automatiquement distribués",
       color: "yellow"
     }
   ]

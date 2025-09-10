@@ -35,7 +35,7 @@ export default function Home() {
       <HowItWorks />
       <Events />
       <Testimonials />
-      <CallToAction />
+      {/* <CallToAction /> */}
       <Footer />
     </div>
   )

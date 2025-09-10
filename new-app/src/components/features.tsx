@@ -6,10 +6,10 @@ export function Features() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16" data-aos="fade-up">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-            Une révolution dans l'événementiel
+            Une plateforme pour tous
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Notre plateforme blockchain élimine les intermédiaires pour plus d'équité
+            Découvrez comment Tickethic facilite l'organisation et la participation aux événements
           </p>
         </div>
 

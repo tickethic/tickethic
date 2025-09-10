@@ -1,35 +1,8 @@
 import { ArrowRight } from 'lucide-react'
+import { useEvents } from '@/hooks/useEvents'
 
 export function Events() {
-  const events = [
-    {
-      id: 1,
-      title: "Festival Électronique",
-      description: "Un festival de musique électronique avec les meilleurs DJs internationaux.",
-      category: "Musique",
-      date: "25 Juin 2023",
-      location: "Genève, Suisse",
-      image: "http://static.photos/music/640x360/1"
-    },
-    {
-      id: 2,
-      title: "Exposition Contemporaine",
-      description: "Découvrez les œuvres d'artistes contemporains émergents.",
-      category: "Art",
-      date: "15 Juillet 2023",
-      location: "Lausanne, Suisse",
-      image: "http://static.photos/art/640x360/2"
-    },
-    {
-      id: 3,
-      title: "Marché Culinaire",
-      description: "Dégustez les spécialités de chefs locaux et internationaux.",
-      category: "Gastronomie",
-      date: "5 Août 2023",
-      location: "Zurich, Suisse",
-      image: "http://static.photos/food/640x360/3"
-    }
-  ]
+  const { events, loading } = useEvents()
 
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -57,30 +30,55 @@ export function Events() {
           </a>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {events.map((event, index) => (
-            <div key={event.id} className="rounded-xl overflow-hidden shadow-md border border-gray-100 transition hover:shadow-lg" data-aos="fade-up" data-aos-delay={index * 100}>
-              <div 
-                className="h-48 bg-cover bg-center" 
-                style={{ backgroundImage: `url(${event.image})` }}
-              />
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-2">
-                  <span className={`${getCategoryColor(event.category)} text-xs font-medium px-2.5 py-0.5 rounded`}>
-                    {event.category}
-                  </span>
-                  <span className="text-gray-500 text-sm">{event.date}</span>
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Chargement des événements...</p>
+          </div>
+        ) : events.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {events.slice(0, 6).map((event, index) => (
+              <div key={index} className="rounded-xl overflow-hidden shadow-md border border-gray-100 transition hover:shadow-lg" data-aos="fade-up" data-aos-delay={index * 100}>
+                <div className="h-48 bg-gradient-to-br from-purple-400 to-blue-500 flex items-center justify-center">
+                  <span className="text-white text-2xl font-bold">🎫</span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">{event.title}</h3>
-                <p className="text-gray-600 mb-4">{event.description}</p>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700 font-medium">{event.location}</span>
-                  <a href="#" className="text-purple-600 hover:text-purple-700 font-medium">Détails</a>
+                <div className="p-6">
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                      Événement
+                    </span>
+                    <span className="text-gray-500 text-sm">
+                      {new Date(Number(event.date) * 1000).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">
+                    {event.name || `Événement ${index + 1}`}
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    Prix: {event.ticketPrice} ETH • Billets: {event.soldTickets}/{event.totalTickets}
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700 font-medium">
+                      {event.soldTickets}/{event.totalTickets} vendus
+                    </span>
+                    <a href="/events" className="text-purple-600 hover:text-purple-700 font-medium">Voir détails</a>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">🎫</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucun événement disponible</h3>
+            <p className="text-gray-600 mb-6">
+              Il n'y a pas encore d'événements sur la plateforme.
+            </p>
+            <a href="/organizers" className="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition">
+              Créer le premier événement
+            </a>
+          </div>
+        )}
       </div>
     </section>
   )

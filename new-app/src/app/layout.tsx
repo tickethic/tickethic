@@ -5,6 +5,9 @@ import ContextProvider from "@/context";
 export const metadata: Metadata = {
   title: "Tickethic - Plateforme événementielle pour organisateurs et artistes",
   description: "Une plateforme Web3 qui garantit des paiements directs aux artistes et une transparence totale.",
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({

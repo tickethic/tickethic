@@ -119,4 +119,8 @@ contract Event is Ownable {
     function getArtistIds() external view returns (uint256[] memory) {
         return artistIds;
     }
+
+    function getArtistShares() external view returns (uint256[] memory) {
+        return artistShares;
+    }
 }

@@ -29,7 +29,6 @@ export function Navbar() {
                 Admin
               </a>
             )}
-            <a href="#" className="text-gray-700 hover:text-purple-600 transition">Contact</a>
           </div>
           <div className="flex items-center space-x-4">
             <Button 

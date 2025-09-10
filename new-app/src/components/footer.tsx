@@ -1,4 +1,4 @@
-import { Ticket, Facebook, Twitter, Instagram, Linkedin, Github } from 'lucide-react'
+import { Ticket, Github } from 'lucide-react'
 
 export function Footer() {
   return (
@@ -12,18 +12,6 @@ export function Footer() {
             </a>
             <p className="text-gray-400 mb-4">La première plateforme événementielle décentralisée et éthique.</p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition">
-                <Linkedin className="w-5 h-5" />
-              </a>
               <a href="https://github.com/dadamagouil/tickethic" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition">
                 <Github className="w-5 h-5" />
               </a>

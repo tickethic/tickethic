@@ -152,3 +152,4 @@ export function AdminArtistsList({ artists, isLoading, error }: AdminArtistsList
     </div>
   )
 }
+

@@ -50,6 +50,13 @@ const EVENT_ABI = [
     "outputs": [{"internalType": "uint256[]", "name": "", "type": "uint256[]"}],
     "stateMutability": "view",
     "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getArtistShares",
+    "outputs": [{"internalType": "uint256[]", "name": "", "type": "uint256[]"}],
+    "stateMutability": "view",
+    "type": "function"
   }
 ] as const
 
@@ -115,8 +122,18 @@ export function useEventMetadata(eventAddress: string) {
     }
   })
 
+  const { data: artistShares } = useReadContract({
+    address: eventAddress as `0x${string}`,
+    abi: EVENT_ABI,
+    functionName: 'getArtistShares',
+    query: {
+      enabled: !!eventAddress && eventAddress !== '0x0000000000000000000000000000000000000000',
+    }
+  })
+
   return {
     metadataURI,
     artistIds,
+    artistShares,
   }
 }

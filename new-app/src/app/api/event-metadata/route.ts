@@ -23,21 +23,36 @@ export async function GET(request: NextRequest) {
           console.log('BLOCKED: Artist URI detected for event metadata:', metadataURI)
           metadata = null
         } else {
-          // Convert IPFS URI to HTTP URL
+          // Convert IPFS URI to HTTP URL - use a reliable gateway
           const ipfsHash = metadataURI.replace('ipfs://', '')
           const ipfsUrl = `https://ipfs.io/ipfs/${ipfsHash}`
           
-          const response = await fetch(ipfsUrl)
-          if (response.ok) {
-            const fetchedData = await response.json()
-            // Double check: if the fetched data looks like artist data, reject it
-            if (fetchedData.name && fetchedData.external_url) {
-              console.log('BLOCKED: Fetched data looks like artist metadata:', fetchedData.name)
-              metadata = null
+          try {
+            console.log('Attempting to fetch from IPFS URL:', ipfsUrl)
+            const response = await fetch(ipfsUrl, {
+              headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+              }
+            })
+            console.log('IPFS response status:', response.status, response.ok)
+            
+            if (response.ok) {
+              const fetchedData = await response.json()
+              console.log('Raw fetched data from IPFS:', fetchedData)
+              
+              // Double check: if the fetched data looks like artist data, reject it
+              if (fetchedData.name && fetchedData.external_url) {
+                console.log('BLOCKED: Fetched data looks like artist metadata:', fetchedData.name)
+                metadata = null
+              } else {
+                metadata = fetchedData
+                console.log('Successfully fetched event metadata from IPFS:', metadata)
+              }
             } else {
-              metadata = fetchedData
-              console.log('Fetched event metadata from IPFS:', metadata)
+              console.log('IPFS fetch failed with status:', response.status)
             }
+          } catch (error) {
+            console.log('Error fetching from IPFS:', error.message)
           }
         }
       } else if (metadataURI.startsWith('http')) {
@@ -55,15 +70,40 @@ export async function GET(request: NextRequest) {
     if (!metadata) {
       // Extract event name from URI if it's in the format event://event-name-timestamp
       let eventName = 'Événement'
+      let eventDescription = 'Un événement musical exceptionnel avec des artistes talentueux. Venez profiter d\'une soirée inoubliable dans une ambiance unique.'
       
       if (metadataURI.startsWith('event://')) {
         const eventSlug = metadataURI.replace('event://', '')
-        // Remove timestamp and convert back to readable name
-        const nameWithoutTimestamp = eventSlug.replace(/-\d+$/, '')
-        eventName = nameWithoutTimestamp
+        // Parse: title-description-timestamp
+        const parts = eventSlug.split('-')
+        const timestamp = parts[parts.length - 1]
+        
+        // Remove timestamp
+        const withoutTimestamp = parts.slice(0, -1).join('-')
+        
+        // Try to extract description (look for encoded description)
+        let namePart = withoutTimestamp
+        let extractedDescription = null
+        
+        // Look for encoded description (contains %20 or other encoded chars)
+        const encodedMatch = withoutTimestamp.match(/^(.+?)-([A-Za-z0-9%]+)$/)
+        if (encodedMatch) {
+          namePart = encodedMatch[1]
+          const encodedDesc = encodedMatch[2]
+          try {
+            extractedDescription = decodeURIComponent(encodedDesc.replace(/%/g, '%'))
+          } catch (e) {
+            // If decoding fails, use the whole part as name
+            namePart = withoutTimestamp
+          }
+        }
+        
+        eventName = namePart
           .split('-')
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
           .join(' ')
+        
+        eventDescription = extractedDescription || `Rejoignez-nous pour ${eventName.toLowerCase()}, un événement musical exceptionnel avec des artistes talentueux. Venez profiter d'une soirée inoubliable dans une ambiance unique.`
       } else if (metadataURI.startsWith('ipfs://event-')) {
         // Handle old format ipfs://event-timestamp
         const eventSlug = metadataURI.replace('ipfs://event-', '')
@@ -80,7 +120,7 @@ export async function GET(request: NextRequest) {
       
       metadata = {
         name: eventName,
-        description: `Rejoignez-nous pour ${eventName.toLowerCase()}, un événement musical exceptionnel avec des artistes talentueux. Venez profiter d'une soirée inoubliable dans une ambiance unique.`,
+        description: eventDescription,
         image: 'https://via.placeholder.com/400x200/7c3aed/ffffff?text=Event',
         date: new Date().toISOString(),
         location: 'À définir',

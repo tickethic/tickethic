@@ -2,6 +2,8 @@
 
 import { Calendar, MapPin, Users, Ticket, Clock } from 'lucide-react'
 import { useEventInfo, useEventMetadata } from '@/hooks/useEvents'
+import { useArtistDetails } from '@/hooks/useArtistDetails'
+import { Tooltip } from './Tooltip'
 import { useState, useEffect } from 'react'
 
 interface EventCardProps {
@@ -10,12 +12,18 @@ interface EventCardProps {
 
 export function EventCard({ eventId }: EventCardProps) {
   const { eventInfo, isLoading } = useEventInfo(eventId)
-  const { metadataURI, artistIds } = useEventMetadata(eventInfo?.[0] || '')
+  const { metadataURI, artistIds, artistShares } = useEventMetadata(eventInfo?.[0] || '')
   const [eventName, setEventName] = useState<string>('')
   const [eventDescription, setEventDescription] = useState<string>('')
   const [eventImage, setEventImage] = useState<string>('')
   const [eventLocation, setEventLocation] = useState<string>('')
   const [isLoadingMetadata, setIsLoadingMetadata] = useState(false)
+  
+  // Get artist details for tooltip
+  const { artistDetails, isLoading: isLoadingArtists } = useArtistDetails(
+    artistIds ? artistIds.map(id => Number(id)) : [], 
+    artistShares ? artistShares.map(share => Number(share)) : []
+  )
 
   // Fetch event metadata when metadataURI is available
   useEffect(() => {
@@ -23,26 +31,80 @@ export function EventCard({ eventId }: EventCardProps) {
       console.log(`EventCard ${eventId}: Fetching metadata for URI:`, metadataURI)
       setIsLoadingMetadata(true)
       
-      // Fetch metadata from API
-      fetch(`/api/event-metadata?uri=${encodeURIComponent(metadataURI)}`)
-        .then(response => response.json())
-        .then(data => {
-          console.log(`EventCard ${eventId}: Received metadata:`, data)
-          setEventName(data.name || `Événement #${eventId}`)
-          setEventDescription(data.description || '')
-          setEventImage(data.image || '')
-          setEventLocation(data.location || '')
-        })
-        .catch(error => {
-          console.error('Error fetching event metadata:', error)
-          setEventName(`Événement #${eventId}`)
-          setEventDescription('')
-          setEventImage('')
-          setEventLocation('')
-        })
-        .finally(() => {
+      // Try to fetch directly from IPFS first, then fallback to API
+      if (metadataURI.startsWith('ipfs://')) {
+        const ipfsHash = metadataURI.replace('ipfs://', '')
+        const ipfsGateways = [
+          `https://ipfs.io/ipfs/${ipfsHash}`,
+          `https://dweb.link/ipfs/${ipfsHash}`,
+          `https://ipfs.fleek.co/ipfs/${ipfsHash}`,
+          `https://gateway.originprotocol.com/ipfs/${ipfsHash}`
+        ]
+        
+        // Try each gateway until one works
+        const tryGateways = async () => {
+          for (const ipfsUrl of ipfsGateways) {
+            try {
+              console.log(`EventCard ${eventId}: Trying IPFS gateway:`, ipfsUrl)
+              const response = await fetch(ipfsUrl)
+              if (response.ok) {
+                const data = await response.json()
+                console.log(`EventCard ${eventId}: Received IPFS metadata:`, data)
+                setEventName(data.name || `Événement #${eventId}`)
+                setEventDescription(data.description || '')
+                setEventImage(data.image || '')
+                setEventLocation(data.location || '')
+                return // Success, exit
+              }
+          } catch (error) {
+            console.log(`EventCard ${eventId}: Gateway failed:`, ipfsUrl, error instanceof Error ? error.message : 'Unknown error')
+            }
+          }
+          
+          // All gateways failed, try API fallback
+          console.log('EventCard ${eventId}: All IPFS gateways failed, trying API fallback')
+          try {
+            const response = await fetch(`/api/event-metadata?uri=${encodeURIComponent(metadataURI)}`)
+            const data = await response.json()
+            console.log(`EventCard ${eventId}: Received API metadata:`, data)
+            setEventName(data.name || `Événement #${eventId}`)
+            setEventDescription(data.description || '')
+            setEventImage(data.image || '')
+            setEventLocation(data.location || '')
+          } catch (error) {
+            console.error('Error fetching event metadata:', error)
+            setEventName(`Événement #${eventId}`)
+            setEventDescription('')
+            setEventImage('')
+            setEventLocation('')
+          }
+        }
+        
+        tryGateways().finally(() => {
           setIsLoadingMetadata(false)
         })
+      } else {
+        // Use API for non-IPFS URIs
+        fetch(`/api/event-metadata?uri=${encodeURIComponent(metadataURI)}`)
+          .then(response => response.json())
+          .then(data => {
+            console.log(`EventCard ${eventId}: Received metadata:`, data)
+            setEventName(data.name || `Événement #${eventId}`)
+            setEventDescription(data.description || '')
+            setEventImage(data.image || '')
+            setEventLocation(data.location || '')
+          })
+          .catch(error => {
+            console.error('Error fetching event metadata:', error)
+            setEventName(`Événement #${eventId}`)
+            setEventDescription('')
+            setEventImage('')
+            setEventLocation('')
+          })
+          .finally(() => {
+            setIsLoadingMetadata(false)
+          })
+      }
     } else {
       setEventName(`Événement #${eventId}`)
     }
@@ -147,7 +209,30 @@ export function EventCard({ eventId }: EventCardProps) {
         {artistIds && artistIds.length > 0 && (
           <div className="flex items-center text-gray-600">
             <Ticket className="w-4 h-4 mr-2" />
-            <span>{artistIds.length} artiste{artistIds.length > 1 ? 's' : ''}</span>
+            <Tooltip
+              content={
+                <div className="space-y-1">
+                  <div className="font-semibold text-white mb-2">Artistes participants</div>
+                  {isLoadingArtists ? (
+                    <div className="text-gray-300">Chargement...</div>
+                  ) : artistDetails.length > 0 ? (
+                    artistDetails.map((artist, index) => (
+                      <div key={artist.id} className="flex justify-between items-center text-sm">
+                        <span className="text-white">{artist.name}</span>
+                        <span className="text-purple-300 font-medium">{artist.share}%</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-gray-300">Aucun détail disponible</div>
+                  )}
+                </div>
+              }
+              position="top"
+            >
+              <span className="cursor-help hover:text-purple-600 transition-colors">
+                {artistIds.length} artiste{artistIds.length > 1 ? 's' : ''}
+              </span>
+            </Tooltip>
           </div>
         )}
       </div>

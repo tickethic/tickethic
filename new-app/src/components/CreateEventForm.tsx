@@ -85,7 +85,11 @@ export function CreateEventForm() {
 
     // For now, we'll use a placeholder URI since we can't upload to IPFS from the frontend
     // In a real app, you'd upload the metadata to IPFS and get the hash
-    const metadataURI = formData.metadataURI || `event://${formData.title.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}`
+    const eventSlug = formData.title.replace(/\s+/g, '-').toLowerCase()
+    const descriptionSlug = formData.description ? 
+      encodeURIComponent(formData.description.substring(0, 100)).replace(/%/g, '') : 
+      'no-description'
+    const metadataURI = formData.metadataURI || `event://${eventSlug}-${descriptionSlug}-${Date.now()}`
 
     const params = {
       artistIds: artists.map(a => a.id),

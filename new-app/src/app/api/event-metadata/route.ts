@@ -37,16 +37,25 @@ export async function GET(request: NextRequest) {
             console.log('IPFS response status:', response.status, response.ok)
             
             if (response.ok) {
-              const fetchedData = await response.json()
-              console.log('Raw fetched data from IPFS:', fetchedData)
+              const responseText = await response.text()
+              console.log('Raw IPFS response text:', responseText)
               
-              // Double check: if the fetched data looks like artist data, reject it
-              if (fetchedData.name && fetchedData.external_url) {
-                console.log('BLOCKED: Fetched data looks like artist metadata:', fetchedData.name)
-                metadata = null
-              } else {
-                metadata = fetchedData
-                console.log('Successfully fetched event metadata from IPFS:', metadata)
+              try {
+                const fetchedData = JSON.parse(responseText)
+                console.log('Parsed JSON data from IPFS:', fetchedData)
+                
+                // Double check: if the fetched data looks like artist data, reject it
+                if (fetchedData.name && fetchedData.external_url) {
+                  console.log('BLOCKED: Fetched data looks like artist metadata:', fetchedData.name)
+                  metadata = null
+                } else {
+                  metadata = fetchedData
+                  console.log('Successfully fetched event metadata from IPFS:', metadata)
+                }
+              } catch (jsonError) {
+                console.log('JSON parsing error:', jsonError.message)
+                console.log('Response text that failed to parse:', responseText)
+                // Don't set metadata, will fall back to placeholder
               }
             } else {
               console.log('IPFS fetch failed with status:', response.status)
@@ -57,9 +66,19 @@ export async function GET(request: NextRequest) {
         }
       } else if (metadataURI.startsWith('http')) {
         // Direct HTTP URL
-        const response = await fetch(metadataURI)
-        if (response.ok) {
-          metadata = await response.json()
+        try {
+          const response = await fetch(metadataURI)
+          if (response.ok) {
+            const responseText = await response.text()
+            try {
+              metadata = JSON.parse(responseText)
+            } catch (jsonError) {
+              console.log('JSON parsing error for HTTP URL:', jsonError.message)
+              console.log('Response text that failed to parse:', responseText)
+            }
+          }
+        } catch (httpError) {
+          console.log('Error fetching HTTP URL:', httpError.message)
         }
       }
     } catch (ipfsError) {

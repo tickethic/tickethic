@@ -31,7 +31,7 @@ export default function Home() {
     <div className="min-h-screen">
       <Hero />
       <Navbar />
-      <Features />
+      {/* <Features /> */}
       <HowItWorks />
       <Events />
       <Testimonials />

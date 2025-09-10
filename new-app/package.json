@@ -4,19 +4,24 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
+    "@reown/appkit": "^1.8.3",
+    "@reown/appkit-adapter-wagmi": "^1.8.3",
+    "@tanstack/react-query": "^5.87.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.542.0",
     "next": "15.5.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "viem": "^2.37.4",
+    "wagmi": "^2.16.9"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

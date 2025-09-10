@@ -6,21 +6,21 @@ export function Testimonials() {
       id: 1,
       name: "Marie Dubois",
       role: "Organisatrice d'événements",
-      content: "Tick3thic a révolutionné la façon dont je gère mes événements. La plateforme est intuitive et complète, me permettant de tout gérer en un seul endroit.",
+      content: "Tickethic a révolutionné la façon dont je gère mes événements. La plateforme est intuitive et complète, me permettant de tout gérer en un seul endroit.",
       avatar: "http://static.photos/people/200x200/1"
     },
     {
       id: 2,
       name: "Jean Martin",
       role: "Musicien",
-      content: "Grâce à Tick3thic, j'ai pu me concentrer sur ma musique tout en ayant une gestion transparente de mes participations et paiements. Une vraie bouffée d'air frais !",
+      content: "Grâce à Tickethic, j'ai pu me concentrer sur ma musique tout en ayant une gestion transparente de mes participations et paiements. Une vraie bouffée d'air frais !",
       avatar: "http://static.photos/people/200x200/2"
     },
     {
       id: 3,
       name: "Sophie Lambert",
       role: "Participante",
-      content: "Je trouve toujours des événements intéressants sur Tick3thic. L'achat de billets est simple et sécurisé, et je peux gérer toutes mes réservations en un clin d'œil.",
+      content: "Je trouve toujours des événements intéressants sur Tickethic. L'achat de billets est simple et sécurisé, et je peux gérer toutes mes réservations en un clin d'œil.",
       avatar: "http://static.photos/people/200x200/3"
     }
   ]

@@ -2,26 +2,26 @@ export function HowItWorks() {
   const steps = [
     {
       number: 1,
-      title: "Inscription",
-      description: "Créez votre compte en 2 minutes selon votre profil",
+      title: "Connexion",
+      description: "Connecte ton wallet pour commencer",
       color: "purple"
     },
     {
       number: 2,
-      title: "Configuration",
-      description: "Complétez votre profil ou créez votre événement",
+      title: "Profil",
+      description: "Choisis ton profil : Organisateur, Artiste ou Participant",
       color: "blue"
     },
     {
       number: 3,
-      title: "Interaction",
-      description: "Connectez-vous avec la communauté",
+      title: "Artiste ?",
+      description: "Ajoute ton NFT d'artiste pour partager tes créations",
       color: "green"
     },
     {
       number: 4,
-      title: "Profitez",
-      description: "Vivez une expérience événementielle inoubliable",
+      title: "Interaction",
+      description: "Organise ton événement ou participe à un événement en soutenant directement les artistes",
       color: "yellow"
     }
   ]
@@ -34,7 +34,7 @@ export function HowItWorks() {
             Comment ça marche
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Découvrez en quelques étapes comment Tick3thic révolutionne votre expérience événementielle
+            Découvrez en quelques étapes comment Tickethic révolutionne votre expérience événementielle
           </p>
         </div>
 

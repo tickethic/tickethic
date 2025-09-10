@@ -71,7 +71,7 @@ export function Hero() {
             <a href="#" className="btn-primary px-8 py-4 rounded-full font-semibold text-white">
               Créer un événement
             </a>
-            <a href="#" className="bg-white text-purple-700 px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition">
+            <a href="/events" className="bg-white text-purple-700 px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition">
               Découvrir les événements
             </a>
           </div>

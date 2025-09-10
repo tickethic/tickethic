@@ -11,11 +11,25 @@ if (!projectId) {
 
 export const networks = [polygonAmoy] as [AppKitNetwork, ...AppKitNetwork[]]
 
+// Configuration pour Reown AppKit
+export const appKitConfig = {
+  projectId,
+  networks,
+  // Configuration pour éviter l'erreur "Invalid App Configuration"
+  metadata: {
+    name: 'Tickethic',
+    description: 'Tickethic - Plateforme de tickets NFT',
+    url: typeof window !== 'undefined' ? window.location.origin : 'https://tickethic.ch',
+    icons: ['https://tickethic.ch/favicon.ico']
+  }
+}
+
 //Set up the Wagmi Adapter (Config)
 export const wagmiAdapter = new WagmiAdapter({
   ssr: true,
   projectId,
-  networks
+  networks,
+  metadata: appKitConfig.metadata
 })
 
 export const config = wagmiAdapter.wagmiConfig

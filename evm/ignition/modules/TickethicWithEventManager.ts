@@ -1,6 +1,6 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
-const TickethicModule = buildModule("TickethicModule", (m) => {
+const TickethicWithEventManagerModule = buildModule("TickethicWithEventManagerModule", (m) => {
   // Deploy Artist contract
   const artist = m.contract("Artist");
 
@@ -42,4 +42,4 @@ const TickethicModule = buildModule("TickethicModule", (m) => {
   return { artist, ticket, organizator, event, eventManager };
 });
 
-export default TickethicModule;
+export default TickethicWithEventManagerModule;

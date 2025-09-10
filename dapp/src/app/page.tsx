@@ -2,6 +2,7 @@
 import { ConnectButton } from "@/components/ConnectButton";
 import { InfoList } from "@/components/InfoList";
 import { ActionButtonList } from "@/components/ActionButtonList";
+import { EventManager } from "@/components/EventManager";
 import Image from 'next/image';
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
 
       <ConnectButton />
       <ActionButtonList />
+      <EventManager />
       <div className="advice">
         <p>Welcome on the Tickethic dApp!</p>
       </div>

@@ -4,13 +4,16 @@ import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { CreateEventForm } from '@/components/CreateEventForm'
 import { OrganizerEventsList } from '@/components/OrganizerEventsList'
+import { OrganizerRegistration } from '@/components/OrganizerRegistration'
 import { useWallet } from '@/hooks/useWallet'
+import { useOrganizerStatus } from '@/hooks/useOrganizerStatus'
 // Remove the import since we're now using the API directly
-import { User, Calendar, Plus, Wallet } from 'lucide-react'
+import { User, Calendar, Plus, Wallet, UserCheck } from 'lucide-react'
 import { useState } from 'react'
 
 export default function OrganizersPage() {
   const { isConnected, address } = useWallet()
+  const { isOrganizer, isLoading: isLoadingStatus } = useOrganizerStatus(address)
   const [activeTab, setActiveTab] = useState<'create' | 'manage'>('create')
   // We'll get the stats from the OrganizerEventsList component
   const [stats, setStats] = useState({ totalEvents: 0, totalSold: 0, totalRevenue: 0 })
@@ -69,6 +72,52 @@ export default function OrganizersPage() {
     )
   }
 
+  // Show loading state while checking organizer status
+  if (isLoadingStatus) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <Navbar />
+        <div className="w-full flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Vérification du statut d'organisateur...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    )
+  }
+
+  // Show registration form if not an organizer
+  if (!isOrganizer) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <Navbar />
+        
+        <div className="w-full flex-1">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="text-center mb-12">
+              <h1 className="text-4xl font-bold text-gray-800 mb-4">
+                Espace Organisateurs
+              </h1>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                Vous devez être enregistré comme organisateur pour accéder à cette section
+              </p>
+              <div className="mt-4 flex items-center justify-center space-x-2 text-sm text-gray-500">
+                <User className="w-4 h-4" />
+                <span>Connecté en tant que : {address?.slice(0, 6)}...{address?.slice(-4)}</span>
+              </div>
+            </div>
+            
+            <OrganizerRegistration />
+          </div>
+        </div>
+        
+        <Footer />
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
@@ -84,8 +133,8 @@ export default function OrganizersPage() {
               Gérez vos événements et créez de nouvelles expériences pour votre communauté
             </p>
             <div className="mt-4 flex items-center justify-center space-x-2 text-sm text-gray-500">
-              <User className="w-4 h-4" />
-              <span>Connecté en tant que : {address?.slice(0, 6)}...{address?.slice(-4)}</span>
+              <UserCheck className="w-4 h-4 text-green-600" />
+              <span>Organisateur vérifié : {address?.slice(0, 6)}...{address?.slice(-4)}</span>
             </div>
           </div>
 

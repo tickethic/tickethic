@@ -35,7 +35,7 @@ export function Events() {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
             <p className="mt-4 text-gray-600">Chargement des événements...</p>
           </div>
-        ) : events.length > 0 ? (
+        ) : events && events.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {events.slice(0, 6).map((event, index) => (
               <div key={index} className="rounded-xl overflow-hidden shadow-md border border-gray-100 transition hover:shadow-lg" data-aos="fade-up" data-aos-delay={index * 100}>

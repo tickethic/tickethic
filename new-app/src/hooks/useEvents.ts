@@ -64,10 +64,11 @@ export interface EventInfo {
   id: number
   eventAddress: string
   organizer: string
-  date: bigint
-  ticketPrice: bigint
-  totalTickets: bigint
-  soldTickets: bigint
+  date: string
+  ticketPrice: string
+  totalTickets: string
+  soldTickets: string
+  name?: string
   metadataURI?: string
   artistIds?: bigint[]
 }
@@ -80,9 +81,20 @@ export function useEvents() {
     functionName: 'getTotalEvents',
   })
 
+  // Create a mock events array for now
+  const events: EventInfo[] = []
+  
+  // If we have events, we would fetch them here
+  // For now, return empty array to prevent errors
+  if (totalEvents && Number(totalEvents) > 0) {
+    // TODO: Implement fetching individual events
+    // This would require calling getEventInfo for each event ID
+  }
+
   return {
+    events,
+    loading: isLoadingTotal,
     totalEvents: totalEvents ? Number(totalEvents) : 0,
-    isLoadingTotal,
   }
 }
 

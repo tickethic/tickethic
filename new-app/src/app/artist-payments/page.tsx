@@ -2,18 +2,23 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Navbar } from '@/components/navbar'
+import { Footer } from '@/components/footer'
 import { DollarSign, Users, Clock, Shield, TrendingUp } from 'lucide-react'
 
 export default function ArtistPaymentsPage() {
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Gestion des Paiements</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Comment les artistes reçoivent leurs paiements de manière transparente et automatique
-          </p>
-        </div>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Navbar />
+      
+      <div className="w-full flex-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-800 mb-4">Gestion des Paiements</h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Comment les artistes reçoivent leurs paiements de manière transparente et automatique
+            </p>
+          </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           <Card>
@@ -250,7 +255,10 @@ export default function ArtistPaymentsPage() {
             </div>
           </CardContent>
         </Card>
+        </div>
       </div>
+      
+      <Footer />
     </div>
   )
 }

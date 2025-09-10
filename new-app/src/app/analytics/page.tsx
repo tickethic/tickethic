@@ -4,7 +4,9 @@ import { useWallet } from '@/hooks/useWallet'
 import { useEvents } from '@/hooks/useEvents'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Ticket, Users, TrendingUp, DollarSign } from 'lucide-react'
+import { Navbar } from '@/components/navbar'
+import { Footer } from '@/components/footer'
+import { Ticket, Users, TrendingUp, DollarSign, Wallet } from 'lucide-react'
 
 export default function AnalyticsPage() {
   const { address, isConnected, connect } = useWallet()
@@ -12,16 +14,34 @@ export default function AnalyticsPage() {
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Analytics</h1>
-            <p className="text-gray-600 mb-8">Connectez votre wallet pour voir vos métriques personnalisées</p>
-            <Button onClick={connect} className="bg-purple-600 hover:bg-purple-700">
-              Connecter mon wallet
-            </Button>
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <Navbar />
+        
+        <div className="w-full flex-1">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="text-center">
+              <div className="bg-white rounded-lg shadow-md p-12 max-w-2xl mx-auto">
+                <div className="w-24 h-24 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Wallet className="w-12 h-12 text-purple-600" />
+                </div>
+                
+                <h1 className="text-3xl font-bold text-gray-800 mb-4">
+                  Connexion requise
+                </h1>
+                
+                <p className="text-lg text-gray-600 mb-8">
+                  Connectez votre wallet pour voir vos métriques personnalisées
+                </p>
+                
+                <Button onClick={connect} className="bg-purple-600 hover:bg-purple-700">
+                  Connecter mon wallet
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
+        
+        <Footer />
       </div>
     )
   }
@@ -39,13 +59,23 @@ export default function AnalyticsPage() {
   const soldPercentage = totalTickets > 0 ? (totalSold / totalTickets) * 100 : 0
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Analytics</h1>
-          <p className="text-gray-600">Métriques personnalisées pour votre wallet</p>
-          <p className="text-sm text-gray-500 mt-1">Wallet: {address}</p>
-        </div>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Navbar />
+      
+      <div className="w-full flex-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-800 mb-4">
+              Analytics
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Métriques personnalisées pour votre wallet
+            </p>
+            <div className="mt-4 flex items-center justify-center space-x-2 text-sm text-gray-500">
+              <Wallet className="w-4 h-4" />
+              <span>Wallet: {address?.slice(0, 6)}...{address?.slice(-4)}</span>
+            </div>
+          </div>
 
         {loading ? (
           <div className="text-center py-12">
@@ -158,7 +188,10 @@ export default function AnalyticsPage() {
             </CardContent>
           </Card>
         )}
+        </div>
       </div>
+      
+      <Footer />
     </div>
   )
 }

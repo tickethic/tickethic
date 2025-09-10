@@ -68,7 +68,7 @@ export function Hero() {
             Une plateforme Web3 qui garantit des paiements directs aux artistes et une transparence totale.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="#" className="btn-primary px-8 py-4 rounded-full font-semibold text-white">
+            <a href="/organizers" className="btn-primary px-8 py-4 rounded-full font-semibold text-white">
               Créer un événement
             </a>
             <a href="/events" className="bg-white text-purple-700 px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition">

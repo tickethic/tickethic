@@ -1,8 +1,8 @@
 import { ArrowRight } from 'lucide-react'
-import { useEvents } from '@/hooks/useEvents'
+import { useAllEvents } from '@/hooks/useAllEvents'
 
 export function Events() {
-  const { events, loading } = useEvents()
+  const { events, loading } = useAllEvents()
 
   const getCategoryColor = (category: string) => {
     switch (category) {

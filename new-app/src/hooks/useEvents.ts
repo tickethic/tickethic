@@ -81,48 +81,14 @@ export function useEvents() {
     functionName: 'getTotalEvents',
   })
 
-  // Fetch all events if we have any
+  // For now, return empty array to avoid hooks in loop
+  // TODO: Implement proper event fetching with a different approach
+  const events: EventInfo[] = []
   const eventCount = totalEvents ? Number(totalEvents) : 0
-  const eventIds = Array.from({ length: eventCount }, (_, i) => i + 1)
-
-  // Fetch event info for each event
-  const eventQueries = eventIds.map(eventId => 
-    useReadContract({
-      address: contractAddresses.EventManager,
-      abi: EVENT_MANAGER_ABI,
-      functionName: 'getEventInfo',
-      args: [BigInt(eventId)],
-      query: {
-        enabled: eventCount > 0,
-      }
-    })
-  )
-
-  // Process the events data
-  const events: EventInfo[] = eventQueries
-    .map((query, index) => {
-      if (!query.data) return null
-      
-      const [eventAddress, organizer, date, ticketPrice, totalTickets, soldTickets] = query.data
-      
-      return {
-        id: index + 1,
-        eventAddress,
-        organizer,
-        date: date.toString(),
-        ticketPrice: ticketPrice.toString(),
-        totalTickets: totalTickets.toString(),
-        soldTickets: soldTickets.toString(),
-        name: `Événement ${index + 1}` // We'll get the real name from metadata later
-      }
-    })
-    .filter(Boolean) as EventInfo[]
-
-  const isLoading = isLoadingTotal || eventQueries.some(query => query.isLoading)
 
   return {
     events,
-    loading: isLoading,
+    loading: isLoadingTotal,
     totalEvents: eventCount,
   }
 }

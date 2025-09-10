@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createPublicClient, http } from 'viem'
 import { polygonAmoy } from 'viem/chains'
+import { contractAddresses } from '@/config'
 
 // Artist ABI
 const ARTIST_ABI = [
@@ -30,14 +31,6 @@ const ARTIST_ABI = [
   }
 ] as const
 
-// Contract addresses from environment variables
-const contractAddresses = {
-  Artist: process.env.NEXT_PUBLIC_ARTIST_CONTRACT || "0xC0a9A064450EE8f7Fd9A954b558A75027544D239",
-  Organizator: process.env.NEXT_PUBLIC_ORGANIZATOR_CONTRACT || "0x80b24c6F73662097ab0849848AB467002EDe6756",
-  Ticket: process.env.NEXT_PUBLIC_TICKET_CONTRACT || "0x1cD35f2051D8BE9727529f45797acaaD4BfD85bA",
-  Event: process.env.NEXT_PUBLIC_EVENT_CONTRACT || "0xaa71da205cEE3C513BfD044129790B74442239Ed",
-  EventManager: process.env.NEXT_PUBLIC_EVENT_MANAGER_CONTRACT || "0xb566702544055969Ef08983F745Faf092F2f1976"
-} as const
 
 // Create public client
 const publicClient = createPublicClient({

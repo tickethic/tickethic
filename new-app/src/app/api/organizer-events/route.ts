@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createPublicClient, http } from 'viem'
 import { polygonAmoy } from 'viem/chains'
+import { contractAddresses } from '@/config'
 
 // EventManager ABI
 const EVENT_MANAGER_ABI = [
@@ -27,10 +28,6 @@ const EVENT_MANAGER_ABI = [
   }
 ] as const
 
-// Contract addresses
-const contractAddresses = {
-  EventManager: "0x9D04429C5ec6ea8dcdEe0f0D8D6E06e8d291ACcc"
-} as const
 
 // Create public client
 const publicClient = createPublicClient({

@@ -25,7 +25,7 @@ export function Events() {
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800">Événements à venir</h2>
             <p className="text-gray-600">Découvrez les prochains événements près de chez vous</p>
           </div>
-          <a href="#" className="text-purple-600 font-semibold hover:text-purple-700 transition flex items-center" data-aos="fade-left">
+          <a href="/events" className="text-purple-600 font-semibold hover:text-purple-700 transition flex items-center" data-aos="fade-left">
             Voir tout <ArrowRight className="ml-2 w-4 h-4" />
           </a>
         </div>

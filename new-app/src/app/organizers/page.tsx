@@ -5,6 +5,7 @@ import { Footer } from '@/components/footer'
 import { CreateEventForm } from '@/components/CreateEventForm'
 import { OrganizerEventsList } from '@/components/OrganizerEventsList'
 import { OrganizerRegistration } from '@/components/OrganizerRegistration'
+import { OrganizerAdmin } from '@/components/OrganizerAdmin'
 import { useWallet } from '@/hooks/useWallet'
 import { useOrganizerStatus } from '@/hooks/useOrganizerStatus'
 // Remove the import since we're now using the API directly
@@ -109,7 +110,7 @@ export default function OrganizersPage() {
               </div>
             </div>
             
-            <OrganizerRegistration />
+            <OrganizerAdmin />
           </div>
         </div>
         

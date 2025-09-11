@@ -86,3 +86,4 @@ export function useAllEvents() {
     totalEvents: totalEvents ? Number(totalEvents) : 0,
   }
 }
+

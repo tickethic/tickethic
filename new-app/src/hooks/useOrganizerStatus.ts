@@ -31,3 +31,4 @@ export function useOrganizerStatus(address?: string) {
     error
   }
 }
+

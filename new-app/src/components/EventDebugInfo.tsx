@@ -61,7 +61,7 @@ interface EventDebugInfoProps {
 }
 
 export function EventDebugInfo({ eventAddress }: EventDebugInfoProps) {
-  const { data: date } = useReadContract({
+  const { data: date, error: dateError } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
     functionName: 'date',
@@ -73,13 +73,13 @@ export function EventDebugInfo({ eventAddress }: EventDebugInfoProps) {
     functionName: 'ticketPrice',
   })
 
-  const { data: soldTickets } = useReadContract({
+  const { data: soldTickets, error: soldTicketsError } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
     functionName: 'soldTickets',
   })
 
-  const { data: totalTickets } = useReadContract({
+  const { data: totalTickets, error: totalTicketsError } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
     functionName: 'totalTickets',
@@ -91,13 +91,13 @@ export function EventDebugInfo({ eventAddress }: EventDebugInfoProps) {
     functionName: 'organizer',
   })
 
-  const { data: artistIds } = useReadContract({
+  const { data: artistIds, error: artistIdsError } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
     functionName: 'artistIds',
   })
 
-  const { data: artistShares } = useReadContract({
+  const { data: artistShares, error: artistSharesError } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
     functionName: 'artistShares',
@@ -180,6 +180,20 @@ export function EventDebugInfo({ eventAddress }: EventDebugInfoProps) {
           {artistShares && artistShares.some(s => Number(s) === 0) && <li>• Some artists have 0% share</li>}
         </ul>
       </div>
+
+      {/* Contract Errors */}
+      {(dateError || soldTicketsError || totalTicketsError || artistIdsError || artistSharesError) && (
+        <div className="mt-3 p-2 bg-red-50 border border-red-200 rounded">
+          <strong className="text-red-800">Contract Errors:</strong>
+          <ul className="text-red-700 text-xs mt-1 space-y-1">
+            {dateError && <li>• Date error: {dateError.message}</li>}
+            {soldTicketsError && <li>• Sold tickets error: {soldTicketsError.message}</li>}
+            {totalTicketsError && <li>• Total tickets error: {totalTicketsError.message}</li>}
+            {artistIdsError && <li>• Artist IDs error: {artistIdsError.message}</li>}
+            {artistSharesError && <li>• Artist shares error: {artistSharesError.message}</li>}
+          </ul>
+        </div>
+      )}
     </div>
   )
 }

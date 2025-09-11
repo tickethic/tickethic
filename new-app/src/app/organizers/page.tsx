@@ -4,13 +4,16 @@ import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { CreateEventForm } from '@/components/CreateEventForm'
 import { OrganizerEventsList } from '@/components/OrganizerEventsList'
+import { OrganizerAdmin } from '@/components/OrganizerAdmin'
 import { useWallet } from '@/hooks/useWallet'
-import { User, Calendar, Plus, Wallet } from 'lucide-react'
+import { useOrganizerStatus } from '@/hooks/useOrganizerStatus'
+import { User, Calendar, Plus, Wallet, AlertCircle } from 'lucide-react'
 import { useState } from 'react'
 
 export default function OrganizersPage() {
   const { isConnected, address } = useWallet()
-  const [activeTab, setActiveTab] = useState<'create' | 'manage'>('create')
+  const { isOrganizer, isLoading: isLoadingStatus } = useOrganizerStatus(address)
+  const [activeTab, setActiveTab] = useState<'create' | 'manage' | 'register'>('create')
   // We'll get the stats from the OrganizerEventsList component
   const [stats, setStats] = useState({ totalEvents: 0, totalSold: 0, totalRevenue: 0 })
 
@@ -89,7 +92,7 @@ export default function OrganizersPage() {
           </div>
 
           {/* Tabs */}
-          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8 max-w-md mx-auto">
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8 max-w-2xl mx-auto">
             <button
               onClick={() => setActiveTab('create')}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
@@ -110,16 +113,48 @@ export default function OrganizersPage() {
             >
               Mes événements
             </button>
+            {!isOrganizer && (
+              <button
+                onClick={() => setActiveTab('register')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
+                  activeTab === 'register'
+                    ? 'bg-white text-purple-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                S'enregistrer
+              </button>
+            )}
           </div>
+
+          {/* Warning for non-registered organizers */}
+          {!isOrganizer && activeTab === 'create' && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+              <div className="flex items-start">
+                <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5 mr-3 flex-shrink-0" />
+                <div>
+                  <h3 className="text-sm font-semibold text-yellow-800 mb-1">
+                    Enregistrement requis
+                  </h3>
+                  <p className="text-yellow-700 text-sm">
+                    Vous devez être enregistré comme organisateur pour créer des événements. 
+                    Allez dans l'onglet "S'enregistrer" pour vous enregistrer.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Tab Content */}
           {activeTab === 'create' ? (
             <CreateEventForm />
-          ) : (
+          ) : activeTab === 'manage' ? (
             <OrganizerEventsList 
               organizerAddress={address || ''} 
               onStatsUpdate={setStats}
             />
+          ) : (
+            <OrganizerAdmin />
           )}
 
           {/* Quick Stats */}

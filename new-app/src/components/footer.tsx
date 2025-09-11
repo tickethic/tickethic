@@ -32,7 +32,7 @@ export function Footer() {
             <h3 className="text-lg font-semibold mb-4">Pour les participants</h3>
             <ul className="space-y-2">
               <li><a href="/events" className="text-gray-400 hover:text-white transition">Découvrir les événements</a></li>
-              <li><a href="/mes-billets" className="text-gray-400 hover:text-white transition">Mes billets</a></li>
+              <li><a href="/profile" className="text-gray-400 hover:text-white transition">Mes billets</a></li>
               <li><a href="/comment-acheter" className="text-gray-400 hover:text-white transition">Comment acheter</a></li>
               <li><a href="/guide-wallet" className="text-gray-400 hover:text-white transition">Guide Wallet</a></li>
             </ul>

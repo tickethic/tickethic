@@ -5,12 +5,14 @@ import { useEventInfo, useEventMetadata } from '@/hooks/useEvents'
 import { useArtistDetails } from '@/hooks/useArtistDetails'
 import { Tooltip } from './Tooltip'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 interface EventCardProps {
   eventId: number
 }
 
 export function EventCard({ eventId }: EventCardProps) {
+  const router = useRouter()
   const { eventInfo, isLoading } = useEventInfo(eventId)
   const { metadataURI, artistIds, artistShares } = useEventMetadata(eventInfo?.[0] || '')
   const [eventName, setEventName] = useState<string>('')
@@ -278,7 +280,10 @@ export function EventCard({ eventId }: EventCardProps) {
         </div>
 
         {!isPastEvent && !isSoldOut && (
-          <button className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition">
+          <button 
+            onClick={() => router.push(`/checkout/${eventId}`)}
+            className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition"
+          >
             Acheter un billet
           </button>
         )}

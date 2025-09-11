@@ -23,6 +23,11 @@ export function Navbar() {
           <div className="hidden md:flex items-center space-x-8">
             <a href="/" className="text-gray-700 hover:text-purple-600 transition">Accueil</a>
             <a href="/events" className="text-gray-700 hover:text-purple-600 transition">Événements</a>
+            {isConnected && (
+              <a href="/profile" className="text-gray-700 hover:text-purple-600 transition">
+                Mes Billets
+              </a>
+            )}
             <a href="/organizers" className="text-gray-700 hover:text-purple-600 transition">Pour les organisateurs</a>
             <a href="/artists" className="text-gray-700 hover:text-purple-600 transition">Pour les artistes</a>
             {isOwner && (
@@ -84,6 +89,15 @@ export function Navbar() {
               >
                 Événements
               </a>
+              {isConnected && (
+                <a 
+                  href="/profile" 
+                  className="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md transition"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Mes Billets
+                </a>
+              )}
               <a 
                 href="/organizers" 
                 className="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md transition"

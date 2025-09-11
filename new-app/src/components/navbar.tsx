@@ -1,13 +1,15 @@
 'use client'
 
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Ticket, Menu, User, LogOut, Shield } from 'lucide-react'
+import { Ticket, Menu, User, LogOut, Shield, X } from 'lucide-react'
 import { useWallet } from '@/hooks/useWallet'
 import { useIsContractOwner } from '@/hooks/useIsContractOwner'
 
 export function Navbar() {
   const { address, isConnected, connect, disconnect, formatAddress } = useWallet()
   const { isOwner } = useIsContractOwner()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -51,11 +53,64 @@ export function Navbar() {
                 </>
               )}
             </Button>
-            <button className="md:hidden text-gray-700">
-              <Menu className="w-6 h-6" />
+            <button 
+              className="md:hidden text-gray-700 hover:text-purple-600 transition"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>
+        
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-200 bg-white">
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              <a 
+                href="/" 
+                className="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md transition"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Accueil
+              </a>
+              <a 
+                href="/events" 
+                className="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md transition"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Événements
+              </a>
+              <a 
+                href="/organizers" 
+                className="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md transition"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Pour les organisateurs
+              </a>
+              <a 
+                href="/artists" 
+                className="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md transition"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Pour les artistes
+              </a>
+              {isOwner && (
+                <a 
+                  href="/admin" 
+                  className="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md transition flex items-center"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Shield className="w-4 h-4 mr-2" />
+                  Admin
+                </a>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   )

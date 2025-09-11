@@ -1,0 +1,47 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'new-app/package-lock.json'
+        
+    - name: Install dependencies
+      working-directory: ./new-app
+      run: npm ci
+      
+    - name: Run tests and linting
+      working-directory: ./new-app
+      run: |
+        npm run lint
+        # npm run test (si vous ajoutez des tests)
+        
+    - name: Build application
+      working-directory: ./new-app
+      run: npm run build
+      env:
+        NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+        
+    - name: Deploy to Vercel
+      uses: amondnet/vercel-action@v25
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        working-directory: ./new-app
+        vercel-args: '--prod'

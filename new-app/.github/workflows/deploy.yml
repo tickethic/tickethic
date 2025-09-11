@@ -1,0 +1,91 @@
+name: Deploy Tickethic DApp
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'new-app/package-lock.json'
+        
+    - name: Install dependencies
+      working-directory: ./new-app
+      run: npm ci
+      
+    - name: Run linting
+      working-directory: ./new-app
+      run: npm run lint
+      
+    - name: Build application
+      working-directory: ./new-app
+      run: npm run build
+      env:
+        NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+        
+    - name: Create deployment archive
+      run: |
+        cd new-app
+        tar -czf ../tickethic-deploy.tar.gz \
+          --exclude=node_modules \
+          --exclude=.next \
+          --exclude=.git \
+          --exclude=.github \
+          --exclude=*.log \
+          .
+          
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        port: 22
+        script: |
+          cd /root/tickethic-dapp
+          docker-compose down
+          cd /root
+          rm -rf tickethic-dapp
+          mkdir tickethic-dapp
+          cd tickethic-dapp
+          
+    - name: Upload files to server
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        port: 22
+        source: "tickethic-deploy.tar.gz"
+        target: "/root/"
+        
+    - name: Extract and start application
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        port: 22
+        script: |
+          cd /root/tickethic-dapp
+          tar -xzf /root/tickethic-deploy.tar.gz
+          docker-compose up -d --build
+          docker network connect host-calendars-hub_host-calendars-network tickethic-dapp
+          rm /root/tickethic-deploy.tar.gz
+          
+    - name: Health check
+      run: |
+        sleep 30
+        curl -f https://tickethic.ch || exit 1

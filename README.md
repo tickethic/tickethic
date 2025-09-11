@@ -38,7 +38,7 @@ tickethic/
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/dadamagouil/tickethic.git
+   git clone https://github.com/tickethic/tickethic.git
    cd tickethic
    ```
 
@@ -164,8 +164,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Live Demo**: [https://tickethic.ch](https://tickethic.ch)
 - **Documentation**: [https://docs.tickethic.ch](https://docs.tickethic.ch) (coming soon)
-- **Issues**: [GitHub Issues](https://github.com/dadamagouil/tickethic/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/dadamagouil/tickethic/discussions)
+- **Issues**: [GitHub Issues](https://github.com/tickethic/tickethic/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/tickethic/tickethic/discussions)
 
 ## 🎯 Roadmap
 
@@ -181,8 +181,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 If you have any questions or need help:
 
 1. Check the [documentation](dapp/DEPLOY.md)
-2. Search [existing issues](https://github.com/dadamagouil/tickethic/issues)
-3. Create a [new issue](https://github.com/dadamagouil/tickethic/issues/new)
+2. Search [existing issues](https://github.com/tickethic/tickethic/issues)
+3. Create a [new issue](https://github.com/tickethic/tickethic/issues/new)
 4. Join our [Discord community](https://discord.gg/tickethic) (coming soon)
 
 ## 🙏 Acknowledgments

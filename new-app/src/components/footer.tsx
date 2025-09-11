@@ -1,21 +1,16 @@
-import { Ticket, Github } from 'lucide-react'
+import { Ticket } from 'lucide-react'
 
 export function Footer() {
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-8 mt-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-12">
           <div>
             <a href="#" className="flex items-center mb-6">
               <Ticket className="text-purple-400 mr-2 w-6 h-6" />
               <span className="text-xl font-bold">Tickethic</span>
             </a>
             <p className="text-gray-400 mb-4">La première plateforme événementielle décentralisée et éthique.</p>
-            <div className="flex space-x-4">
-              <a href="https://github.com/dadamagouil/tickethic" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition">
-                <Github className="w-5 h-5" />
-              </a>
-            </div>
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Pour les organisateurs</h3>
@@ -31,6 +26,15 @@ export function Footer() {
             <ul className="space-y-2">
               <li><a href="/artists" className="text-gray-400 hover:text-white transition">Créer un profil</a></li>
               <li><a href="/artist-payments" className="text-gray-400 hover:text-white transition">Gestion des paiements</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Pour les participants</h3>
+            <ul className="space-y-2">
+              <li><a href="/events" className="text-gray-400 hover:text-white transition">Découvrir les événements</a></li>
+              <li><a href="/mes-billets" className="text-gray-400 hover:text-white transition">Mes billets</a></li>
+              <li><a href="/comment-acheter" className="text-gray-400 hover:text-white transition">Comment acheter</a></li>
+              <li><a href="/guide-wallet" className="text-gray-400 hover:text-white transition">Guide Wallet</a></li>
             </ul>
           </div>
           <div>
@@ -50,9 +54,9 @@ export function Footer() {
         <div className="border-t border-gray-800 pt-8 pb-0 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 mb-4 md:mb-0">© 2023 Tickethic. Tous droits réservés.</p>
           <div className="flex space-x-6">
-            <a href="#" className="text-gray-400 hover:text-white transition">Conditions générales</a>
-            <a href="#" className="text-gray-400 hover:text-white transition">Politique de confidentialité</a>
-            <a href="#" className="text-gray-400 hover:text-white transition">Mentions légales</a>
+            <a href="/conditions-generales" className="text-gray-400 hover:text-white transition">Conditions générales</a>
+            <a href="/politique-confidentialite" className="text-gray-400 hover:text-white transition">Politique de confidentialité</a>
+            <a href="/mentions-legales" className="text-gray-400 hover:text-white transition">Mentions légales</a>
           </div>
         </div>
       </div>

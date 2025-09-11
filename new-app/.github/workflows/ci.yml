@@ -1,0 +1,51 @@
+name: CI - Tests and Quality
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18, 20]
+        
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: 'new-app/package-lock.json'
+        
+    - name: Install dependencies
+      working-directory: ./new-app
+      run: npm ci
+      
+    - name: Run ESLint
+      working-directory: ./new-app
+      run: npm run lint
+      
+    - name: Type check
+      working-directory: ./new-app
+      run: npx tsc --noEmit
+      
+    - name: Build application
+      working-directory: ./new-app
+      run: npm run build
+      env:
+        NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID || '48bf2d8d1236d3befa190b22c42ef96b' }}
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-files-${{ matrix.node-version }}
+        path: new-app/.next/
+        retention-days: 1

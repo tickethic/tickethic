@@ -4,15 +4,16 @@ import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { AdminArtistsList } from '@/components/AdminArtistsList'
 import { AdminAddArtistForm } from '@/components/AdminAddArtistForm'
+import { OrganizerAdmin } from '@/components/OrganizerAdmin'
 import { useIsContractOwner } from '@/hooks/useIsContractOwner'
 import { useAllArtists } from '@/hooks/useAllArtists'
-import { Shield, Lock, User, AlertCircle } from 'lucide-react'
+import { Shield, Lock, User, AlertCircle, Users } from 'lucide-react'
 import { useState } from 'react'
 
 export default function AdminPage() {
   const { isOwner, isLoading: isLoadingOwner, contractOwner, userAddress } = useIsContractOwner()
   const { artists, isLoading: isLoadingArtists, error, totalCount } = useAllArtists()
-  const [activeTab, setActiveTab] = useState<'list' | 'add'>('list')
+  const [activeTab, setActiveTab] = useState<'list' | 'add' | 'organizers'>('list')
 
   if (isLoadingOwner) {
     return (
@@ -134,7 +135,7 @@ export default function AdminPage() {
           </div>
 
           {/* Tabs */}
-          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8 max-w-md mx-auto">
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8 max-w-2xl mx-auto">
             <button
               onClick={() => setActiveTab('list')}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
@@ -155,6 +156,16 @@ export default function AdminPage() {
             >
               Ajouter un artiste
             </button>
+            <button
+              onClick={() => setActiveTab('organizers')}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
+                activeTab === 'organizers'
+                  ? 'bg-white text-purple-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              Organisateurs
+            </button>
           </div>
 
           {/* Tab Content */}
@@ -164,8 +175,10 @@ export default function AdminPage() {
               isLoading={isLoadingArtists}
               error={error}
             />
-          ) : (
+          ) : activeTab === 'add' ? (
             <AdminAddArtistForm />
+          ) : (
+            <OrganizerAdmin />
           )}
         </div>
       </div>

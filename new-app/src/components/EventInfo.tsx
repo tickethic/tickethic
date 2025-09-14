@@ -3,7 +3,7 @@
 import { useReadContract } from 'wagmi'
 import { contractAddresses } from '@/config'
 
-// Event ABI for debugging
+// Event ABI for reading event information
 const EVENT_ABI = [
   {
     "inputs": [],
@@ -56,11 +56,11 @@ const EVENT_ABI = [
   }
 ] as const
 
-interface EventDebugInfoProps {
+interface EventInfoProps {
   eventAddress: string
 }
 
-export function EventDebugInfo({ eventAddress }: EventDebugInfoProps) {
+export function EventInfo({ eventAddress }: EventInfoProps) {
   const { data: date, error: dateError } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
@@ -112,86 +112,86 @@ export function EventDebugInfo({ eventAddress }: EventDebugInfoProps) {
 
   return (
     <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-      <h3 className="text-sm font-semibold text-gray-800 mb-3">Debug Info - Event Contract</h3>
+      <h3 className="text-sm font-semibold text-gray-800 mb-3">Informations de l'événement</h3>
       
       <div className="grid grid-cols-2 gap-4 text-xs">
         <div>
-          <strong>Event Address:</strong>
+          <strong>Adresse du contrat :</strong>
           <div className="font-mono break-all">{eventAddress}</div>
         </div>
         
         <div>
-          <strong>Organizer:</strong>
-          <div className="font-mono break-all">{organizer ? `${organizer.slice(0, 6)}...${organizer.slice(-4)}` : 'Loading...'}</div>
+          <strong>Organisateur :</strong>
+          <div className="font-mono break-all">{organizer ? `${organizer.slice(0, 6)}...${organizer.slice(-4)}` : 'Chargement...'}</div>
         </div>
         
         <div>
-          <strong>Event Date:</strong>
+          <strong>Date de l'événement :</strong>
           <div className={isEventInFuture ? 'text-green-600' : 'text-red-600'}>
-            {eventDate ? new Date(eventDate * 1000).toLocaleString() : 'Loading...'}
-            {isEventInFuture ? ' ✅' : ' ❌ (Past)'}
+            {eventDate ? new Date(eventDate * 1000).toLocaleString('fr-FR') : 'Chargement...'}
+            {isEventInFuture ? ' ✅' : ' ❌ (Passé)'}
           </div>
         </div>
         
         <div>
-          <strong>Current Time:</strong>
-          <div>{new Date(now * 1000).toLocaleString()}</div>
+          <strong>Heure actuelle :</strong>
+          <div>{new Date(now * 1000).toLocaleString('fr-FR')}</div>
         </div>
         
         <div>
-          <strong>Ticket Price:</strong>
+          <strong>Prix du billet :</strong>
           <div className="font-mono">
-            {ticketPrice ? `${(Number(ticketPrice) / 1e18).toFixed(4)} ETH` : 'Loading...'}
+            {ticketPrice ? `${(Number(ticketPrice) / 1e18).toFixed(4)} ETH` : 'Chargement...'}
           </div>
         </div>
         
         <div>
-          <strong>Tickets Status:</strong>
+          <strong>Statut des billets :</strong>
           <div className={isSoldOut ? 'text-red-600' : 'text-green-600'}>
-            {soldTickets && totalTickets ? `${Number(soldTickets)}/${Number(totalTickets)}` : 'Loading...'}
-            {isSoldOut ? ' ❌ (Sold Out)' : ' ✅'}
+            {soldTickets && totalTickets ? `${Number(soldTickets)}/${Number(totalTickets)}` : 'Chargement...'}
+            {isSoldOut ? ' ❌ (Complet)' : ' ✅'}
           </div>
         </div>
         
         <div>
-          <strong>Remaining:</strong>
+          <strong>Billets restants :</strong>
           <div className={isLoadingTickets ? 'text-gray-500' : (remainingTickets && remainingTickets > 0 ? 'text-green-600' : 'text-red-600')}>
-            {isLoadingTickets ? 'Loading...' : `${remainingTickets} tickets`}
+            {isLoadingTickets ? 'Chargement...' : `${remainingTickets} billets`}
           </div>
         </div>
         
         <div>
-          <strong>Artists:</strong>
+          <strong>Artistes :</strong>
           <div>
             {artistIds && artistShares ? 
-              `${artistIds.length} artists (${artistShares.map(s => Number(s)).join(', ')}% shares)` : 
-              'Loading...'
+              `${artistIds.length} artistes (${artistShares.map(s => Number(s)).join(', ')}% de parts)` : 
+              'Chargement...'
             }
           </div>
         </div>
       </div>
       
       <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded">
-        <strong className="text-yellow-800">Possible Issues:</strong>
+        <strong className="text-yellow-800">Problèmes potentiels :</strong>
         <ul className="text-yellow-700 text-xs mt-1 space-y-1">
-          {!isEventInFuture && <li>• Event date is in the past</li>}
-          {isSoldOut && <li>• All tickets are sold out</li>}
-          {remainingTickets === 0 && !isSoldOut && !isLoadingTickets && <li>• No tickets available</li>}
-          {artistIds && artistIds.length === 0 && <li>• No artists configured</li>}
-          {artistShares && artistShares.some(s => Number(s) === 0) && <li>• Some artists have 0% share</li>}
+          {!isEventInFuture && <li>• La date de l'événement est dans le passé</li>}
+          {isSoldOut && <li>• Tous les billets sont vendus</li>}
+          {remainingTickets === 0 && !isSoldOut && !isLoadingTickets && <li>• Aucun billet disponible</li>}
+          {artistIds && artistIds.length === 0 && <li>• Aucun artiste configuré</li>}
+          {artistShares && artistShares.some(s => Number(s) === 0) && <li>• Certains artistes ont 0% de parts</li>}
         </ul>
       </div>
 
-      {/* Contract Errors */}
+      {/* Erreurs de contrat */}
       {(dateError || soldTicketsError || totalTicketsError || artistIdsError || artistSharesError) && (
         <div className="mt-3 p-2 bg-red-50 border border-red-200 rounded">
-          <strong className="text-red-800">Contract Errors:</strong>
+          <strong className="text-red-800">Erreurs de contrat :</strong>
           <ul className="text-red-700 text-xs mt-1 space-y-1">
-            {dateError && <li>• Date error: {dateError.message}</li>}
-            {soldTicketsError && <li>• Sold tickets error: {soldTicketsError.message}</li>}
-            {totalTicketsError && <li>• Total tickets error: {totalTicketsError.message}</li>}
-            {artistIdsError && <li>• Artist IDs error: {artistIdsError.message}</li>}
-            {artistSharesError && <li>• Artist shares error: {artistSharesError.message}</li>}
+            {dateError && <li>• Erreur de date : {dateError.message}</li>}
+            {soldTicketsError && <li>• Erreur billets vendus : {soldTicketsError.message}</li>}
+            {totalTicketsError && <li>• Erreur total billets : {totalTicketsError.message}</li>}
+            {artistIdsError && <li>• Erreur IDs artistes : {artistIdsError.message}</li>}
+            {artistSharesError && <li>• Erreur parts artistes : {artistSharesError.message}</li>}
           </ul>
         </div>
       )}

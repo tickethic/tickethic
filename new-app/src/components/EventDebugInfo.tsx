@@ -42,14 +42,14 @@ const EVENT_ABI = [
   },
   {
     "inputs": [],
-    "name": "artistIds",
+    "name": "getArtistIds",
     "outputs": [{"internalType": "uint256[]", "name": "", "type": "uint256[]"}],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "artistShares",
+    "name": "getArtistShares",
     "outputs": [{"internalType": "uint256[]", "name": "", "type": "uint256[]"}],
     "stateMutability": "view",
     "type": "function"
@@ -94,13 +94,13 @@ export function EventDebugInfo({ eventAddress }: EventDebugInfoProps) {
   const { data: artistIds, error: artistIdsError } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
-    functionName: 'artistIds',
+    functionName: 'getArtistIds',
   })
 
   const { data: artistShares, error: artistSharesError } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
-    functionName: 'artistShares',
+    functionName: 'getArtistShares',
   })
 
   const now = Math.floor(Date.now() / 1000)

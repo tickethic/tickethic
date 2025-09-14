@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useWallet } from '@/hooks/useWallet'
 import { useCreateEvent } from '@/hooks/useEventManager'
 import { useOrganizerStatus } from '@/hooks/useOrganizerStatus'
@@ -20,6 +20,20 @@ export function CreateEventForm() {
   const { createEvent, isLoading, isConfirmed, error, hash, eventAddress, eventId } = useCreateEvent()
   const { isOrganizer, isLoading: isLoadingStatus } = useOrganizerStatus(address)
   const { registerAsOrganizer, isLoading: isRegistering, isConfirmed: isRegistrationConfirmed } = useOrganizerRegistration()
+  
+  // État local pour gérer l'affichage après enregistrement
+  const [justRegistered, setJustRegistered] = useState(false)
+  
+  // Détecter quand l'enregistrement est confirmé
+  useEffect(() => {
+    if (isRegistrationConfirmed) {
+      setJustRegistered(true)
+      // Réinitialiser l'état après un délai pour permettre au hook de se mettre à jour
+      setTimeout(() => {
+        setJustRegistered(false)
+      }, 2000)
+    }
+  }, [isRegistrationConfirmed])
   
   const [formData, setFormData] = useState({
     title: '',
@@ -136,8 +150,13 @@ export function CreateEventForm() {
     )
   }
 
+<<<<<<< HEAD
+  // Show registration prompt if not an organizer and not just registered
+  if (!isOrganizer && !justRegistered) {
+=======
   // Show registration prompt if not an organizer
   if (!isOrganizer) {
+>>>>>>> develop
     return (
       <div className="bg-white rounded-lg shadow-md p-8">
         <div className="text-center">
@@ -165,6 +184,28 @@ export function CreateEventForm() {
               </>
             )}
           </button>
+<<<<<<< HEAD
+        </div>
+      </div>
+    )
+  }
+
+  // Show success message and transition to form if just registered
+  if (justRegistered) {
+    return (
+      <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="w-8 h-8 text-green-600" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Enregistrement réussi !</h2>
+          <p className="text-gray-600 mb-6">
+            Vous êtes maintenant enregistré comme organisateur. Créez votre premier événement !
+          </p>
+          <div className="animate-pulse">
+            <div className="text-sm text-gray-500">Chargement du formulaire...</div>
+          </div>
+=======
           {isRegistrationConfirmed && (
             <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
               <p className="text-green-800 text-sm">
@@ -172,6 +213,7 @@ export function CreateEventForm() {
               </p>
             </div>
           )}
+>>>>>>> develop
         </div>
       </div>
     )
@@ -201,7 +243,9 @@ export function CreateEventForm() {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-8">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Créer un nouvel événement</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">
+        {justRegistered ? "Créer votre premier événement" : "Créer un nouvel événement"}
+      </h2>
       
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Information */}

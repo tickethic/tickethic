@@ -3,11 +3,13 @@
 import { useState } from 'react'
 import { useWallet } from '@/hooks/useWallet'
 import { useArtistRegistration, ArtistRegistrationData } from '@/hooks/useArtistRegistration'
+import { useUserArtist } from '@/hooks/useUserArtist'
 import { Music, User, CheckCircle, AlertCircle, Link } from 'lucide-react'
 
 export function CreateArtistForm() {
   const { address } = useWallet()
   const { mintArtist, isLoading, error, success, hash } = useArtistRegistration()
+  const { hasArtist, artistId, isLoading: isCheckingArtist } = useUserArtist()
   
   const [formData, setFormData] = useState<ArtistRegistrationData>({
     name: '',
@@ -65,6 +67,52 @@ export function CreateArtistForm() {
         [field]: undefined
       }))
     }
+  }
+
+  // Show loading state while checking if user has artist
+  if (isCheckingArtist) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white rounded-lg shadow-md p-8 text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Vérification de votre profil artiste...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show message if user already has an artist
+  if (hasArtist) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white rounded-lg shadow-md p-8 text-center">
+          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Music className="w-8 h-8 text-blue-600" />
+          </div>
+          
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Vous avez déjà un profil artiste !
+          </h2>
+          
+          <p className="text-gray-600 mb-6">
+            Votre profil artiste #{artistId} est déjà enregistré sur la blockchain. Chaque wallet ne peut créer qu'un seul profil artiste.
+          </p>
+          
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <p className="text-blue-800 text-sm">
+              <strong>Limite :</strong> Un seul profil artiste par wallet. Si vous voulez créer un nouveau profil, vous devez utiliser un autre wallet.
+            </p>
+          </div>
+          
+          <button
+            onClick={() => window.location.href = '/profile'}
+            className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition"
+          >
+            Voir mon profil
+          </button>
+        </div>
+      </div>
+    )
   }
 
   if (success) {

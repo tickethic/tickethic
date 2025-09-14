@@ -34,25 +34,11 @@ export const wagmiAdapter = new WagmiAdapter({
 
 export const config = wagmiAdapter.wagmiConfig
 
-// Contract addresses - will throw error if environment variables are missing
+// Contract addresses with fallbacks
 export const contractAddresses = {
-  Artist: process.env.NEXT_PUBLIC_ARTIST_CONTRACT!,
-  Organizator: process.env.NEXT_PUBLIC_ORGANIZATOR_CONTRACT!,
-  Ticket: process.env.NEXT_PUBLIC_TICKET_CONTRACT!,
-  Event: process.env.NEXT_PUBLIC_EVENT_CONTRACT!,
-  EventManager: process.env.NEXT_PUBLIC_EVENT_MANAGER_CONTRACT!
+  Artist: process.env.NEXT_PUBLIC_ARTIST_CONTRACT || "0x726D177E3F7f7e727Cbd4f109eD712fa5D09C989",
+  Organizator: process.env.NEXT_PUBLIC_ORGANIZATOR_CONTRACT || "0x2BCBd0d867cccfEF9746C3400c16512460011407",
+  Ticket: process.env.NEXT_PUBLIC_TICKET_CONTRACT || "0x25F13fC9413d6969dBee5f686b20c71Aa2273505",
+  Event: process.env.NEXT_PUBLIC_EVENT_CONTRACT || "0x7a18BCd38346BBd2A99b7C1740270450e4Ef063b",
+  EventManager: process.env.NEXT_PUBLIC_EVENT_MANAGER_CONTRACT || "0xd23a1dF74d3E56D2B1aba069F2735FEe197F051f"
 } as const
-
-// Validate that all required environment variables are present
-const requiredEnvVars = [
-  'NEXT_PUBLIC_ARTIST_CONTRACT',
-  'NEXT_PUBLIC_ORGANIZATOR_CONTRACT', 
-  'NEXT_PUBLIC_TICKET_CONTRACT',
-  'NEXT_PUBLIC_EVENT_CONTRACT',
-  'NEXT_PUBLIC_EVENT_MANAGER_CONTRACT'
-] as const
-
-const missingVars = requiredEnvVars.filter(varName => !process.env[varName])
-if (missingVars.length > 0) {
-  throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`)
-}

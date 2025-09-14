@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createPublicClient, http } from 'viem'
 import { polygonAmoy } from 'viem/chains'
-import { contractAddresses } from '@/config'
+import { serverContractAddresses } from '@/config/server'
 
 // Artist ABI
 const ARTIST_ABI = [
@@ -56,13 +56,13 @@ export async function GET(
     // Get artist info from contract
     const [artistInfo, owner] = await Promise.all([
       publicClient.readContract({
-        address: contractAddresses.Artist,
+        address: serverContractAddresses.Artist,
         abi: ARTIST_ABI,
         functionName: 'getArtistInfo',
         args: [BigInt(artistId)]
       }),
       publicClient.readContract({
-        address: contractAddresses.Artist,
+        address: serverContractAddresses.Artist,
         abi: ARTIST_ABI,
         functionName: 'ownerOf',
         args: [BigInt(artistId)]

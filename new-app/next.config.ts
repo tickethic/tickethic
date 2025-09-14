@@ -1,14 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
+  // Vercel doesn't need 'standalone' output
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
   },
-  serverExternalPackages: [],
+  // Vercel handles external packages automatically
   async headers() {
     return [
       {

@@ -14,7 +14,7 @@ const queryClient = new QueryClient()
 const metadata = {
   name: 'Tickethic',
   description: 'dApp allowing to manage tickets as NFTs. Open source project to share tickets revenue with artists in a faire and open way.',
-  url: 'https://github.com/0xonerb/next-reown-appkit-ssr', // origin must match your domain & subdomain
+  url: typeof window !== 'undefined' ? window.location.origin : 'https://tickethic.ch', // Dynamic URL for dev/prod
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
@@ -26,7 +26,7 @@ export const modal = createAppKit({
   metadata,
   themeMode: 'light',
   features: {
-    analytics: true // Optional - defaults to your Cloud configuration
+    analytics: false // Disable analytics to avoid 401/403 errors
   },
   themeVariables: {
     '--w3m-accent': '#7c3aed', // Purple accent to match your design

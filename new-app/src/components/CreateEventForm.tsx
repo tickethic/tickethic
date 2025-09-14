@@ -95,7 +95,7 @@ export function CreateEventForm() {
     const eventMetadata = {
       name: formData.title,
       description: formData.description || `Un événement organisé par ${address.slice(0, 6)}...${address.slice(-4)}`,
-      image: 'https://via.placeholder.com/400x200/7c3aed/ffffff?text=Event',
+      image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjN2MzYWVkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1pemU9IjI0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50PC90ZXh0Pjwvc3ZnPg==',
       date: eventDateTime.toISOString(),
       location: 'À définir',
       category: 'Musique'

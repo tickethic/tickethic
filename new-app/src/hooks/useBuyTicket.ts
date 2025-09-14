@@ -41,6 +41,14 @@ export function useBuyTicket() {
 
   const buyTicket = async (params: BuyTicketParams) => {
     try {
+      console.log('=== DEBUG BUY TICKET ===')
+      console.log('Event Address:', params.eventAddress)
+      console.log('Ticket Price (wei):', params.ticketPrice.toString())
+      console.log('Ticket Price (ETH):', (Number(params.ticketPrice) / 1e18).toString())
+      console.log('Buyer Address:', params.buyerInfo.walletAddress)
+      console.log('Gas Limit: 800,000')
+      console.log('========================')
+      
       // Call the buyTicket function on the Event contract
       writeContract({
         address: params.eventAddress as `0x${string}`,
@@ -48,10 +56,11 @@ export function useBuyTicket() {
         functionName: 'buyTicket',
         args: [],
         value: params.ticketPrice, // Send ETH as payment
-        gas: 500000n, // Set a higher gas limit
+        gas: 1500000n, // Much higher gas limit for multiple transfers
       })
     } catch (err) {
       console.error('Error buying ticket:', err)
+      console.error('Error details:', JSON.stringify(err, null, 2))
       throw err
     }
   }

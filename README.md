@@ -99,24 +99,22 @@ npx hardhat deploy --network <network>
 
 ## 🌐 Deployment
 
-### Static Hosting (Recommended)
+### Vercel (Recommended)
 
-The dapp is optimized for static hosting and can be deployed to any FTP server:
+The dapp is optimized for Vercel deployment with automatic builds and deployments:
 
-1. **Configure FTP settings** in `.env`
-2. **Run deployment:**
-   ```bash
-   npm run deploy
-   ```
+1. **Connect your GitHub repository** to Vercel
+2. **Configure environment variables** in Vercel dashboard
+3. **Deploy automatically** on every push to main branch
 
-See [DEPLOY.md](dapp/DEPLOY.md) for detailed deployment instructions.
+See [VERCEL_DEPLOYMENT.md](new-app/VERCEL_DEPLOYMENT.md) for detailed deployment instructions.
 
 ### Supported Hosting Providers
 
-- **OVH**: `ftp.cluster0XX.ovh.net`
-- **Infomaniak**: `ftp.infomaniak.com`
-- **Hostinger**: `ftp.your-domain.com`
-- Any FTP-compatible hosting
+- **Vercel**: Automatic deployments, CDN, SSL
+- **Netlify**: Static hosting with form handling
+- **GitHub Pages**: Free static hosting
+- **Any static hosting**: FTP, S3, etc.
 
 ## 🛠️ Technology Stack
 
@@ -134,13 +132,13 @@ See [DEPLOY.md](dapp/DEPLOY.md) for detailed deployment instructions.
 - **OpenZeppelin**: Secure contract libraries
 
 ### Deployment
-- **Static Export**: Next.js static generation
-- **FTP**: Automated deployment script
+- **Vercel**: Automatic deployments and CDN
 - **Environment Variables**: Secure configuration
+- **GitHub Integration**: Automatic builds on push
 
 ## 📖 Documentation
 
-- [Deployment Guide](dapp/DEPLOY.md) - Detailed deployment instructions
+- [Vercel Deployment Guide](new-app/VERCEL_DEPLOYMENT.md) - Detailed deployment instructions
 - [Smart Contracts](evm/README.md) - Contract documentation
 - [API Reference](docs/api.md) - API documentation (coming soon)
 

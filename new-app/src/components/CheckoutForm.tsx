@@ -5,11 +5,6 @@ import { useRouter } from 'next/navigation'
 import { useWallet } from '@/hooks/useWallet'
 import { useBuyTicket } from '@/hooks/useBuyTicket'
 import { useEventStatus } from '@/hooks/useEventStatus'
-import { useEventValidation } from '@/hooks/useEventValidation'
-import { useArtistValidation } from '@/hooks/useArtistValidation'
-import { useContractDebug } from '@/hooks/useContractDebug'
-import { EventInfo } from './EventInfo'
-import { BuyTicketDebugger } from './BuyTicketDebugger'
 import { CreditCard, CheckCircle, Shield, AlertCircle } from 'lucide-react'
 
 interface CheckoutFormProps {
@@ -35,20 +30,15 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
     validationError 
   } = useEventStatus(eventAddress)
 
-  const { 
-    isEventValid: isEventContractValid, 
-    validationErrors: contractValidationErrors,
-    artistIds: eventArtistIds
-  } = useEventValidation(eventAddress)
-
-  // Validate the first artist (for debugging)
-  const firstArtistId = eventArtistIds.length > 0 ? Number(eventArtistIds[0]) : 0
-  const { isValid: isArtistValid, hasError: hasArtistError } = useArtistValidation(firstArtistId)
   
-  // Debug contract state
-  const contractDebug = useContractDebug(eventAddress)
   
   const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [quantity, setQuantity] = useState(1)
+
+  // Calculate total price
+  const totalPrice = contractTicketPrice ? contractTicketPrice * BigInt(quantity) : 0n
+  const totalPriceETH = contractTicketPrice ? (Number(contractTicketPrice) / 1e18) * quantity : 0
+  const remainingTickets = totalTickets && soldTickets ? Number(totalTickets) - Number(soldTickets) : 0
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -63,21 +53,27 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
       return
     }
 
+    if (quantity > remainingTickets) {
+      alert(`Pas assez de billets disponibles. Il reste ${remainingTickets} billet${remainingTickets > 1 ? 's' : ''}.`)
+      return
+    }
+
     // Check if user has enough ETH (add some buffer for gas)
-    const requiredEth = Number(contractTicketPrice || ticketPrice) / 1e18
+    const requiredEth = totalPriceETH
     const gasBuffer = 0.01 // 0.01 ETH buffer for gas
     const totalRequired = requiredEth + gasBuffer
     
     console.log('=== ETH BALANCE CHECK ===')
-    console.log('Required ETH for ticket:', requiredEth)
+    console.log('Required ETH for tickets:', requiredEth)
+    console.log('Quantity:', quantity)
     console.log('Gas buffer:', gasBuffer)
     console.log('Total required:', totalRequired)
     console.log('========================')
 
-    // Check contract validation
-    if (!isEventContractValid) {
-      console.error('Contract validation failed:', contractValidationErrors)
-      alert(`Erreur de validation du contrat : ${contractValidationErrors.join(', ')}`)
+    // Check if event is valid
+    if (!isEventValid) {
+      console.error('Event validation failed:', validationError)
+      alert(`Erreur de validation de l'événement : ${validationError}`)
       return
     }
 
@@ -91,31 +87,36 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
     // Debug: Log the values being sent
     console.log('=== DEBUG ACHAT BILLET ===')
     console.log('Event Address:', eventAddress)
+    console.log('Quantity:', quantity)
     console.log('Ticket Price from props (wei):', ticketPrice.toString())
     console.log('Ticket Price from props (ETH):', (Number(ticketPrice) / 1e18).toString())
     console.log('Contract Ticket Price (wei):', contractTicketPrice?.toString() || 'Loading...')
     console.log('Contract Ticket Price (ETH):', contractTicketPrice ? (Number(contractTicketPrice) / 1e18).toString() : 'Loading...')
+    console.log('Total Price (wei):', totalPrice.toString())
+    console.log('Total Price (ETH):', totalPriceETH.toString())
     console.log('User Address:', address)
     console.log('Event Valid:', isEventValid)
     console.log('Validation Error:', validationError)
     console.log('Sold Tickets:', soldTickets?.toString() || 'Loading...')
     console.log('Total Tickets:', totalTickets?.toString() || 'Loading...')
+    console.log('Remaining Tickets:', remainingTickets)
     console.log('Event Date:', date ? new Date(Number(date) * 1000).toISOString() : 'Loading...')
     console.log('Current Time:', new Date().toISOString())
     console.log('Organizer:', organizer || 'Loading...')
     console.log('Has Contract Error:', hasContractError)
     console.log('========================')
 
-    // Use contract price if available, otherwise fallback to props price
-    const finalTicketPrice = contractTicketPrice || ticketPrice
+    // Use total price for the selected quantity
+    const finalTicketPrice = totalPrice
     
-    console.log('Using ticket price (wei):', finalTicketPrice.toString())
-    console.log('Using ticket price (ETH):', (Number(finalTicketPrice) / 1e18).toString())
+    console.log('Using total price (wei):', finalTicketPrice.toString())
+    console.log('Using total price (ETH):', totalPriceETH.toString())
 
     try {
       await buyTicket({
         eventAddress,
         ticketPrice: finalTicketPrice,
+        quantity: quantity,
         buyerInfo: {
           walletAddress: address
         }
@@ -179,20 +180,48 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
     <div>
       <h2 className="text-xl font-bold text-gray-800 mb-6">Confirmer l'achat</h2>
       
-      {/* Debug Tool */}
-      <BuyTicketDebugger eventAddress={eventAddress} />
-
-      {/* Informations de l'événement */}
-      <EventInfo 
-        eventAddress={eventAddress}
-        date={date}
-        ticketPrice={contractTicketPrice}
-        totalTickets={totalTickets}
-        soldTickets={soldTickets}
-        organizer={organizer}
-        artistIds={eventArtistIds}
-        artistShares={eventArtistIds.length > 0 ? [50n] : []} // Temporary fix for artist shares
-      />
+      {/* Quantity Selection */}
+      <div className="bg-gray-50 rounded-lg p-4 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <label className="text-sm font-medium text-gray-700">Nombre de billets</label>
+          <span className="text-sm text-gray-500">
+            {remainingTickets} billets disponibles
+          </span>
+        </div>
+        
+        <div className="flex items-center space-x-4">
+          <button
+            type="button"
+            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+            disabled={quantity <= 1}
+            className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed flex items-center justify-center"
+          >
+            -
+          </button>
+          
+          <span className="text-lg font-semibold min-w-[2rem] text-center">{quantity}</span>
+          
+          <button
+            type="button"
+            onClick={() => setQuantity(Math.min(remainingTickets, quantity + 1))}
+            disabled={quantity >= remainingTickets}
+            className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed flex items-center justify-center"
+          >
+            +
+          </button>
+        </div>
+        
+        <div className="mt-3 text-sm text-gray-600">
+          <div className="flex justify-between">
+            <span>Prix unitaire :</span>
+            <span>{contractTicketPrice ? (Number(contractTicketPrice) / 1e18).toFixed(4) : '0.0000'} ETH</span>
+          </div>
+          <div className="flex justify-between font-semibold text-lg">
+            <span>Total :</span>
+            <span className="text-purple-600">{totalPriceETH.toFixed(4)} ETH</span>
+          </div>
+        </div>
+      </div>
       
       {/* Wallet Info */}
       <div className="bg-gray-50 rounded-lg p-4 mb-6">
@@ -233,26 +262,6 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
             <span className="font-medium text-red-800">Événement non disponible</span>
           </div>
           <p className="text-red-700 text-sm">{validationError}</p>
-        </div>
-      ) : !isEventContractValid ? (
-        <div className="bg-red-50 rounded-lg p-4 mb-6">
-          <div className="flex items-center mb-2">
-            <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
-            <span className="font-medium text-red-800">Contrat invalide</span>
-          </div>
-          <p className="text-red-700 text-sm">
-            {contractValidationErrors.join(', ')}
-          </p>
-        </div>
-      ) : !contractDebug.isValid ? (
-        <div className="bg-red-50 rounded-lg p-4 mb-6">
-          <div className="flex items-center mb-2">
-            <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
-            <span className="font-medium text-red-800">Problème de validation</span>
-          </div>
-          <p className="text-red-700 text-sm">
-            {contractDebug.validationErrors.join(', ')}
-          </p>
         </div>
       ) : (
         <div className="bg-green-50 rounded-lg p-4 mb-6">
@@ -325,7 +334,7 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={isLoading || !agreedToTerms || !isEventValid || !isEventContractValid || !contractDebug.isValid || isLoadingStatus}
+          disabled={isLoading || !agreedToTerms || !isEventValid || isLoadingStatus}
           className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-purple-700 transition font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
         >
           {isLoading ? (
@@ -336,7 +345,7 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
           ) : (
             <>
               <CreditCard className="w-4 h-4 mr-2" />
-              Acheter le billet
+              Acheter {quantity} billet{quantity > 1 ? 's' : ''} ({totalPriceETH.toFixed(4)} ETH)
             </>
           )}
         </button>

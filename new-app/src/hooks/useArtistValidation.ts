@@ -32,12 +32,15 @@ export function useArtistValidation(artistId: number) {
     args: [BigInt(artistId)],
   })
 
-  const { data: artistInfo, error: infoError } = useReadContract({
-    address: contractAddresses.Artist as `0x${string}`,
-    abi: ARTIST_ABI,
-    functionName: 'getArtistInfo',
-    args: [BigInt(artistId)],
-  })
+  // Temporarily disable getArtistInfo due to data corruption error
+  // const { data: artistInfo, error: infoError } = useReadContract({
+  //   address: contractAddresses.Artist as `0x${string}`,
+  //   abi: ARTIST_ABI,
+  //   functionName: 'getArtistInfo',
+  //   args: [BigInt(artistId)],
+  // })
+  const artistInfo = null
+  const infoError = null
 
   const isValid = owner && owner !== '0x0000000000000000000000000000000000000000'
   const hasError = ownerError || infoError

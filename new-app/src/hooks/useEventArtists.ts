@@ -58,7 +58,7 @@ export function useEventArtists(eventAddress: string) {
   if (artistIds && artistShares) {
     for (let i = 0; i < artistIds.length; i++) {
       const artistId = Number(artistIds[i])
-      const share = Math.round(Number(artistShares[i]) / 100) // Convert from basis points to percentage
+      const share = Number(artistShares[i]) // Already in percentage, no conversion needed
       
       // We'll fetch the artist name via API call instead of direct contract call
       // to avoid multiple useReadContract calls in a loop

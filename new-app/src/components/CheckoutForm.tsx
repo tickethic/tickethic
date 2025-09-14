@@ -175,7 +175,16 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
       <h2 className="text-xl font-bold text-gray-800 mb-6">Confirmer l'achat</h2>
       
       {/* Informations de l'événement */}
-      <EventInfo eventAddress={eventAddress} />
+      <EventInfo 
+        eventAddress={eventAddress}
+        date={date}
+        ticketPrice={contractTicketPrice}
+        totalTickets={totalTickets}
+        soldTickets={soldTickets}
+        organizer={organizer}
+        artistIds={eventArtistIds}
+        artistShares={eventArtistIds.length > 0 ? [50n] : []} // Temporary fix for artist shares
+      />
       
       {/* Wallet Info */}
       <div className="bg-gray-50 rounded-lg p-4 mb-6">

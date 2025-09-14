@@ -59,57 +59,90 @@ const EVENT_ABI = [
 
 interface EventInfoProps {
   eventAddress: string
+  date?: bigint
+  ticketPrice?: bigint
+  totalTickets?: bigint
+  soldTickets?: bigint
+  organizer?: string
+  artistIds?: bigint[]
+  artistShares?: bigint[]
 }
 
-export function EventInfo({ eventAddress }: EventInfoProps) {
+export function EventInfo({ 
+  eventAddress, 
+  date: propDate, 
+  ticketPrice: propTicketPrice, 
+  totalTickets: propTotalTickets, 
+  soldTickets: propSoldTickets, 
+  organizer: propOrganizer,
+  artistIds: propArtistIds,
+  artistShares: propArtistShares
+}: EventInfoProps) {
+  // Use props if available, otherwise fetch from contract
   const { data: date, error: dateError } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
     functionName: 'date',
+    query: { enabled: !propDate }
   })
 
   const { data: ticketPrice } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
     functionName: 'ticketPrice',
+    query: { enabled: !propTicketPrice }
   })
 
   const { data: soldTickets, error: soldTicketsError } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
     functionName: 'soldTickets',
+    query: { enabled: !propSoldTickets }
   })
 
   const { data: totalTickets, error: totalTicketsError } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
     functionName: 'totalTickets',
+    query: { enabled: !propTotalTickets }
   })
 
   const { data: organizer } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
     functionName: 'organizer',
+    query: { enabled: !propOrganizer }
   })
 
   const { data: artistIds, error: artistIdsError } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
     functionName: 'getArtistIds',
+    query: { enabled: !propArtistIds }
   })
 
   const { data: artistShares, error: artistSharesError } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
     functionName: 'getArtistShares',
+    query: { enabled: !propArtistShares }
   })
 
+  // Use props or fetched data
+  const finalDate = propDate || date
+  const finalTicketPrice = propTicketPrice || ticketPrice
+  const finalSoldTickets = propSoldTickets || soldTickets
+  const finalTotalTickets = propTotalTickets || totalTickets
+  const finalOrganizer = propOrganizer || organizer
+  const finalArtistIds = propArtistIds || artistIds
+  const finalArtistShares = propArtistShares || artistShares
+
   const now = Math.floor(Date.now() / 1000)
-  const eventDate = date ? Number(date) : 0
+  const eventDate = finalDate ? Number(finalDate) : 0
   const isEventInFuture = eventDate > now
-  const isSoldOut = soldTickets && totalTickets ? Number(soldTickets) >= Number(totalTickets) : false
-  const remainingTickets = soldTickets && totalTickets ? Number(totalTickets) - Number(soldTickets) : null
-  const isLoadingTickets = !soldTickets || !totalTickets
+  const isSoldOut = finalSoldTickets && finalTotalTickets ? Number(finalSoldTickets) >= Number(finalTotalTickets) : false
+  const remainingTickets = finalSoldTickets && finalTotalTickets ? Number(finalTotalTickets) - Number(finalSoldTickets) : null
+  const isLoadingTickets = !finalSoldTickets || !finalTotalTickets
 
   return (
     <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
@@ -123,7 +156,7 @@ export function EventInfo({ eventAddress }: EventInfoProps) {
         
         <div>
           <strong>Organisateur :</strong>
-          <div className="font-mono break-all">{organizer ? `${organizer.slice(0, 6)}...${organizer.slice(-4)}` : 'Chargement...'}</div>
+          <div className="font-mono break-all">{finalOrganizer ? `${finalOrganizer.slice(0, 6)}...${finalOrganizer.slice(-4)}` : 'Chargement...'}</div>
         </div>
         
         <div>
@@ -142,14 +175,14 @@ export function EventInfo({ eventAddress }: EventInfoProps) {
         <div>
           <strong>Prix du billet :</strong>
           <div className="font-mono">
-            {ticketPrice ? `${(Number(ticketPrice) / 1e18).toFixed(4)} ETH` : 'Chargement...'}
+            {finalTicketPrice ? `${(Number(finalTicketPrice) / 1e18).toFixed(4)} ETH` : 'Chargement...'}
           </div>
         </div>
         
         <div>
           <strong>Statut des billets :</strong>
           <div className={isSoldOut ? 'text-red-600' : 'text-green-600'}>
-            {soldTickets && totalTickets ? `${Number(soldTickets)}/${Number(totalTickets)}` : 'Chargement...'}
+            {finalSoldTickets && finalTotalTickets ? `${Number(finalSoldTickets)}/${Number(finalTotalTickets)}` : 'Chargement...'}
             {isSoldOut ? ' ❌ (Complet)' : ' ✅'}
           </div>
         </div>

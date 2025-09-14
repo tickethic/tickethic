@@ -125,7 +125,7 @@ export default function OrganizersPage() {
                   </h3>
                   <p className="text-yellow-700 text-sm">
                     Vous devez être enregistré comme organisateur pour créer des événements. 
-                    Allez dans la page <a href="/admin" className="text-blue-600 underline">Administration</a> pour vous enregistrer.
+                    Utilisez le bouton "S'enregistrer comme organisateur" ci-dessous pour vous enregistrer directement.
                   </p>
                 </div>
               </div>

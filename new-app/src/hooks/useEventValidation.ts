@@ -5,14 +5,14 @@ import { useReadContract } from 'wagmi'
 const EVENT_ABI = [
   {
     "inputs": [],
-    "name": "artistIds",
+    "name": "getArtistIds",
     "outputs": [{"internalType": "uint256[]", "name": "", "type": "uint256[]"}],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "artistShares",
+    "name": "getArtistShares",
     "outputs": [{"internalType": "uint256[]", "name": "", "type": "uint256[]"}],
     "stateMutability": "view",
     "type": "function"
@@ -40,13 +40,13 @@ export function useEventValidation(eventAddress: string) {
   const { data: artistIds } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
-    functionName: 'artistIds',
+    functionName: 'getArtistIds',
   })
 
   const { data: artistShares } = useReadContract({
     address: eventAddress as `0x${string}`,
     abi: EVENT_ABI,
-    functionName: 'artistShares',
+    functionName: 'getArtistShares',
   })
 
   const { data: organizer } = useReadContract({
@@ -54,6 +54,14 @@ export function useEventValidation(eventAddress: string) {
     abi: EVENT_ABI,
     functionName: 'organizer',
   })
+
+  // Debug logs
+  console.log('=== EVENT VALIDATION DEBUG ===')
+  console.log('Event Address:', eventAddress)
+  console.log('Artist IDs:', artistIds)
+  console.log('Artist Shares:', artistShares)
+  console.log('Organizer:', organizer)
+  console.log('==============================')
 
   // Check if organizer address is valid (not zero address)
   const isOrganizerValid = organizer && organizer !== '0x0000000000000000000000000000000000000000'

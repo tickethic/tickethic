@@ -2,6 +2,7 @@
 
 import { useReadContract } from 'wagmi'
 import { contractAddresses } from '@/config'
+import { EventArtistsList } from './EventArtistsList'
 
 // Event ABI for reading event information
 const EVENT_ABI = [
@@ -160,14 +161,8 @@ export function EventInfo({ eventAddress }: EventInfoProps) {
           </div>
         </div>
         
-        <div>
-          <strong>Artistes :</strong>
-          <div>
-            {artistIds && artistShares ? 
-              `${artistIds.length} artistes (${artistShares.map(s => Number(s)).join(', ')}% de parts)` : 
-              'Chargement...'
-            }
-          </div>
+        <div className="col-span-2">
+          <EventArtistsList eventAddress={eventAddress} />
         </div>
       </div>
       

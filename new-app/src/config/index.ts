@@ -36,20 +36,20 @@ export const config = wagmiAdapter.wagmiConfig
 
 // Contract addresses - will throw error if environment variables are missing
 export const contractAddresses = {
-  Artist: process.env.ARTIST_CONTRACT!,
-  Organizator: process.env.ORGANIZATOR_CONTRACT!,
-  Ticket: process.env.TICKET_CONTRACT!,
-  Event: process.env.EVENT_CONTRACT!,
-  EventManager: process.env.EVENT_MANAGER_CONTRACT!
+  Artist: process.env.NEXT_PUBLIC_ARTIST_CONTRACT!,
+  Organizator: process.env.NEXT_PUBLIC_ORGANIZATOR_CONTRACT!,
+  Ticket: process.env.NEXT_PUBLIC_TICKET_CONTRACT!,
+  Event: process.env.NEXT_PUBLIC_EVENT_CONTRACT!,
+  EventManager: process.env.NEXT_PUBLIC_EVENT_MANAGER_CONTRACT!
 } as const
 
 // Validate that all required environment variables are present
 const requiredEnvVars = [
-  'ARTIST_CONTRACT',
-  'ORGANIZATOR_CONTRACT', 
-  'TICKET_CONTRACT',
-  'EVENT_CONTRACT',
-  'EVENT_MANAGER_CONTRACT'
+  'NEXT_PUBLIC_ARTIST_CONTRACT',
+  'NEXT_PUBLIC_ORGANIZATOR_CONTRACT', 
+  'NEXT_PUBLIC_TICKET_CONTRACT',
+  'NEXT_PUBLIC_EVENT_CONTRACT',
+  'NEXT_PUBLIC_EVENT_MANAGER_CONTRACT'
 ] as const
 
 const missingVars = requiredEnvVars.filter(varName => !process.env[varName])

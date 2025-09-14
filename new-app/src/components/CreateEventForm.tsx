@@ -3,9 +3,11 @@
 import { useState } from 'react'
 import { useWallet } from '@/hooks/useWallet'
 import { useCreateEvent } from '@/hooks/useEventManager'
+import { useOrganizerStatus } from '@/hooks/useOrganizerStatus'
+import { useOrganizerRegistration } from '@/hooks/useOrganizerRegistration'
 import { ArtistSearch } from './ArtistSearch'
 import { ArtistInfo } from '@/hooks/useArtists'
-import { Calendar, DollarSign, Users, Plus, X, CheckCircle } from 'lucide-react'
+import { Calendar, DollarSign, Users, Plus, X, CheckCircle, UserPlus, AlertCircle } from 'lucide-react'
 
 interface Artist {
   id: number
@@ -16,6 +18,8 @@ interface Artist {
 export function CreateEventForm() {
   const { address } = useWallet()
   const { createEvent, isLoading, isConfirmed, error, hash, eventAddress, eventId } = useCreateEvent()
+  const { isOrganizer, isLoading: isLoadingStatus } = useOrganizerStatus(address)
+  const { registerAsOrganizer, isLoading: isRegistering, isConfirmed: isRegistrationConfirmed } = useOrganizerRegistration()
   
   const [formData, setFormData] = useState({
     title: '',
@@ -91,9 +95,22 @@ export function CreateEventForm() {
       'no-description'
     const metadataURI = formData.metadataURI || `event://${eventSlug}-${descriptionSlug}-${Date.now()}`
 
+    // Combine all artists (from search and manual addition)
+    const allArtists = [...artists]
+    selectedArtists.forEach(selectedArtist => {
+      if (!allArtists.find(a => a.id === selectedArtist.id)) {
+        allArtists.push({ id: selectedArtist.id, share: 0, name: selectedArtist.name })
+      }
+    })
+
+    if (allArtists.length === 0) {
+      alert('Veuillez sélectionner au moins un artiste pour créer l\'événement')
+      return
+    }
+
     const params = {
-      artistIds: artists.map(a => a.id),
-      artistShares: artists.map(a => a.share),
+      artistIds: allArtists.map(a => a.id),
+      artistShares: allArtists.map(a => a.share),
       organizer: address,
       date: timestamp,
       metadataURI: metadataURI,
@@ -106,6 +123,59 @@ export function CreateEventForm() {
 
   const totalArtistShare = artists.reduce((sum, artist) => sum + artist.share, 0)
   const organizerShare = 100 - totalArtistShare
+
+  // Show loading state while checking organizer status
+  if (isLoadingStatus) {
+    return (
+      <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Vérification du statut d'organisateur...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show registration prompt if not an organizer
+  if (!isOrganizer) {
+    return (
+      <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8 text-orange-600" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Enregistrement requis</h2>
+          <p className="text-gray-600 mb-6">
+            Vous devez être enregistré comme organisateur pour créer des événements.
+          </p>
+          <button 
+            onClick={registerAsOrganizer}
+            disabled={isRegistering}
+            className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center mx-auto"
+          >
+            {isRegistering ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Enregistrement en cours...
+              </>
+            ) : (
+              <>
+                <UserPlus className="w-4 h-4 mr-2" />
+                S'enregistrer comme organisateur
+              </>
+            )}
+          </button>
+          {isRegistrationConfirmed && (
+            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-green-800 text-sm">
+                ✅ Enregistrement réussi ! Vous pouvez maintenant créer des événements.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
 
   if (isConfirmed) {
     return (

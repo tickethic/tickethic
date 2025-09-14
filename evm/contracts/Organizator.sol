@@ -8,6 +8,7 @@ contract Organizator is Ownable {
 
     event OrganizatorAdded(address indexed organizator);
     event OrganizatorRemoved(address indexed organizator);
+    event OrganizatorSelfRegistered(address indexed organizator);
 
     constructor(address initialOwner, address[] memory initialOrganizators) Ownable(initialOwner) {
         for (uint256 i = 0; i < initialOrganizators.length; i++) {
@@ -24,5 +25,14 @@ contract Organizator is Ownable {
     function removeOrganizator(address organizator) external onlyOwner {
         isOrganizator[organizator] = false;
         emit OrganizatorRemoved(organizator);
+    }
+
+    /**
+     * @dev Allow anyone to register themselves as an organizer
+     */
+    function registerAsOrganizer() external {
+        require(!isOrganizator[msg.sender], "Already registered as organizer");
+        isOrganizator[msg.sender] = true;
+        emit OrganizatorSelfRegistered(msg.sender);
     }
 }

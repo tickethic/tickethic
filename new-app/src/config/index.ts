@@ -36,9 +36,9 @@ export const config = wagmiAdapter.wagmiConfig
 
 // Contract addresses (updated to latest deployed versions)
 export const contractAddresses = {
-  Artist: process.env.NEXT_PUBLIC_ARTIST_CONTRACT || "0xc21F137FecF80Cf9cBF7c4d65CaE56E78156f911",
-  Organizator: process.env.NEXT_PUBLIC_ORGANIZATOR_CONTRACT || "0x1DD874A39Ff352741Ec585435747f94a5dbD20B5",
-  Ticket: process.env.NEXT_PUBLIC_TICKET_CONTRACT || "0x5C7ABd7b9049297135AD88b5781c0ED74eF821ed",
-  Event: process.env.NEXT_PUBLIC_EVENT_CONTRACT || "0x48888a4C7183033C6e8a832A85fcCf256a185F46",
-  EventManager: process.env.NEXT_PUBLIC_EVENT_MANAGER_CONTRACT || "0x7a4Bb066613A838F6fbd806f8Afdc26fffAfcaB1"
+  Artist: process.env.NEXT_PUBLIC_ARTIST_CONTRACT || "0xbeb15C97531a350cd05D6D16FCFE32A27Ce51A88",
+  Organizator: process.env.NEXT_PUBLIC_ORGANIZATOR_CONTRACT || "0x197E63ea5Ed134060d0F296c51201DF254256666",
+  Ticket: process.env.NEXT_PUBLIC_TICKET_CONTRACT || "0xCCBa1170bF3Da4B5d18242291Dfa286Ceb3c66Ea",
+  Event: process.env.NEXT_PUBLIC_EVENT_CONTRACT || "0x6Eb80Bf14e7aB4f7778Cc872aE07E4E2993e03c1",
+  EventManager: process.env.NEXT_PUBLIC_EVENT_MANAGER_CONTRACT || "0x201824aeB856cf87a5F1c7CcD29fCF0122eF3d9F"
 } as const

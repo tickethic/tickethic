@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createPublicClient, http } from 'viem'
 import { polygonAmoy } from 'viem/chains'
-import { contractAddresses } from '@/config'
+import { serverContractAddresses } from '@/config/server'
 
 const TICKET_ABI = [
   {
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
 
     // Get ticket ID at the given index
     const tokenId = await client.readContract({
-      address: contractAddresses.Ticket,
+      address: serverContractAddresses.Ticket,
       abi: TICKET_ABI,
       functionName: 'tokenOfOwnerByIndex',
       args: [address as `0x${string}`, BigInt(index)]
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
 
     // Get ticket info
     const ticketInfo = await client.readContract({
-      address: contractAddresses.Ticket,
+      address: serverContractAddresses.Ticket,
       abi: TICKET_ABI,
       functionName: 'getTicketInfo',
       args: [tokenId]

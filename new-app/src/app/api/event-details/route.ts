@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createPublicClient, http } from 'viem'
 import { polygonAmoy } from 'viem/chains'
-import { contractAddresses } from '@/config'
+import { serverContractAddresses } from '@/config/server'
 
 const EVENT_ABI = [
   {

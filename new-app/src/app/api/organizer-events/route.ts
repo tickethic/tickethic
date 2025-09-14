@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createPublicClient, http } from 'viem'
 import { polygonAmoy } from 'viem/chains'
-import { contractAddresses } from '@/config'
+import { serverContractAddresses } from '@/config/server'
 
 // EventManager ABI
 const EVENT_MANAGER_ABI = [
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
 
     // Get total number of events
     const totalEvents = await publicClient.readContract({
-      address: contractAddresses.EventManager,
+      address: serverContractAddresses.EventManager,
       abi: EVENT_MANAGER_ABI,
       functionName: 'getTotalEvents',
     })
@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
     for (let i = 1; i <= Number(totalEvents); i++) {
       try {
         const eventInfo = await publicClient.readContract({
-          address: contractAddresses.EventManager,
+          address: serverContractAddresses.EventManager,
           abi: EVENT_MANAGER_ABI,
           functionName: 'getEventInfo',
           args: [BigInt(i)]

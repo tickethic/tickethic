@@ -10,6 +10,13 @@ const EVENT_ABI = [
     "outputs": [{"internalType": "address", "name": "", "type": "address"}],
     "stateMutability": "view",
     "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTicketContract",
+    "outputs": [{"internalType": "address", "name": "", "type": "address"}],
+    "stateMutability": "view",
+    "type": "function"
   }
 ] as const
 
@@ -34,11 +41,19 @@ const ARTIST_ABI = [
 ] as const
 
 export function useContractRelations(eventAddress: string) {
-  // Check if Event contract is owner of Ticket contract
+  // Get the ticket contract address for this specific event
+  const { data: eventTicketContract } = useReadContract({
+    address: eventAddress as `0x${string}`,
+    abi: EVENT_ABI,
+    functionName: 'getTicketContract',
+  })
+
+  // Check if Event contract is owner of its specific Ticket contract
   const { data: ticketOwner } = useReadContract({
-    address: contractAddresses.Ticket as `0x${string}`,
+    address: eventTicketContract as `0x${string}`,
     abi: TICKET_ABI,
     functionName: 'owner',
+    query: { enabled: !!eventTicketContract }
   })
 
   // Check if Event contract is owner of Artist contract
@@ -62,6 +77,7 @@ export function useContractRelations(eventAddress: string) {
 
   console.log('=== CONTRACT RELATIONS DEBUG ===')
   console.log('Event Address:', eventAddress)
+  console.log('Event Ticket Contract:', eventTicketContract)
   console.log('Ticket Owner:', ticketOwner)
   console.log('Is Event Ticket Owner:', isEventTicketOwner)
   console.log('Artist Owner (ID 1):', artistOwner)
@@ -71,6 +87,7 @@ export function useContractRelations(eventAddress: string) {
   console.log('================================')
 
   return {
+    eventTicketContract,
     ticketOwner,
     artistOwner,
     eventOrganizer,

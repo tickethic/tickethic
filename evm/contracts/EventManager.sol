@@ -77,6 +77,9 @@ contract EventManager {
             }
         }
         
+        // Create a new ticket contract for this event
+        Ticket newTicketContract = new Ticket(address(this));
+        
         // Create the new event
         Event newEvent = new Event(
             address(artistContract),
@@ -87,12 +90,12 @@ contract EventManager {
             _metadataURI,
             _ticketPrice,
             _totalTickets,
-            address(ticketContract),
+            address(newTicketContract),
             address(organizatorContract)
         );
         
-        // Transfer ownership of the ticket contract to the new event
-        ticketContract.transferOwnership(address(newEvent));
+        // Transfer ownership of the new ticket contract to the event
+        newTicketContract.transferOwnership(address(newEvent));
         
         // Store the event
         eventId = nextEventId++;
@@ -165,5 +168,19 @@ contract EventManager {
         }
         
         return eventAddresses;
+    }
+    
+    /**
+     * @dev Get ticket contract address for an event
+     * @param _eventId Event ID
+     * @return Ticket contract address
+     */
+    function getEventTicketContract(uint256 _eventId) external view returns (address) {
+        require(_eventId > 0 && _eventId < nextEventId, "Event does not exist");
+        
+        address eventAddress = events[_eventId];
+        Event eventContract = Event(eventAddress);
+        
+        return address(eventContract.ticketContract());
     }
 }

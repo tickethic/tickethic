@@ -56,6 +56,13 @@ const EVENT_ABI = [
     "outputs": [{"internalType": "uint256[]", "name": "", "type": "uint256[]"}],
     "stateMutability": "view",
     "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTicketContract",
+    "outputs": [{"internalType": "address", "name": "", "type": "address"}],
+    "stateMutability": "view",
+    "type": "function"
   }
 ] as const
 
@@ -129,6 +136,12 @@ export function BuyTicketDebugger({ eventAddress }: BuyTicketDebuggerProps) {
     functionName: 'getArtistShares',
   })
 
+  const { data: eventTicketContract } = useReadContract({
+    address: eventAddress as `0x${string}`,
+    abi: EVENT_ABI,
+    functionName: 'getTicketContract',
+  })
+
   // Read artist owner
   const { data: artistOwner, error: artistOwnerError } = useReadContract({
     address: contractAddresses.Artist as `0x${string}`,
@@ -173,6 +186,7 @@ export function BuyTicketDebugger({ eventAddress }: BuyTicketDebuggerProps) {
     diagnostic += `Artist Shares: ${artistShares}\n`
     diagnostic += `Artist Owner: ${artistOwner} ${hasValidArtist ? '✅' : '❌'}\n`
     diagnostic += `Artist Owner Error: ${artistOwnerError ? artistOwnerError.message : 'None'}\n`
+    diagnostic += `Event Ticket Contract: ${eventTicketContract}\n`
     diagnostic += `Next Ticket ID: ${nextTicketId}\n`
     diagnostic += `Ticket Error: ${ticketError ? ticketError.message : 'None'}\n`
     diagnostic += '\n=== CONTRACT RELATIONS ===\n'

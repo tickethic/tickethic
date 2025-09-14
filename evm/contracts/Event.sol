@@ -123,4 +123,8 @@ contract Event is Ownable {
     function getArtistShares() external view returns (uint256[] memory) {
         return artistShares;
     }
+    
+    function getTicketContract() external view returns (address) {
+        return address(ticketContract);
+    }
 }

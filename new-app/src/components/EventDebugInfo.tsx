@@ -107,7 +107,8 @@ export function EventDebugInfo({ eventAddress }: EventDebugInfoProps) {
   const eventDate = date ? Number(date) : 0
   const isEventInFuture = eventDate > now
   const isSoldOut = soldTickets && totalTickets ? Number(soldTickets) >= Number(totalTickets) : false
-  const remainingTickets = soldTickets && totalTickets ? Number(totalTickets) - Number(soldTickets) : 0
+  const remainingTickets = soldTickets && totalTickets ? Number(totalTickets) - Number(soldTickets) : null
+  const isLoadingTickets = !soldTickets || !totalTickets
 
   return (
     <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
@@ -154,8 +155,8 @@ export function EventDebugInfo({ eventAddress }: EventDebugInfoProps) {
         
         <div>
           <strong>Remaining:</strong>
-          <div className={remainingTickets > 0 ? 'text-green-600' : 'text-red-600'}>
-            {remainingTickets} tickets
+          <div className={isLoadingTickets ? 'text-gray-500' : (remainingTickets && remainingTickets > 0 ? 'text-green-600' : 'text-red-600')}>
+            {isLoadingTickets ? 'Loading...' : `${remainingTickets} tickets`}
           </div>
         </div>
         
@@ -175,7 +176,7 @@ export function EventDebugInfo({ eventAddress }: EventDebugInfoProps) {
         <ul className="text-yellow-700 text-xs mt-1 space-y-1">
           {!isEventInFuture && <li>• Event date is in the past</li>}
           {isSoldOut && <li>• All tickets are sold out</li>}
-          {remainingTickets === 0 && !isSoldOut && <li>• No tickets available</li>}
+          {remainingTickets === 0 && !isSoldOut && !isLoadingTickets && <li>• No tickets available</li>}
           {artistIds && artistIds.length === 0 && <li>• No artists configured</li>}
           {artistShares && artistShares.some(s => Number(s) === 0) && <li>• Some artists have 0% share</li>}
         </ul>

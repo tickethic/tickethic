@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { useWallet } from '@/hooks/useWallet'
 import { useBuyTicket } from '@/hooks/useBuyTicket'
 import { useEventStatus } from '@/hooks/useEventStatus'
-import { EventInfo } from './EventInfo'
 import { CreditCard, CheckCircle, Shield, AlertCircle } from 'lucide-react'
 
 interface CheckoutFormProps {
@@ -164,15 +163,6 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
     <div>
       <h2 className="text-xl font-bold text-gray-800 mb-6">Confirmer l'achat</h2>
       
-      {/* Informations de l'événement */}
-      <EventInfo 
-        eventAddress={eventAddress}
-        date={date}
-        ticketPrice={contractTicketPrice}
-        totalTickets={totalTickets}
-        soldTickets={soldTickets}
-        organizer={organizer}
-      />
       
       {/* Wallet Info */}
       <div className="bg-gray-50 rounded-lg p-4 mb-6">

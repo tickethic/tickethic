@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { useWallet } from '@/hooks/useWallet'
 import { useEventInfo, useEventMetadata } from '@/hooks/useEvents'
 import { CheckoutForm } from '@/components/CheckoutForm'
+import { EventArtistsList } from '@/components/EventArtistsList'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { Calendar, MapPin, Users, Ticket, Clock, ArrowLeft } from 'lucide-react'
@@ -270,6 +271,11 @@ export default function CheckoutPage() {
                   <Users className="w-4 h-4 mr-2" />
                   <span>Organisateur: {organizer.slice(0, 6)}...{organizer.slice(-4)}</span>
                 </div>
+              </div>
+
+              {/* Artists List */}
+              <div className="border-t border-gray-200 pt-4 mt-4">
+                <EventArtistsList eventAddress={eventAddress} />
               </div>
 
               {/* Price */}

@@ -56,18 +56,31 @@ export function useEventArtists(eventAddress: string) {
   // Fetch artist details for each artist ID
   const artistDetails = []
   if (artistIds && artistShares) {
+    console.log('=== EVENT ARTISTS DEBUG ===')
+    console.log('Artist IDs:', artistIds)
+    console.log('Artist Shares (raw):', artistShares)
+    console.log('Artist Shares (numbers):', artistShares.map(s => Number(s)))
+    
     for (let i = 0; i < artistIds.length; i++) {
       const artistId = Number(artistIds[i])
-      const share = Number(artistShares[i]) // Already in percentage, no conversion needed
+      const rawShare = Number(artistShares[i])
       
-      // We'll fetch the artist name via API call instead of direct contract call
-      // to avoid multiple useReadContract calls in a loop
+      // Debug: Check if shares are in basis points (0-10000) or percentage (0-100)
+      console.log(`Artist ${artistId}: raw share = ${rawShare}`)
+      
+      // If shares are stored as basis points (0-10000), convert to percentage
+      // If shares are stored as percentage (0-100), use as is
+      const share = rawShare > 100 ? Math.round(rawShare / 100) : rawShare
+      
+      console.log(`Artist ${artistId}: final share = ${share}%`)
+      
       artistDetails.push({
         id: artistId,
         name: `Artiste #${artistId}`, // Placeholder, will be replaced by API call
         share: share
       })
     }
+    console.log('========================')
   }
 
   return {

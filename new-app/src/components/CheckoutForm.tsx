@@ -6,6 +6,7 @@ import { useWallet } from '@/hooks/useWallet'
 import { useBuyTicket } from '@/hooks/useBuyTicket'
 import { useEventStatus } from '@/hooks/useEventStatus'
 import { useEventValidation } from '@/hooks/useEventValidation'
+import { useArtistValidation } from '@/hooks/useArtistValidation'
 import { EventInfo } from './EventInfo'
 import { CreditCard, CheckCircle, Shield, AlertCircle } from 'lucide-react'
 
@@ -34,8 +35,13 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
 
   const { 
     isEventValid: isEventContractValid, 
-    validationErrors: contractValidationErrors 
+    validationErrors: contractValidationErrors,
+    artistIds: eventArtistIds
   } = useEventValidation(eventAddress)
+
+  // Validate the first artist (for debugging)
+  const firstArtistId = eventArtistIds.length > 0 ? Number(eventArtistIds[0]) : 0
+  const { isValid: isArtistValid, hasError: hasArtistError } = useArtistValidation(firstArtistId)
   
   const [agreedToTerms, setAgreedToTerms] = useState(false)
 
@@ -67,6 +73,13 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
     if (!isEventContractValid) {
       console.error('Contract validation failed:', contractValidationErrors)
       alert(`Erreur de validation du contrat : ${contractValidationErrors.join(', ')}`)
+      return
+    }
+
+    // Check artist validation
+    if (firstArtistId > 0 && !isArtistValid) {
+      console.error('Artist validation failed for ID:', firstArtistId)
+      alert(`Erreur de validation de l'artiste #${firstArtistId}`)
       return
     }
 

@@ -46,6 +46,7 @@ export function useBuyTicket() {
       console.log('Ticket Price (wei):', params.ticketPrice.toString())
       console.log('Ticket Price (ETH):', (Number(params.ticketPrice) / 1e18).toString())
       console.log('Buyer Address:', params.buyerInfo.walletAddress)
+      console.log('Gas Limit: 800,000')
       console.log('========================')
       
       // Call the buyTicket function on the Event contract
@@ -59,6 +60,7 @@ export function useBuyTicket() {
       })
     } catch (err) {
       console.error('Error buying ticket:', err)
+      console.error('Error details:', JSON.stringify(err, null, 2))
       throw err
     }
   }

@@ -14,7 +14,7 @@ const queryClient = new QueryClient()
 const metadata = {
   name: 'Tickethic',
   description: 'dApp allowing to manage tickets as NFTs. Open source project to share tickets revenue with artists in a faire and open way.',
-  url: 'https://tickethic.ch', // origin must match your domain & subdomain
+  url: typeof window !== 'undefined' ? window.location.origin : 'https://tickethic.ch', // Dynamic URL for dev/prod
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 

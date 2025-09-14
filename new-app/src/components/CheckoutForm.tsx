@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useWallet } from '@/hooks/useWallet'
 import { useBuyTicket } from '@/hooks/useBuyTicket'
 import { useEventStatus } from '@/hooks/useEventStatus'
+import { useEventValidation } from '@/hooks/useEventValidation'
 import { EventInfo } from './EventInfo'
 import { CreditCard, CheckCircle, Shield, AlertCircle } from 'lucide-react'
 
@@ -30,6 +31,11 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
     isEventValid, 
     validationError 
   } = useEventStatus(eventAddress)
+
+  const { 
+    isEventValid: isEventContractValid, 
+    validationErrors: contractValidationErrors 
+  } = useEventValidation(eventAddress)
   
   const [agreedToTerms, setAgreedToTerms] = useState(false)
 
@@ -43,6 +49,24 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
 
     if (!agreedToTerms) {
       alert('Veuillez accepter les conditions générales')
+      return
+    }
+
+    // Check if user has enough ETH (add some buffer for gas)
+    const requiredEth = Number(contractTicketPrice || ticketPrice) / 1e18
+    const gasBuffer = 0.01 // 0.01 ETH buffer for gas
+    const totalRequired = requiredEth + gasBuffer
+    
+    console.log('=== ETH BALANCE CHECK ===')
+    console.log('Required ETH for ticket:', requiredEth)
+    console.log('Gas buffer:', gasBuffer)
+    console.log('Total required:', totalRequired)
+    console.log('========================')
+
+    // Check contract validation
+    if (!isEventContractValid) {
+      console.error('Contract validation failed:', contractValidationErrors)
+      alert(`Erreur de validation du contrat : ${contractValidationErrors.join(', ')}`)
       return
     }
 
@@ -180,6 +204,16 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
           </div>
           <p className="text-red-700 text-sm">{validationError}</p>
         </div>
+      ) : !isEventContractValid ? (
+        <div className="bg-red-50 rounded-lg p-4 mb-6">
+          <div className="flex items-center mb-2">
+            <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
+            <span className="font-medium text-red-800">Contrat invalide</span>
+          </div>
+          <p className="text-red-700 text-sm">
+            {contractValidationErrors.join(', ')}
+          </p>
+        </div>
       ) : (
         <div className="bg-green-50 rounded-lg p-4 mb-6">
           <div className="flex items-center mb-2">
@@ -251,7 +285,7 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={isLoading || !agreedToTerms || !isEventValid || isLoadingStatus}
+          disabled={isLoading || !agreedToTerms || !isEventValid || !isEventContractValid || isLoadingStatus}
           className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-purple-700 transition font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
         >
           {isLoading ? (

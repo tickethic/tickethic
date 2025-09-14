@@ -55,7 +55,7 @@ export function useBuyTicket() {
         functionName: 'buyTicket',
         args: [],
         value: params.ticketPrice, // Send ETH as payment
-        gas: 300000n, // Reduced gas limit
+        gas: 800000n, // Increased gas limit for multiple transfers
       })
     } catch (err) {
       console.error('Error buying ticket:', err)

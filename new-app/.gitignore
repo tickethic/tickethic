@@ -41,20 +41,9 @@ next-env.d.ts
 # OS
 Thumbs.db
 
-# Docker
-*.tar.gz
+# Vercel
+.vercel
 
-# Déploiement - FICHIERS SENSIBLES
-scripts/deploy-config.env
-scripts/deploy-to-server.ps1
-scripts/deploy-to-server.sh
-scripts/deploy-basic.ps1
-scripts/deploy-simple.ps1
-scripts/deploy-tickethic.ps1
-DEPLOYMENT.md
-
-# Clés SSH et configurations serveur
-*.pem
-*.key
-ssh-config*
-server-config*
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts

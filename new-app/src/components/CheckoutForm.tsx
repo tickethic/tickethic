@@ -116,6 +116,7 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
       await buyTicket({
         eventAddress,
         ticketPrice: finalTicketPrice,
+        quantity: quantity,
         buyerInfo: {
           walletAddress: address
         }

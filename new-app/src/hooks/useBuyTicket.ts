@@ -6,7 +6,13 @@ import { contractAddresses } from '@/config'
 // Event ABI for buying tickets
 const EVENT_ABI = [
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_quantity",
+        "type": "uint256"
+      }
+    ],
     "name": "buyTicket",
     "outputs": [],
     "stateMutability": "payable",
@@ -17,6 +23,7 @@ const EVENT_ABI = [
 export interface BuyTicketParams {
   eventAddress: string
   ticketPrice: bigint
+  quantity: number
   buyerInfo: {
     walletAddress: string
   }
@@ -43,10 +50,13 @@ export function useBuyTicket() {
     try {
       console.log('=== DEBUG BUY TICKET ===')
       console.log('Event Address:', params.eventAddress)
+      console.log('Quantity:', params.quantity)
       console.log('Ticket Price (wei):', params.ticketPrice.toString())
       console.log('Ticket Price (ETH):', (Number(params.ticketPrice) / 1e18).toString())
+      console.log('Total Price (wei):', (params.ticketPrice * BigInt(params.quantity)).toString())
+      console.log('Total Price (ETH):', (Number(params.ticketPrice) / 1e18 * params.quantity).toString())
       console.log('Buyer Address:', params.buyerInfo.walletAddress)
-      console.log('Gas Limit: 800,000')
+      console.log('Gas Limit: 1,500,000')
       console.log('========================')
       
       // Call the buyTicket function on the Event contract
@@ -54,8 +64,8 @@ export function useBuyTicket() {
         address: params.eventAddress as `0x${string}`,
         abi: EVENT_ABI,
         functionName: 'buyTicket',
-        args: [],
-        value: params.ticketPrice, // Send ETH as payment
+        args: [BigInt(params.quantity)],
+        value: params.ticketPrice, // Send total ETH as payment
         gas: 1500000n, // Much higher gas limit for multiple transfers
       })
     } catch (err) {

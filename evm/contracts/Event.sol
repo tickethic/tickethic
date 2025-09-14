@@ -66,13 +66,17 @@ contract Event is Ownable {
     verificators[_organizer] = true;
     }
 
-    function buyTicket() external payable {
+    function buyTicket(uint256 _quantity) external payable {
         require(block.timestamp < date, "Event already happened");
-        require(soldTickets < totalTickets, "Sold out");
-        require(msg.value == ticketPrice, "Incorrect ETH sent");
+        require(_quantity > 0, "Quantity must be greater than 0");
+        require(soldTickets + _quantity <= totalTickets, "Not enough tickets available");
+        require(msg.value == ticketPrice * _quantity, "Incorrect ETH sent");
 
-        uint256 tokenId = ticketContract.mintTicket(msg.sender, metadataURI);
-        soldTickets++;
+        // Mint multiple tickets
+        for (uint256 i = 0; i < _quantity; i++) {
+            ticketContract.mintTicket(msg.sender, metadataURI);
+        }
+        soldTickets += _quantity;
 
         // split payment among artists and organizer
         uint256 totalSent = 0;

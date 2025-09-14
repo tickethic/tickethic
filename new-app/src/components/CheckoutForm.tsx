@@ -70,10 +70,10 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
     console.log('Total required:', totalRequired)
     console.log('========================')
 
-    // Check contract validation
-    if (!isEventContractValid) {
-      console.error('Contract validation failed:', contractValidationErrors)
-      alert(`Erreur de validation du contrat : ${contractValidationErrors.join(', ')}`)
+    // Check if event is valid
+    if (!isEventValid) {
+      console.error('Event validation failed:', validationError)
+      alert(`Erreur de validation de l'événement : ${validationError}`)
       return
     }
 

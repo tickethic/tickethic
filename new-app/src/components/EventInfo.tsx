@@ -159,6 +159,10 @@ export function EventInfo({
           <div className="font-mono break-all">{finalOrganizer ? `${finalOrganizer.slice(0, 6)}...${finalOrganizer.slice(-4)}` : 'Chargement...'}</div>
         </div>
         
+        <div className="col-span-2">
+          <EventArtistsList eventAddress={eventAddress} />
+        </div>
+        
         <div>
           <strong>Date de l'événement :</strong>
           <div className={isEventInFuture ? 'text-green-600' : 'text-red-600'}>
@@ -192,10 +196,6 @@ export function EventInfo({
           <div className={isLoadingTickets ? 'text-gray-500' : (remainingTickets && remainingTickets > 0 ? 'text-green-600' : 'text-red-600')}>
             {isLoadingTickets ? 'Chargement...' : `${remainingTickets} billets`}
           </div>
-        </div>
-        
-        <div className="col-span-2">
-          <EventArtistsList eventAddress={eventAddress} />
         </div>
       </div>
       

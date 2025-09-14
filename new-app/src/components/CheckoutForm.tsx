@@ -5,11 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useWallet } from '@/hooks/useWallet'
 import { useBuyTicket } from '@/hooks/useBuyTicket'
 import { useEventStatus } from '@/hooks/useEventStatus'
-import { useEventValidation } from '@/hooks/useEventValidation'
-import { useArtistValidation } from '@/hooks/useArtistValidation'
-import { useContractDebug } from '@/hooks/useContractDebug'
 import { EventInfo } from './EventInfo'
-import { BuyTicketDebugger } from './BuyTicketDebugger'
 import { CreditCard, CheckCircle, Shield, AlertCircle } from 'lucide-react'
 
 interface CheckoutFormProps {
@@ -35,18 +31,7 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
     validationError 
   } = useEventStatus(eventAddress)
 
-  const { 
-    isEventValid: isEventContractValid, 
-    validationErrors: contractValidationErrors,
-    artistIds: eventArtistIds
-  } = useEventValidation(eventAddress)
-
-  // Validate the first artist (for debugging)
-  const firstArtistId = eventArtistIds.length > 0 ? Number(eventArtistIds[0]) : 0
-  const { isValid: isArtistValid, hasError: hasArtistError } = useArtistValidation(firstArtistId)
   
-  // Debug contract state
-  const contractDebug = useContractDebug(eventAddress)
   
   const [agreedToTerms, setAgreedToTerms] = useState(false)
 
@@ -179,9 +164,6 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
     <div>
       <h2 className="text-xl font-bold text-gray-800 mb-6">Confirmer l'achat</h2>
       
-      {/* Debug Tool */}
-      <BuyTicketDebugger eventAddress={eventAddress} />
-
       {/* Informations de l'événement */}
       <EventInfo 
         eventAddress={eventAddress}
@@ -190,8 +172,6 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
         totalTickets={totalTickets}
         soldTickets={soldTickets}
         organizer={organizer}
-        artistIds={eventArtistIds}
-        artistShares={eventArtistIds.length > 0 ? [50n] : []} // Temporary fix for artist shares
       />
       
       {/* Wallet Info */}
@@ -233,26 +213,6 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
             <span className="font-medium text-red-800">Événement non disponible</span>
           </div>
           <p className="text-red-700 text-sm">{validationError}</p>
-        </div>
-      ) : !isEventContractValid ? (
-        <div className="bg-red-50 rounded-lg p-4 mb-6">
-          <div className="flex items-center mb-2">
-            <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
-            <span className="font-medium text-red-800">Contrat invalide</span>
-          </div>
-          <p className="text-red-700 text-sm">
-            {contractValidationErrors.join(', ')}
-          </p>
-        </div>
-      ) : !contractDebug.isValid ? (
-        <div className="bg-red-50 rounded-lg p-4 mb-6">
-          <div className="flex items-center mb-2">
-            <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
-            <span className="font-medium text-red-800">Problème de validation</span>
-          </div>
-          <p className="text-red-700 text-sm">
-            {contractDebug.validationErrors.join(', ')}
-          </p>
         </div>
       ) : (
         <div className="bg-green-50 rounded-lg p-4 mb-6">
@@ -325,7 +285,7 @@ export function CheckoutForm({ eventId, eventAddress, ticketPrice, eventName }: 
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={isLoading || !agreedToTerms || !isEventValid || !isEventContractValid || !contractDebug.isValid || isLoadingStatus}
+          disabled={isLoading || !agreedToTerms || !isEventValid || isLoadingStatus}
           className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-purple-700 transition font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
         >
           {isLoading ? (

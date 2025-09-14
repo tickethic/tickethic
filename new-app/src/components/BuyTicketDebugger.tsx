@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useReadContract } from 'wagmi'
 import { useBuyTicketTest } from '@/hooks/useBuyTicketTest'
 import { useContractRelations } from '@/hooks/useContractRelations'
+import { useTicketOwner } from '@/hooks/useTicketOwner'
 import { contractAddresses } from '@/config'
 
 const EVENT_ABI = [
@@ -146,6 +147,7 @@ export function BuyTicketDebugger({ eventAddress }: BuyTicketDebuggerProps) {
 
   const { testBuyTicket, error, isPending, isConfirmed } = useBuyTicketTest()
   const contractRelations = useContractRelations(eventAddress)
+  const ticketOwner = useTicketOwner()
 
   const runDiagnostic = () => {
     const now = Math.floor(Date.now() / 1000)
@@ -179,6 +181,10 @@ export function BuyTicketDebugger({ eventAddress }: BuyTicketDebuggerProps) {
     diagnostic += `Artist Owner (ID 1): ${contractRelations.artistOwner}\n`
     diagnostic += `Event Organizer: ${contractRelations.eventOrganizer}\n`
     diagnostic += `Has Valid Relations: ${contractRelations.hasValidRelations ? '✅' : '❌'}\n`
+    diagnostic += '\n=== TICKET CONTRACT OWNERSHIP ===\n'
+    diagnostic += `Ticket Contract: ${contractAddresses.Ticket}\n`
+    diagnostic += `Ticket Owner: ${ticketOwner.owner}\n`
+    diagnostic += `Ticket Owner Error: ${ticketOwner.error ? ticketOwner.error.message : 'None'}\n`
     diagnostic += '\n=== VALIDATION CHECKS ===\n'
     diagnostic += `Event in future: ${isEventInFuture ? 'PASS' : 'FAIL'}\n`
     diagnostic += `Not sold out: ${!isSoldOut ? 'PASS' : 'FAIL'}\n`

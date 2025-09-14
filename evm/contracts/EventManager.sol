@@ -91,6 +91,9 @@ contract EventManager {
             address(organizatorContract)
         );
         
+        // Transfer ownership of the ticket contract to the new event
+        ticketContract.transferOwnership(address(newEvent));
+        
         // Store the event
         eventId = nextEventId++;
         events[eventId] = address(newEvent);

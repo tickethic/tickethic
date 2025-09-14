@@ -150,13 +150,8 @@ export function CreateEventForm() {
     )
   }
 
-<<<<<<< HEAD
   // Show registration prompt if not an organizer and not just registered
   if (!isOrganizer && !justRegistered) {
-=======
-  // Show registration prompt if not an organizer
-  if (!isOrganizer) {
->>>>>>> develop
     return (
       <div className="bg-white rounded-lg shadow-md p-8">
         <div className="text-center">
@@ -184,7 +179,6 @@ export function CreateEventForm() {
               </>
             )}
           </button>
-<<<<<<< HEAD
         </div>
       </div>
     )
@@ -205,15 +199,6 @@ export function CreateEventForm() {
           <div className="animate-pulse">
             <div className="text-sm text-gray-500">Chargement du formulaire...</div>
           </div>
-=======
-          {isRegistrationConfirmed && (
-            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-green-800 text-sm">
-                ✅ Enregistrement réussi ! Vous pouvez maintenant créer des événements.
-              </p>
-            </div>
-          )}
->>>>>>> develop
         </div>
       </div>
     )

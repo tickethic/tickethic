@@ -13,7 +13,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Suppression des headers API car plus de routes API
+  // Configuration pour résoudre les problèmes CSP avec IPFS
+  // Note: Les headers CSP ne fonctionnent pas avec output: 'export'
+  // La solution est d'utiliser un meta tag dans le HTML
 };
 
 export default nextConfig;

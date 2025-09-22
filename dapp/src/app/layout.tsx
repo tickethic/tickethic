@@ -18,6 +18,11 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
+        {/* Content Security Policy pour résoudre les problèmes avec IPFS */}
+        <meta 
+          httpEquiv="Content-Security-Policy" 
+          content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; connect-src 'self' https: wss: ws:; img-src 'self' data: https: blob:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; frame-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'" 
+        />
         <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>

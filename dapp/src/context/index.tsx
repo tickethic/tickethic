@@ -33,6 +33,9 @@ export const modal = createAppKit({
   enableNetworkSwitching: false, // Disable network switching for static deployment
   enableAccountView: true,
   enableOnramp: false, // Disable onramp features
+  // Force local configuration to avoid CSP issues
+  _sdkVersion: 'react-wagmi-1.8.2',
+  _sdkType: 'appkit',
   themeVariables: {
     '--w3m-accent': '#7c3aed', // Purple accent to match your design
     '--w3m-accent-fill': '#7c3aed',

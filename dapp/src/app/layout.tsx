@@ -18,10 +18,10 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
-        {/* Content Security Policy pour résoudre les problèmes avec IPFS */}
+        {/* Content Security Policy simplifié pour IPFS */}
         <meta 
           httpEquiv="Content-Security-Policy" 
-          content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https:; connect-src 'self' https: wss: ws: https://rpc.walletconnect.org https://*.walletconnect.org https://*.reown.com https://*.walletconnect.com https://api.web3modal.org https://*.web3modal.org https://*.storacha.link https://*.w3s.link https://*.nftstorage.link https://*.dweb.link https://ipfs.io https://gateway.originprotocol.com https://dweb.link; img-src 'self' data: https: blob: https://*.storacha.link https://*.w3s.link https://*.nftstorage.link https://*.dweb.link https://ipfs.io https://gateway.originprotocol.com https://dweb.link https://avatars.githubusercontent.com; font-src 'self' data: https: https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https: https://fonts.googleapis.com https://unpkg.com https://cdnjs.cloudflare.com; style-src-elem 'self' 'unsafe-inline' https: https://fonts.googleapis.com https://unpkg.com https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: https://unpkg.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; frame-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'" 
+          content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https: wss: ws:; connect-src 'self' https: wss: ws:; img-src 'self' data: https: blob:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; style-src-elem 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; frame-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'" 
         />
         <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>

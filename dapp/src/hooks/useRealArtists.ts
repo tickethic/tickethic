@@ -104,48 +104,47 @@ export function useAllArtists() {
       // Fetch all artists info from the real contract
       const fetchAllArtists = async () => {
         const artists: ArtistInfo[] = []
-        
         for (let i = 1; i <= totalArtists; i++) {
           try {
-            // For now, we'll use a simple approach
-            // In a production app, you might want to batch these calls or use a different strategy
-            const response = await fetch('/api/artist/' + i) // You'd need to create this API endpoint
-            if (response.ok) {
-              const artistData = await response.json()
-              artists.push(artistData)
-            } else {
-              // Fallback to placeholder if API fails
-              artists.push({
-                id: i,
-                name: `Artiste #${i}`,
-                metadataURI: `ipfs://artist-${i}`,
-                owner: '0x...'
-              })
-            }
-          } catch (error) {
-            console.error(`Error fetching artist ${i}:`, error)
-            // Add placeholder for failed fetch
+            const [name, metadataURI] = await (window as any).viem.readContract({
+              address: contractAddresses.Artist,
+              abi: ARTIST_ABI,
+              functionName: 'getArtistInfo',
+              args: [BigInt(i)]
+            })
+            const owner = await (window as any).viem.readContract({
+              address: contractAddresses.Artist,
+              abi: ARTIST_ABI,
+              functionName: 'ownerOf',
+              args: [BigInt(i)]
+            })
+            artists.push({
+              id: i,
+              name,
+              metadataURI,
+              owner
+            })
+          } catch (err) {
             artists.push({
               id: i,
               name: `Artiste #${i}`,
-              metadataURI: `ipfs://artist-${i}`,
-              owner: '0x...'
+              metadataURI: '',
+              owner: ''
             })
           }
         }
-        
         setAllArtists(artists)
         setIsLoading(false)
       }
-      
       fetchAllArtists()
+    } else {
+      setAllArtists([])
     }
   }, [totalArtists])
 
   return {
     allArtists,
     isLoading: isLoading || isLoadingTotal,
-    totalArtists,
     error
   }
 }

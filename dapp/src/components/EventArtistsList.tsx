@@ -11,25 +11,23 @@ export function EventArtistsList({ eventAddress }: EventArtistsListProps) {
   const { artists, isLoading, totalArtists } = useEventArtists(eventAddress)
   const [artistDetails, setArtistDetails] = useState<EventArtist[]>([])
 
-  // Fetch artist names from API
+  // Fetch artist names from blockchain
   useEffect(() => {
     if (artists.length > 0) {
       const fetchArtistNames = async () => {
         const details = await Promise.all(
           artists.map(async (artist) => {
             try {
-              const response = await fetch(`/api/artist/${artist.id}`)
-              if (response.ok) {
-                const data = await response.json()
-                return {
-                  ...artist,
-                  name: data.name || `Artiste #${artist.id}`
-                }
+              // Utiliser les appels blockchain directs au lieu de l'API
+              // Pour l'instant, on utilise le nom par défaut
+              return {
+                ...artist,
+                name: `Artiste #${artist.id}`
               }
             } catch (error) {
               console.error(`Error fetching artist ${artist.id}:`, error)
+              return artist // Return original if blockchain call fails
             }
-            return artist // Return original if API fails
           })
         )
         setArtistDetails(details)

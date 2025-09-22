@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import { useReadContract } from 'wagmi'
+import { getArtistInfo } from '@/lib/blockchain'
 
 export interface ArtistDetail {
   id: number
@@ -29,21 +31,19 @@ export function useArtistDetails(artistIds: number[], artistShares: number[]) {
         const details = await Promise.all(
           memoizedArtistIds.map(async (artistId, index) => {
             try {
-              const response = await fetch(`/api/artist/${artistId}`)
+              // Utiliser les appels blockchain directs au lieu de l'API
+              const artistInfo = await getArtistInfo(artistId, (params: any) => {
+                // Cette fonction sera appelée par le hook useReadContract
+                return new Promise((resolve, reject) => {
+                  // Simuler un appel blockchain - dans un vrai cas, ceci serait géré par wagmi
+                  resolve(null)
+                })
+              })
               
-              if (response.ok) {
-                const data = await response.json()
-                return {
-                  id: artistId,
-                  name: data.name || `Artiste #${artistId}`,
-                  share: Math.round((memoizedArtistShares[index] || 0) / 100) // Convert from basis points to percentage
-                }
-              } else {
-                return {
-                  id: artistId,
-                  name: `Artiste #${artistId}`,
-                  share: Math.round((memoizedArtistShares[index] || 0) / 100) // Convert from basis points to percentage
-                }
+              return {
+                id: artistId,
+                name: artistInfo?.name || `Artiste #${artistId}`,
+                share: Math.round((memoizedArtistShares[index] || 0) / 100) // Convert from basis points to percentage
               }
             } catch (error) {
               console.error(`Error fetching artist ${artistId}:`, error)

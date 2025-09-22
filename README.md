@@ -8,21 +8,25 @@ A decentralized application (dApp) for managing event tickets as NFTs. This open
 - **Artist Registration**: Artists can register and mint their own NFT collections
 - **Revenue Sharing**: Fair and transparent revenue distribution
 - **Web3 Integration**: Built with wagmi, viem, and Reown AppKit
-- **Static Deployment**: Optimized for static hosting with FTP deployment
+- **IPFS Deployment**: Fully decentralized deployment on IPFS network
 
 ## 🏗️ Project Structure
 
 ```
 tickethic/
-├── dapp/                 # Frontend Next.js application
+├── dapp/                 # Frontend Next.js application (IPFS-ready)
 │   ├── src/             # Source code
 │   ├── public/          # Static assets
-│   ├── deploy.js        # FTP deployment script
-│   └── DEPLOY.md        # Deployment documentation
+│   ├── out/             # Static build output (for IPFS)
+│   ├── .github/         # GitHub Actions for IPFS deployment
+│   └── IPFS_DEPLOYMENT.md # IPFS deployment guide
 ├── evm/                 # Smart contracts (Hardhat)
 │   ├── contracts/       # Solidity contracts
 │   ├── scripts/         # Deployment scripts
 │   └── test/           # Contract tests
+├── nft/                 # NFT metadata
+│   ├── artists/         # Artist metadata
+│   └── events/          # Event metadata
 └── README.md           # This file
 ```
 
@@ -99,19 +103,28 @@ npx hardhat deploy --network <network>
 
 ## 🌐 Deployment
 
-### Vercel (Recommended)
+### IPFS (Recommended for dApps)
 
-The dapp is optimized for Vercel deployment with automatic builds and deployments:
+The dapp is optimized for IPFS deployment, making it truly decentralized:
 
-1. **Connect your GitHub repository** to Vercel
-2. **Configure environment variables** in Vercel dashboard
-3. **Deploy automatically** on every push to main branch
+1. **Configure GitHub Secrets** with Storacha credentials
+2. **Push to main branch** - automatic IPFS deployment
+3. **Access via IPFS gateways** - no central server needed
 
-See [VERCEL_DEPLOYMENT.md](dapp/VERCEL_DEPLOYMENT.md) for detailed deployment instructions.
+See [IPFS_DEPLOYMENT.md](dapp/IPFS_DEPLOYMENT.md) for detailed deployment instructions.
+
+### Local Testing
+
+```bash
+cd dapp
+npm run build
+npm run ipfs-serve
+```
 
 ### Supported Hosting Providers
 
-- **Vercel**: Automatic deployments, CDN, SSL
+- **IPFS**: Fully decentralized, immutable, and censorship-resistant
+- **Vercel**: Traditional hosting with CDN
 - **Netlify**: Static hosting with form handling
 - **GitHub Pages**: Free static hosting
 - **Any static hosting**: FTP, S3, etc.

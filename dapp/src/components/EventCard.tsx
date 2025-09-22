@@ -33,80 +33,28 @@ export function EventCard({ eventId }: EventCardProps) {
       console.log(`EventCard ${eventId}: Fetching metadata for URI:`, metadataURI)
       setIsLoadingMetadata(true)
       
-      // Try to fetch directly from IPFS first, then fallback to API
-      if (metadataURI.startsWith('ipfs://')) {
-        const ipfsHash = metadataURI.replace('ipfs://', '')
-        const ipfsGateways = [
-          `https://ipfs.io/ipfs/${ipfsHash}`,
-          `https://dweb.link/ipfs/${ipfsHash}`,
-          `https://ipfs.fleek.co/ipfs/${ipfsHash}`,
-          `https://gateway.originprotocol.com/ipfs/${ipfsHash}`
-        ]
-        
-        // Try each gateway until one works
-        const tryGateways = async () => {
-          for (const ipfsUrl of ipfsGateways) {
-            try {
-              console.log(`EventCard ${eventId}: Trying IPFS gateway:`, ipfsUrl)
-              const response = await fetch(ipfsUrl)
-              if (response.ok) {
-                const data = await response.json()
-                console.log(`EventCard ${eventId}: Received IPFS metadata:`, data)
-                setEventName(data.name || `Événement #${eventId}`)
-                setEventDescription(data.description || '')
-                setEventImage(data.image || '')
-                setEventLocation(data.location || '')
-                return // Success, exit
-              }
-          } catch (error) {
-            console.log(`EventCard ${eventId}: Gateway failed:`, ipfsUrl, error instanceof Error ? error.message : 'Unknown error')
-            }
-          }
-          
-          // All gateways failed, try API fallback
-          console.log('EventCard ${eventId}: All IPFS gateways failed, trying API fallback')
-          try {
-            const response = await fetch(`/api/event-metadata?uri=${encodeURIComponent(metadataURI)}`)
-            const data = await response.json()
-            console.log(`EventCard ${eventId}: Received API metadata:`, data)
-            setEventName(data.name || `Événement #${eventId}`)
-            setEventDescription(data.description || '')
-            setEventImage(data.image || '')
-            setEventLocation(data.location || '')
-          } catch (error) {
-            console.error('Error fetching event metadata:', error)
-            setEventName(`Événement #${eventId}`)
-            setEventDescription('')
-            setEventImage('')
-            setEventLocation('')
-          }
-        }
-        
-        tryGateways().finally(() => {
+      // Utiliser les appels IPFS directs
+      const fetchMetadata = async () => {
+        try {
+          const { fetchMetadata } = await import('@/lib/ipfs')
+          const data = await fetchMetadata(metadataURI)
+          console.log(`EventCard ${eventId}: Received metadata:`, data)
+          setEventName(data.name || `Événement #${eventId}`)
+          setEventDescription(data.description || '')
+          setEventImage(data.image || '')
+          setEventLocation(data.location || '')
+        } catch (error) {
+          console.error('Error fetching event metadata:', error)
+          setEventName(`Événement #${eventId}`)
+          setEventDescription('')
+          setEventImage('')
+          setEventLocation('')
+        } finally {
           setIsLoadingMetadata(false)
-        })
-      } else {
-        // Use API for non-IPFS URIs
-        fetch(`/api/event-metadata?uri=${encodeURIComponent(metadataURI)}`)
-          .then(response => response.json())
-          .then(data => {
-            console.log(`EventCard ${eventId}: Received metadata:`, data)
-            setEventName(data.name || `Événement #${eventId}`)
-            setEventDescription(data.description || '')
-            setEventImage(data.image || '')
-            setEventLocation(data.location || '')
-          })
-          .catch(error => {
-            console.error('Error fetching event metadata:', error)
-            setEventName(`Événement #${eventId}`)
-            setEventDescription('')
-            setEventImage('')
-            setEventLocation('')
-          })
-          .finally(() => {
-            setIsLoadingMetadata(false)
-          })
+        }
       }
+      
+      fetchMetadata()
     } else {
       setEventName(`Événement #${eventId}`)
     }

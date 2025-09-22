@@ -1,0 +1,82 @@
+name: Deploy to IPFS
+
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Deploy to IPFS
+        uses: ipfs/ipfs-deploy-action@v1
+        id: deploy
+        with:
+          path-to-deploy: out  # Next.js export output directory
+          storacha-key: ${{ secrets.STORACHA_KEY }}
+          storacha-proof: ${{ secrets.STORACHA_PROOF }}
+          github-token: ${{ github.token }}
+
+      - name: Comment PR with deployment info
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const cid = '${{ steps.deploy.outputs.cid }}';
+            const gatewayUrl = `https://${cid}.ipfs.dweb.link`;
+            const swGatewayUrl = `https://${cid}.ipfs.inbrowser.link`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🚀 **Déploiement IPFS réussi !**
+              
+              **CID:** \`${cid}\`
+              
+              **Liens d'accès:**
+              - 🌐 Gateway public: ${gatewayUrl}
+              - 🔗 Service Worker Gateway: ${swGatewayUrl}
+              
+              Votre dApp est maintenant accessible sur IPFS !`
+            });
+
+      - name: Update commit status
+        if: github.event_name == 'push'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const cid = '${{ steps.deploy.outputs.cid }}';
+            const gatewayUrl = `https://${cid}.ipfs.dweb.link`;
+            
+            github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: 'success',
+              target_url: gatewayUrl,
+              description: `Déployé sur IPFS (CID: ${cid})`,
+              context: 'ipfs-deploy'
+            });

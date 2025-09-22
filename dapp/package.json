@@ -5,9 +5,14 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "export": "next build && next export",
     "start": "next start",
     "lint": "eslint",
-    "vercel-build": "next build"
+    "vercel-build": "next build",
+    "ipfs-build": "next build",
+    "ipfs-serve": "npx serve@latest out",
+    "ipfs-deploy": "node scripts/deploy-ipfs-local.js",
+    "ipfs-deploy-full": "npm run build && npm run ipfs-deploy"
   },
   "dependencies": {
     "@next/env": "^15.5.3",

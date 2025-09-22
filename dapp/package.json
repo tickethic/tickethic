@@ -12,7 +12,8 @@
     "ipfs-build": "next build",
     "ipfs-serve": "npx serve@latest out",
     "ipfs-deploy": "node scripts/deploy-ipfs-local.js",
-    "ipfs-deploy-full": "npm run build && npm run ipfs-deploy"
+    "ipfs-deploy-full": "npm run build && npm run ipfs-deploy",
+    "check-env": "node scripts/check-env.js"
   },
   "dependencies": {
     "@next/env": "^15.5.3",

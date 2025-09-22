@@ -14,6 +14,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,14 +33,6 @@ jobs:
       - name: Build project
         run: npm run build
         working-directory: ./dapp
-        env:
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-          NEXT_PUBLIC_CONTRACT_ARTIST: ${{ secrets.NEXT_PUBLIC_CONTRACT_ARTIST }}
-          NEXT_PUBLIC_CONTRACT_ORGANIZATOR: ${{ secrets.NEXT_PUBLIC_CONTRACT_ORGANIZATOR }}
-          NEXT_PUBLIC_CONTRACT_TICKET: ${{ secrets.NEXT_PUBLIC_CONTRACT_TICKET }}
-          NEXT_PUBLIC_CONTRACT_EVENT: ${{ secrets.NEXT_PUBLIC_CONTRACT_EVENT }}
-          NEXT_PUBLIC_CONTRACT_EVENT_MANAGER: ${{ secrets.NEXT_PUBLIC_CONTRACT_EVENT_MANAGER }}
-          NEXT_PUBLIC_CONTRACT_NAME: ${{ secrets.NEXT_PUBLIC_CONTRACT_NAME }}
 
       - name: Deploy to IPFS
         uses: ipfs/ipfs-deploy-action@v1

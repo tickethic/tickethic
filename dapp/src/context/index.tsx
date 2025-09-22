@@ -14,7 +14,7 @@ const queryClient = new QueryClient()
 const metadata = {
   name: 'Tickethic',
   description: 'dApp allowing to manage tickets as NFTs. Open source project to share tickets revenue with artists in a faire and open way.',
-  url: 'https://github.com/0xonerb/next-reown-appkit-ssr', // origin must match your domain & subdomain
+  url: typeof window !== 'undefined' ? window.location.origin : 'https://tickethic.ch', // Dynamic URL for dev/prod
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
@@ -26,10 +26,24 @@ export const modal = createAppKit({
   metadata,
   themeMode: 'light',
   features: {
-    analytics: true // Optional - defaults to your Cloud configuration
+    analytics: false // Disable analytics to avoid 401/403 errors
   },
   themeVariables: {
-    '--w3m-accent': '#000000',
+    '--w3m-accent': '#7c3aed', // Purple accent to match your design
+    '--w3m-accent-fill': '#7c3aed',
+    '--w3m-background': '#ffffff',
+    '--w3m-background-border-radius': '12px',
+    '--w3m-container-border-radius': '12px',
+    '--w3m-wallet-icon-border-radius': '8px',
+    '--w3m-wallet-icon-large-border-radius': '12px',
+    '--w3m-input-border-radius': '8px',
+    '--w3m-button-border-radius': '8px',
+    '--w3m-secondary-button-border-radius': '8px',
+    '--w3m-notification-border-radius': '8px',
+    '--w3m-icon-border-radius': '6px',
+    '--w3m-font-family': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    '--w3m-font-size-master': '14px',
+    '--w3m-z-index': '1000'
   }
 })
 

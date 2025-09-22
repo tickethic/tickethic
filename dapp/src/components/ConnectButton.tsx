@@ -2,7 +2,7 @@
 
 export const ConnectButton = () => {
   return (
-    <div >
+    <div>
         <appkit-button />
     </div>
   )

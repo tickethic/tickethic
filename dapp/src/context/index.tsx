@@ -26,8 +26,13 @@ export const modal = createAppKit({
   metadata,
   themeMode: 'light',
   features: {
-    analytics: false // Disable analytics to avoid 401/403 errors
+    analytics: false, // Disable analytics to avoid 401/403 errors
+    email: false, // Disable email features
+    socials: ['google', 'x', 'github', 'discord', 'apple', 'facebook'] // Only enable specific social logins
   },
+  enableNetworkSwitching: false, // Disable network switching for static deployment
+  enableAccountView: true,
+  enableOnramp: false, // Disable onramp features
   themeVariables: {
     '--w3m-accent': '#7c3aed', // Purple accent to match your design
     '--w3m-accent-fill': '#7c3aed',

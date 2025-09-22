@@ -10,7 +10,7 @@
 
 ### 2. Installer w3cli
 
-```bash
+```bashe
 npm install -g @web3-storage/w3cli
 ```
 
@@ -67,6 +67,16 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ### Secret 2 : STORACHA_PROOF
 - **Nom** : `STORACHA_PROOF`
 - **Valeur** : La sortie base64 de l'étape 6
+
+### Variables d'environnement (OBLIGATOIRES)
+Ces variables sont nécessaires pour le build :
+- `NEXT_PUBLIC_PROJECT_ID` : Votre Project ID WalletConnect
+- `NEXT_PUBLIC_CONTRACT_ARTIST` : Adresse du contrat Artist
+- `NEXT_PUBLIC_CONTRACT_ORGANIZATOR` : Adresse du contrat Organizator
+- `NEXT_PUBLIC_CONTRACT_TICKET` : Adresse du contrat Ticket
+- `NEXT_PUBLIC_CONTRACT_EVENT` : Adresse du contrat Event
+- `NEXT_PUBLIC_CONTRACT_EVENT_MANAGER` : Adresse du contrat EventManager
+- `NEXT_PUBLIC_CONTRACT_NAME` : Nom du contrat (ex: "Tickethic")
 
 ## ✅ Vérification
 

@@ -107,7 +107,7 @@ The dapp is optimized for Vercel deployment with automatic builds and deployment
 2. **Configure environment variables** in Vercel dashboard
 3. **Deploy automatically** on every push to main branch
 
-See [VERCEL_DEPLOYMENT.md](new-app/VERCEL_DEPLOYMENT.md) for detailed deployment instructions.
+See [VERCEL_DEPLOYMENT.md](dapp/VERCEL_DEPLOYMENT.md) for detailed deployment instructions.
 
 ### Supported Hosting Providers
 
@@ -138,7 +138,7 @@ See [VERCEL_DEPLOYMENT.md](new-app/VERCEL_DEPLOYMENT.md) for detailed deployment
 
 ## 📖 Documentation
 
-- [Vercel Deployment Guide](new-app/VERCEL_DEPLOYMENT.md) - Detailed deployment instructions
+- [Vercel Deployment Guide](dapp/VERCEL_DEPLOYMENT.md) - Detailed deployment instructions
 - [Smart Contracts](evm/README.md) - Contract documentation
 - [API Reference](docs/api.md) - API documentation (coming soon)
 
